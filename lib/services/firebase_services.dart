@@ -6,8 +6,8 @@ class FirebaseInstance {
 }
 
 class FirebaseRefs {
-  static CollectionReference colRefUser =
-      FirebaseInstance.db.collection("users");
+  static CollectionReference colRefStory =
+      FirebaseInstance.db.collection("stories");
 }
 
 class FirebaseCRUD {
@@ -58,6 +58,21 @@ class FirebaseCRUD {
     required CollectionReference colRef,
   }) {
     return colRef.snapshots();
+  }
+
+  // Read (Collection 데이터를 불러오도록 함)
+  Future<List<T>> readCollectionData<T extends JsonSerializable>({
+    required CollectionReference colRef,
+    required T Function(Map<String, dynamic>) fromMap,
+  }) async {
+    try {
+      QuerySnapshot querySnapshot = await colRef.get();
+      return querySnapshot.docs
+          .map((doc) => fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // Update
