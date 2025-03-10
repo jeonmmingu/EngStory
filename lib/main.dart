@@ -1,8 +1,10 @@
 import 'package:eng_story/app.dart';
 import 'package:eng_story/services/firebase_options.dart';
+import 'package:eng_story/view_models/home_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
+import 'package:provider/provider.dart';
 
 Logger logger = Logger();
 void main() async {
@@ -12,5 +14,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const App());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: HomeViewModel()),
+      ],
+      child: const App(),
+    ),
+  );
 }
