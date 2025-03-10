@@ -1,4 +1,5 @@
 import 'package:eng_story/core/tests/test_screen.dart';
+import 'package:eng_story/router/router.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -6,17 +7,10 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // home: TestScreen(), // 테스트 할 기능이 있을 때 사용
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Eng Story'),
-        ),
-        body: const Center(
-          child: Text('Welcome to Eng Story'),
-        ),
-      ),
+    return MaterialApp.router(
+      // Go Router 설정
+      routerConfig: router,
+      debugShowCheckedModeBanner: false, // Debug 배너 없애기
     );
   }
 }
