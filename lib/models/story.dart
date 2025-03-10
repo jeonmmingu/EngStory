@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_story/models/json_serializable.dart';
 
 class Story implements JsonSerializable {
@@ -6,7 +7,7 @@ class Story implements JsonSerializable {
   String source;
   String category;
   String readTime;
-  String updatedAt;
+  Timestamp updatedAt;
 
   Story({
     required this.id,
