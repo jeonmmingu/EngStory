@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "340346390404",
+    "project_id": "engstory-48526",
+    "storage_bucket": "engstory-48526.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:340346390404:android:2e10080b01c04760527fd1",
+        "android_client_info": {
+          "package_name": "com.example.eng_story"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBw8O6VfFwdBr85oyDDq1zGIhgf2gvq09g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
