@@ -29,7 +29,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: SejongGeulggot
+      fonts:
+        - asset: assets/fonts/SejongGeulggot.ttf
   assets:
     - assets/animations/
     - assets/images/
-    - assets/fonts/
