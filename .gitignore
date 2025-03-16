@@ -105,4 +105,4 @@ lib/generated_plugin_registrant.dart
 # End of https://www.toptal.com/developers/gitignore/api/flutter,dart,firebase
 
 # lib/core/test/story 제외
-**/lib/core/test/story/
+# **/lib/core/tests/story/
