@@ -264,16 +264,8 @@ class HomeView extends StatelessWidget {
               GestureDetector(
                 onTap: () async {
                   HapticFeedback.heavyImpact();
-                  List<String> storyIds = [
-                    dummyStoryRosetta.id,
-                    dummyStoryFirstNewspaper.id,
-                    dummyStoryEasterMoai.id,
-                    dummyStoryWitchHunt.id,
-                  ];
-                  int randomIndex = Random().nextInt(4);
-                  final story =
-                      await ManageStory().getStory(storyIds[randomIndex]);
-                  homeViewModel.setSelectedStory(story!);
+                  final story = homeViewModel.getRandomStoryByReadTime();
+                  homeViewModel.setSelectedStory(story);
                 },
                 child: Container(
                   width: 61.w,

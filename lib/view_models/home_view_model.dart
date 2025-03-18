@@ -1,5 +1,6 @@
+import 'dart:math';
+
 import 'package:eng_story/core/enums/story_time.dart';
-import 'package:eng_story/models/story.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/repositories/local/cached_story_repository.dart';
 import 'package:eng_story/repositories/remote/story_repository.dart';
@@ -15,8 +16,8 @@ class HomeViewModel with ChangeNotifier {
   StoryTime get storyTime => _storyTime;
 
   // 📌 현재 선택된 스토리
-  Story? _selectedStory;
-  Story? get selectedStory => _selectedStory;
+  CachedStory? _selectedStory;
+  CachedStory? get selectedStory => _selectedStory;
 
   // 📌 캐싱된 스토리 목록
   List<CachedStory> _cachedStories = [];
@@ -58,7 +59,7 @@ class HomeViewModel with ChangeNotifier {
   }
 
   /// 🔹 선택된 스토리 설정
-  void setSelectedStory(Story story) {
+  void setSelectedStory(CachedStory story) {
     _selectedStory = story;
     notifyListeners();
   }
@@ -119,5 +120,21 @@ class HomeViewModel with ChangeNotifier {
     } catch (e) {
       debugPrint("❌ lastReadScriptIndex 업데이트 실패: $e");
     }
+  }
+
+  /// 🔹 캐싱된 스토리 중 설정한 readTime에 맞는 스토리 중 랜덤으로 하나 반환하기
+  CachedStory getRandomStoryByReadTime() {
+    final filteredStories = _cachedStories
+        .where((story) =>
+            story.readTime == storyTime.typeText &&
+            story.id != _selectedStory?.id)
+        .toList();
+
+    if (filteredStories.isEmpty) {
+      return _selectedStory!;
+    }
+
+    final randomIndex = Random().nextInt(filteredStories.length);
+    return filteredStories[randomIndex];
   }
 }
