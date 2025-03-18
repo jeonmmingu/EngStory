@@ -69,7 +69,7 @@ class ManageStory {
       return _storyScripts[storyId];
     } else {
       List<StoryScript> scripts =
-          await _storyRepository.readStoryScripts(storyId);
+          await _storyRepository.readAllStoryScripts(storyId);
       if (scripts.isNotEmpty) {
         _storyScripts[storyId] = scripts;
       }

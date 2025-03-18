@@ -26,15 +26,25 @@ class HomeView extends StatelessWidget {
   // MARK: build
   @override
   Widget build(BuildContext context) {
-    final homeViewModel = Provider.of<HomeViewModel>(context);
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: _body(context, homeViewModel),
+    return FutureBuilder(
+      future: context.read<HomeViewModel>().initializeApp(),
+      builder: (context, snapshot) => Scaffold(
+        backgroundColor: AppColors.background,
+        body: _body(
+          context,
+          Provider.of<HomeViewModel>(context),
+          snapshot.connectionState == ConnectionState.waiting,
+        ),
+      ),
     );
   }
 
   // MARK: - body
-  Widget _body(BuildContext context, HomeViewModel homeViewModel) {
+  Widget _body(
+    BuildContext context,
+    HomeViewModel homeViewModel,
+    bool isLoading,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -55,7 +65,7 @@ class HomeView extends StatelessWidget {
           ),
           _middleSection(context, homeViewModel),
           const Spacer(),
-          _bottomSection(context, homeViewModel),
+          _bottomSection(context, homeViewModel, isLoading),
           SizedBox(height: 98.h),
         ],
       ),
@@ -189,100 +199,113 @@ class HomeView extends StatelessWidget {
   }
 
   // MARK: - bottomSection
-  Widget _bottomSection(BuildContext context, HomeViewModel homeViewModel) {
-    return Row(
+  Widget _bottomSection(
+    BuildContext context,
+    HomeViewModel homeViewModel,
+    bool isLoading,
+  ) {
+    String loadingText = homeViewModel.initializeProgress == "cache"
+        ? "재밌는 이야기를 불러오는 중입니다...."
+        : "새롭게 추가된 이야기를 불러오는 중입니다.....";
+    return Column(
       children: [
-        SizedBox(width: 45.w),
-        GestureDetector(
-          onTap: () {
-            HapticFeedback.heavyImpact();
-            homeViewModel.setStoryTime(StoryTime.short);
-          },
-          child: Container(
-            width: 80.w,
-            height: 61.h,
-            alignment: Alignment.center,
-            child: Text(
-              StoryTime.short.displayText,
-              style: homeViewModel.storyTime == StoryTime.short
-                  ? AppTextStyles.SejongGeulggot_20_regular.copyWith(
-                      color: AppColors.button)
-                  : AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_1,
-                    ),
+        // 🔹 로딩 중이면 인디케이터와 텍스트 표시
+        if (isLoading)
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 24.w,
+                  height: 24.h,
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: AppColors.button,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Text(
+                  loadingText,
+                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    color: AppColors.text_1,
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        const Spacer(),
-        GestureDetector(
-          onTap: () async {
-            HapticFeedback.heavyImpact();
-            // Add Story
-            // await ManageStory().addStory(dummyStoryRosetta);
-            // await ManageStory().addStoryScripts(
-            //   dummyStoryRosetta.id,
-            //   dummyRosettaScripts,
-            // );
-            // await ManageStory().addStory(dummyStoryFirstNewspaper);
-            // await ManageStory().addStoryScripts(
-            //   dummyStoryFirstNewspaper.id,
-            //   dummyFirstNewspaperScripts,
-            // );
-            // await ManageStory().addStory(dummyStoryEasterMoai);
-            // await ManageStory().addStoryScripts(
-            //   dummyStoryEasterMoai.id,
-            //   dummyEasterMoaiScripts,
-            // );
-            // await ManageStory().addStory(dummyStoryWitchHunt);
-            // await ManageStory().addStoryScripts(
-            //   dummyStoryWitchHunt.id,
-            //   dummyWitchHuntScripts,
-            // );
-            // Get Story
-            List<String> storyIds = [
-              dummyStoryRosetta.id,
-              dummyStoryFirstNewspaper.id,
-              dummyStoryEasterMoai.id,
-              dummyStoryWitchHunt.id,
-            ];
-            // 4개의 스토리 중 랜덤으로 선택
-            int randomIndex = Random().nextInt(4);
-            final story = await ManageStory().getStory(storyIds[randomIndex]);
-            homeViewModel.setSelectedStory(story!);
-            // await ManageStory().deleteStoryScripts(dummyStoryThreeLittlePigs.id);
-            // await ManageStory().deleteStory(dummyStoryThreeLittlePigs.id);
-          },
-          child: Container(
-            width: 61.w,
-            height: 61.h,
-            alignment: Alignment.center,
-            child: Image.asset(
-              AppImages.diceButton,
-            ),
+
+        // 🔹 로딩이 끝나면 기존 버튼 UI 표시
+        if (!isLoading)
+          Row(
+            children: [
+              SizedBox(width: 45.w),
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  homeViewModel.setStoryTime(StoryTime.short);
+                },
+                child: Container(
+                  width: 80.w,
+                  height: 61.h,
+                  alignment: Alignment.center,
+                  child: Text(
+                    StoryTime.short.displayText,
+                    style: homeViewModel.storyTime == StoryTime.short
+                        ? AppTextStyles.SejongGeulggot_20_regular.copyWith(
+                            color: AppColors.button)
+                        : AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                            color: AppColors.text_1,
+                          ),
+                  ),
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () async {
+                  HapticFeedback.heavyImpact();
+                  List<String> storyIds = [
+                    dummyStoryRosetta.id,
+                    dummyStoryFirstNewspaper.id,
+                    dummyStoryEasterMoai.id,
+                    dummyStoryWitchHunt.id,
+                  ];
+                  int randomIndex = Random().nextInt(4);
+                  final story =
+                      await ManageStory().getStory(storyIds[randomIndex]);
+                  homeViewModel.setSelectedStory(story!);
+                },
+                child: Container(
+                  width: 61.w,
+                  height: 61.h,
+                  alignment: Alignment.center,
+                  child: Image.asset(AppImages.diceButton),
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  homeViewModel.setStoryTime(StoryTime.medium);
+                },
+                child: Container(
+                  width: 80.w,
+                  height: 61.h,
+                  alignment: Alignment.center,
+                  child: Text(
+                    StoryTime.medium.displayText,
+                    style: homeViewModel.storyTime == StoryTime.medium
+                        ? AppTextStyles.SejongGeulggot_20_regular.copyWith(
+                            color: AppColors.button)
+                        : AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                            color: AppColors.text_1,
+                          ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 45.w),
+            ],
           ),
-        ),
-        const Spacer(),
-        GestureDetector(
-          onTap: () {
-            HapticFeedback.heavyImpact();
-            homeViewModel.setStoryTime(StoryTime.medium);
-          },
-          child: Container(
-            width: 80.w,
-            height: 61.h,
-            alignment: Alignment.center,
-            child: Text(
-              StoryTime.medium.displayText,
-              style: homeViewModel.storyTime == StoryTime.medium
-                  ? AppTextStyles.SejongGeulggot_20_regular.copyWith(
-                      color: AppColors.button)
-                  : AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_1,
-                    ),
-            ),
-          ),
-        ),
-        SizedBox(width: 45.w),
       ],
     );
   }
