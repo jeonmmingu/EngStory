@@ -1,6 +1,6 @@
 import 'package:eng_story/main.dart';
 import 'package:eng_story/models/story_script.dart';
-import 'package:eng_story/repositories/story_repository.dart';
+import 'package:eng_story/repositories/remote/story_repository.dart';
 import 'package:flutter/material.dart';
 
 class StoryViewModel with ChangeNotifier {
