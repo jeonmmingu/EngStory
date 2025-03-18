@@ -1,4 +1,4 @@
-import 'package:eng_story/repositories/story_repository.dart';
+import 'package:eng_story/repositories/remote/story_repository.dart';
 import 'package:eng_story/models/story.dart';
 import 'package:eng_story/models/story_script.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

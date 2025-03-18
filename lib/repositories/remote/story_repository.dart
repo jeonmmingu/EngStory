@@ -1,6 +1,6 @@
 import 'package:eng_story/models/story.dart';
 import 'package:eng_story/models/story_script.dart';
-import 'package:eng_story/services/firebase_services.dart';
+import 'package:eng_story/services/remote/firebase_services.dart';
 
 class StoryRepository {
   FirebaseCRUD firebaseCRUD = FirebaseCRUD();
