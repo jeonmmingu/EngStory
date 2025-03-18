@@ -19,6 +19,7 @@ class StoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     final storyViewModel = Provider.of<StoryViewModel>(context);
     final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -27,7 +28,7 @@ class StoryView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _header(context, homeViewModel),
-            _body(context, storyViewModel),
+            _body(context, homeViewModel, storyViewModel),
             Container(
               width: double.infinity,
               color: Colors.transparent,
@@ -37,7 +38,7 @@ class StoryView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _progressBar(context, storyViewModel),
+                  _progressBar(context, homeViewModel, storyViewModel),
                   _bottomSection(context, storyViewModel),
                 ],
               ),
@@ -97,6 +98,7 @@ class StoryView extends StatelessWidget {
   // MARK: - body
   Widget _body(
     BuildContext context,
+    HomeViewModel homeViewModel,
     StoryViewModel storyViewModel,
   ) {
     return Expanded(
@@ -227,6 +229,7 @@ class StoryView extends StatelessWidget {
   // MARK: - progressBar
   Widget _progressBar(
     BuildContext context,
+    HomeViewModel homeViewModel,
     StoryViewModel storyViewModel,
   ) {
     return Stack(
@@ -251,15 +254,21 @@ class StoryView extends StatelessWidget {
 
   // MARK: - bottomSection
   Widget _bottomSection(BuildContext context, StoryViewModel storyViewModel) {
+    final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
     return Expanded(
       child: Row(
         children: [
+          // MARK: - Rewind Button
           Flexible(
             flex: 1,
             child: GestureDetector(
               onTap: () {
                 HapticFeedback.mediumImpact();
                 storyViewModel.rewindStory();
+                homeViewModel.updateLastReadScriptIndex(
+                  homeViewModel.selectedStory!.id,
+                  storyViewModel.currentIdx,
+                );
               },
               child: Container(
                 color: Colors.transparent,
@@ -272,12 +281,17 @@ class StoryView extends StatelessWidget {
               ),
             ),
           ),
+          // MARK: - Play Button
           Flexible(
             flex: 1,
             child: GestureDetector(
               onTap: () {
                 HapticFeedback.mediumImpact();
                 storyViewModel.playStory();
+                homeViewModel.updateLastReadScriptIndex(
+                  homeViewModel.selectedStory!.id,
+                  storyViewModel.currentIdx,
+                );
               },
               child: Container(
                 color: Colors.transparent,
@@ -304,6 +318,7 @@ class StoryView extends StatelessWidget {
               ),
             ),
           ),
+          // MARK: - Translate Button
           Flexible(
             flex: 1,
             child: GestureDetector(

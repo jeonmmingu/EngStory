@@ -26,6 +26,29 @@ class StoryViewModel with ChangeNotifier {
   // 📌 현재 언어 모드 (영어 / 한국어)
   String languageMode = "Eng";
 
+  /// 🔹 초기 설정 (index 기준)
+  void init(int idx) {
+    if (idx == 0) return; // 초기화할 스크립트가 없을 경우
+    _currentIdx = idx;
+
+    final script = getScript(idx);
+    if (script.role == "story_teller") {
+      var tmpIdx = idx;
+      while (tmpIdx > 0 && getScript(tmpIdx).role == "story_teller") {
+        addStoryTellerScript(getScript(tmpIdx));
+        tmpIdx--;
+      }
+    } else {
+      addMeScript(script);
+      var tmpIdx = idx - 1;
+      while (tmpIdx > 0 && getScript(tmpIdx).role == "story_teller") {
+        addStoryTellerScript(getScript(tmpIdx));
+        tmpIdx--;
+      }
+    }
+    storyTellerScripts.sort((a, b) => a.index.compareTo(b.index));
+  }
+
   /// 🔹 언어 모드 변경 (Eng ↔ Kor)
   void changeLanguageMode() {
     languageMode = languageMode == "Eng" ? "Kor" : "Eng";
