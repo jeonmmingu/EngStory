@@ -101,6 +101,7 @@ class StoryViewModel with ChangeNotifier {
 
   /// 🔹 스토리 재생 (다음 스크립트)
   void playStory() {
+    debugPrint("🔹 playStory($currentIdx/${_selectedScripts.length})");
     if (_currentIdx >= _selectedScripts.length) return;
 
     // 이전 스크립트가 사용자(me)였을 경우, 기존 대화 삭제
@@ -125,6 +126,7 @@ class StoryViewModel with ChangeNotifier {
   /// 🔹 스토리 되감기 (이전 스크립트)
   void rewindStory() {
     if (_currentIdx == 0) return;
+    debugPrint("🔹 rewindStory($currentIdx/${_selectedScripts.length})");
 
     if (getScript(_currentIdx).role == "me") {
       removeMeScript();
@@ -133,6 +135,15 @@ class StoryViewModel with ChangeNotifier {
       if (_storyTellerScripts.length != 1 || _currentIdx == 1) {
         removeStoryTellerScript();
         _currentIdx--;
+
+        if (getScript(_currentIdx).role == "me") {
+          addMeScript(getScript(_currentIdx));
+          var tmpIdx = _currentIdx - 1;
+          while (tmpIdx > 0 && getScript(tmpIdx).role == "story_teller") {
+            addStoryTellerScript(getScript(tmpIdx));
+            tmpIdx--;
+          }
+        }
       } else {
         removeStoryTellerScript();
         _currentIdx--;
