@@ -1,11 +1,13 @@
-import 'package:eng_story/main.dart';
 import 'package:eng_story/models/story_script.dart';
+import 'package:eng_story/repositories/local/cached_story_script_repository.dart';
 import 'package:eng_story/repositories/remote/story_repository.dart';
 import 'package:flutter/material.dart';
 
 /// 📌 StoryViewModel
 class StoryViewModel with ChangeNotifier {
   final StoryRepository _storyRepository = StoryRepository();
+  final CachedStoryScriptRepository _cachedStoryScriptRepository =
+      CachedStoryScriptRepository();
 
   // 📌 선택된 스토리의 전체 스크립트 리스트
   final List<StoryScript> _selectedScripts = [];
@@ -28,6 +30,8 @@ class StoryViewModel with ChangeNotifier {
 
   /// 🔹 초기 설정 (index 기준)
   void init(int idx) {
+    print("🔹 Script Length: (${selectedScripts.length})");
+    print("🔹 StoryViewModel.init($idx)");
     if (idx == 0) return; // 초기화할 스크립트가 없을 경우
     _currentIdx = idx;
 
@@ -56,15 +60,41 @@ class StoryViewModel with ChangeNotifier {
   }
 
   /// 🔹 스토리 스크립트 불러오기
-  /// - Firestore에서 스토리 스크립트를 불러와 `_selectedScripts`에 저장
+  /// - Cache에 저장된 스크립트가 있는 경우, Cache에서 불러오기
+  /// - Cache에 저장된 스크립트가 없는 경우, Firestore에서 불러오기
   Future<bool> getScripts(String storyId) async {
+    // Cache에서 스토리 스크립트 불러오기 시도
+    final isCached = await _loadScriptsFromCache(storyId);
+    // Cache에 없는 경우 Firestore에서 불러오기
+    if (!isCached) {
+      debugPrint("✅ Firestore에서 스토리 스크립트 불러옴");
+      return await _loadScriptsFromFirestore(storyId);
+    } else {
+      debugPrint("✅ Cache에서 스토리 스크립트 불러옴");
+      return true;
+    }
+  }
+
+  /// 🔹 Cache에서 스토리 스크립트 불러오기
+  Future<bool> _loadScriptsFromCache(String storyId) async {
+    resetAllStates(); // 기존 상태 초기화
+    final scripts =
+        await _cachedStoryScriptRepository.getScriptsByStoryId(storyId);
+    _selectedScripts.addAll(scripts.map((e) => e.toStoryScript()).toList());
+    return scripts.isNotEmpty;
+  }
+
+  /// 🔹 Firestore에서 스토리 스크립트 불러오기
+  Future<bool> _loadScriptsFromFirestore(String storyId) async {
     try {
       resetAllStates(); // 기존 상태 초기화
       final scripts = await _storyRepository.readAllStoryScripts(storyId);
       _selectedScripts.addAll(scripts);
+      // Cache에 새로 불러온 스크립트 저장
+      await _cachedStoryScriptRepository.saveScripts(scripts);
       return true;
     } catch (err) {
-      logger.e("스토리 스크립트 가져오기 실패: $err");
+      Exception("스토리 스크립트 가져오기 실패: $err");
       return false;
     }
   }
@@ -162,6 +192,7 @@ class StoryViewModel with ChangeNotifier {
   void resetAllStates() {
     _selectedScripts.clear();
     _currentIdx = 0;
+    languageMode = "Eng";
     clearStoryTellerScripts();
     clearMeScripts();
   }

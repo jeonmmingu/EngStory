@@ -1,33 +1,43 @@
 import 'package:eng_story/app.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
+import 'package:eng_story/models/cache/cached_story_script.dart';
+import 'package:eng_story/providers/app_providers.dart';
 import 'package:eng_story/services/remote/firebase_options.dart';
-import 'package:eng_story/view_models/home_view_model.dart';
-import 'package:eng_story/view_models/story_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 
-Logger logger = Logger();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Hive.initFlutter();
-  // 자동 생성된 type adapter 등록
-  Hive.registerAdapter(CachedStoryAdapter());
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await initializeApp();
 
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: HomeViewModel()),
-        ChangeNotifierProvider.value(value: StoryViewModel()),
-      ],
+      providers: AppProviders.providers,
       child: const App(),
     ),
   );
+}
+
+// MARK: - 앱 초기화
+Future<void> initializeApp() async {
+  await initializeFirebase();
+  await initializeHive();
+}
+
+// MARK: - Firebase 초기화
+Future<void> initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+}
+
+// MARK: - Hive 초기화
+Future<void> initializeHive() async {
+  await Hive.initFlutter();
+  // 자동 생성된 type adapter 등록
+  Hive.registerAdapter(CachedStoryAdapter());
+  Hive.registerAdapter(CachedStoryScriptAdapter());
 }
