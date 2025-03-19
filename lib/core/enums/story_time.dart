@@ -12,4 +12,13 @@ extension StoryTimeExtension on StoryTime {
         return "5-10 분";
     }
   }
+
+  String get typeText {
+    switch (this) {
+      case StoryTime.short:
+        return "1-5 min";
+      case StoryTime.medium:
+        return "5-10 min";
+    }
+  }
 }

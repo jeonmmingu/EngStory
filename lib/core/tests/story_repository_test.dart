@@ -1,7 +1,8 @@
-import 'package:eng_story/repositories/story_repository.dart';
+import 'package:eng_story/repositories/remote/story_repository.dart';
 import 'package:eng_story/models/story.dart';
 import 'package:eng_story/models/story_script.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class StoryRepositoryTest {
   static final StoryRepositoryTest _instance = StoryRepositoryTest._internal();
@@ -25,29 +26,29 @@ class StoryRepositoryTest {
     );
 
     await storyRepository.createStory(testStoryId, testStory);
-    print("✅ 스토리 생성 완료: ${testStory.title}");
+    debugPrint("✅ 스토리 생성 완료: ${testStory.title}");
   }
 
   // 스토리 읽기 테스트
   Future<void> readStoryTest() async {
     final story = await storyRepository.readStory(testStoryId);
     if (story != null) {
-      print("✅ 스토리 읽기 성공: ${story.title}");
+      debugPrint("✅ 스토리 읽기 성공: ${story.title}");
     } else {
-      print("❌ 스토리 읽기 실패");
+      debugPrint("❌ 스토리 읽기 실패");
     }
   }
 
   // 스토리 업데이트 테스트
   Future<void> updateStoryTest() async {
     await storyRepository.updateStory(testStoryId, {"title": "업데이트된 스토리"});
-    print("✅ 스토리 업데이트 완료");
+    debugPrint("✅ 스토리 업데이트 완료");
   }
 
   // 스토리 삭제 테스트
   Future<void> deleteStoryTest() async {
     await storyRepository.deleteStory(testStoryId);
-    print("✅ 스토리 삭제 완료");
+    debugPrint("✅ 스토리 삭제 완료");
   }
 
   // 스토리스크립트 생성 테스트
@@ -64,16 +65,16 @@ class StoryRepositoryTest {
 
     await storyRepository.createStoryScript(
         testStoryId, testScriptId, testScript);
-    print("✅ 스토리스크립트 생성 완료: ${testScript.text_en}");
+    debugPrint("✅ 스토리스크립트 생성 완료: ${testScript.text_en}");
   }
 
   // 스토리스크립트 읽기 테스트
   Future<void> readStoryScriptsTest() async {
-    final scripts = await storyRepository.readStoryScripts(testStoryId);
+    final scripts = await storyRepository.readAllStoryScripts(testStoryId);
     if (scripts.isNotEmpty) {
-      print("✅ 스토리스크립트 읽기 성공: ${scripts.length} 개");
+      debugPrint("✅ 스토리스크립트 읽기 성공: ${scripts.length} 개");
     } else {
-      print("❌ 스토리스크립트 읽기 실패");
+      debugPrint("❌ 스토리스크립트 읽기 실패");
     }
   }
 
@@ -81,13 +82,13 @@ class StoryRepositoryTest {
   Future<void> updateStoryScriptTest() async {
     await storyRepository.updateStoryScript(
         testStoryId, testScriptId, {"text_en": "Updated Text"});
-    print("✅ 스토리스크립트 업데이트 완료");
+    debugPrint("✅ 스토리스크립트 업데이트 완료");
   }
 
   // 스토리스크립트 삭제 테스트
   Future<void> deleteStoryScriptTest() async {
     await storyRepository.deleteStoryScript(testStoryId, testScriptId);
-    print("✅ 스토리스크립트 삭제 완료");
+    debugPrint("✅ 스토리스크립트 삭제 완료");
   }
 
   // 전체 테스트 실행 (성공)
