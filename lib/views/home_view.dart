@@ -160,6 +160,7 @@ class HomeView extends StatelessWidget {
             ],
           ),
           SizedBox(height: 21.h),
+          // MARK: - Read Button
           GestureDetector(
             onTap: () async {
               HapticFeedback.heavyImpact();
@@ -236,6 +237,7 @@ class HomeView extends StatelessWidget {
           Row(
             children: [
               SizedBox(width: 45.w),
+              // MARK: - Story Time Button (Short)
               GestureDetector(
                 onTap: () {
                   HapticFeedback.heavyImpact();
@@ -257,12 +259,11 @@ class HomeView extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+              // MARK: - Dice Button
               GestureDetector(
                 onTap: () async {
                   HapticFeedback.heavyImpact();
                   final story = homeViewModel.getRandomStoryByReadTime();
-                  debugPrint(
-                      "Selected Story: ${story.title} / ${story.id} / ${story.readTime} / ${story.category} / ${story.lastReadScriptIndex}");
                   homeViewModel.setSelectedStory(story);
                 },
                 child: Container(
@@ -273,8 +274,9 @@ class HomeView extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+              // MARK: - Story Time Button (Medium)
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   HapticFeedback.heavyImpact();
                   homeViewModel.setStoryTime(StoryTime.medium);
                 },
