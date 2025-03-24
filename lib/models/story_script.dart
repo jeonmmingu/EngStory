@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_story/models/json_serializable.dart';
 
@@ -32,6 +33,16 @@ class StoryScript extends JsonSerializable {
       text_ko: map['text_ko'],
       updatedAt: map['updatedAt'],
     );
+  }
+
+  static List<StoryScript> fromJsonList(String jsonString) {
+    final List<dynamic> jsonList = jsonDecode(jsonString);
+    return jsonList.map((json) {
+      var scriptJson = json as Map<String, dynamic>;
+      scriptJson['updatedAt'] =
+          Timestamp.fromDate(DateTime.parse(scriptJson['updatedAt']));
+      return StoryScript.fromMap(scriptJson);
+    }).toList();
   }
 
   @override
