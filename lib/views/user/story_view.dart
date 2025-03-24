@@ -187,16 +187,30 @@ class StoryView extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
               color: Colors.black,
-              width: 1.w,
+              width: 0.6.w,
             ),
           ),
-          child: Text(
-            storyViewModel.languageMode == "Eng"
-                ? storyScript.text_en
-                : storyScript.text_ko,
-            style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
-              color: AppColors.text_1,
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                storyScript.text_en,
+                style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
+                  color: AppColors.text_1,
+                ),
+              ),
+              if (storyViewModel.languageMode != "Eng") ...[
+                Divider(color: AppColors.text_2, thickness: 0.4.h),
+                Text(
+                  storyScript.text_ko,
+                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    color: AppColors.text_2,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+              ],
+            ],
           ),
         ),
       ),
@@ -227,13 +241,26 @@ class StoryView extends StatelessWidget {
                 ),
               ),
               alignment: Alignment.centerLeft,
-              child: Text(
-                storyViewModel.languageMode == "Eng"
-                    ? meScript.text_en
-                    : meScript.text_ko,
-                style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
-                  color: Colors.white,
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    meScript.text_en,
+                    style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  if (storyViewModel.languageMode != "Eng") ...[
+                    Divider(color: Colors.white, thickness: 0.4.h),
+                    Text(
+                      meScript.text_ko,
+                      style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           )
