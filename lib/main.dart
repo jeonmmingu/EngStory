@@ -2,6 +2,7 @@ import 'package:eng_story/app.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/models/cache/cached_story_script.dart';
 import 'package:eng_story/providers/app_providers.dart';
+import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:eng_story/services/remote/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await DeviceInfoManager().getDeviceId(); // admin 인지 확인하기 위한 코드
   await initializeApp();
 
   runApp(

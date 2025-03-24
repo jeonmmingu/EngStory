@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_story/models/json_serializable.dart';
 
@@ -27,6 +28,14 @@ class Story implements JsonSerializable {
       readTime: map['readTime'],
       updatedAt: map['updatedAt'],
     );
+  }
+
+  factory Story.fromJson(String jsonString) {
+    final Map<String, dynamic> map = jsonDecode(jsonString);
+    // updatedAt String을 TimpeStamp로 변환
+    map['updatedAt'] = Timestamp.fromDate(DateTime.parse(map['updatedAt']));
+    map['readTime'] = (map['readTime']);
+    return Story.fromMap(map);
   }
 
   @override

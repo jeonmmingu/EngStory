@@ -8,6 +8,8 @@ class FirebaseInstance {
 class FirebaseRefs {
   static CollectionReference colRefStory =
       FirebaseInstance.db.collection("stories");
+  static CollectionReference colRefPrompt =
+      FirebaseInstance.db.collection("prompts");
 }
 
 class FirebaseCRUD {

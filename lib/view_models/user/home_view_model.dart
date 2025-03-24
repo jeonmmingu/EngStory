@@ -27,11 +27,18 @@ class HomeViewModel with ChangeNotifier {
   String _initializeProgress = "cache"; // cache -> sync
   String get initializeProgress => _initializeProgress;
 
+  // 📌 삭제 로딩 인디케이터
+  bool _isDeleting = false;
+  bool get isDeleting => _isDeleting;
+
   /// 🔹 앱 실행 시 초기화 작업 수행
-  Future<void> initializeApp() async {
+  Future<void> initializeApp(bool isAdmin) async {
     try {
       // 1️⃣ 1초 딜레이 후 캐싱된 데이터 불러오기
-      await Future.delayed(const Duration(milliseconds: 1300));
+      if (!isAdmin) {
+        await Future.delayed(const Duration(milliseconds: 1300));
+      }
+
       await _loadCachedStories();
       setInitializeProgress("sync");
 
@@ -39,8 +46,9 @@ class HomeViewModel with ChangeNotifier {
       await _syncStories();
 
       // 3️⃣ 1초 딜레이 후 완료
-      await Future.delayed(const Duration(milliseconds: 1300));
-
+      if (!isAdmin) {
+        await Future.delayed(const Duration(milliseconds: 1300));
+      }
       debugPrint("✅ 앱 초기화 완료!");
     } catch (e) {
       debugPrint("❌ 앱 초기화 실패: $e");
@@ -61,6 +69,12 @@ class HomeViewModel with ChangeNotifier {
   /// 🔹 선택된 스토리 설정
   void setSelectedStory(CachedStory story) {
     _selectedStory = story;
+    notifyListeners();
+  }
+
+  /// 🔹 삭제 로딩 변수 설정
+  void setIsDeleting(bool isDeleting) {
+    _isDeleting = isDeleting;
     notifyListeners();
   }
 
@@ -136,5 +150,17 @@ class HomeViewModel with ChangeNotifier {
 
     final randomIndex = Random().nextInt(filteredStories.length);
     return filteredStories[randomIndex];
+  }
+
+  /// 🔹 캐싱된 스토리 삭제하기
+  Future<void> deleteCachedStory(String storyId) async {
+    try {
+      await _cacheRepository.deleteStory(storyId);
+      _cachedStories.removeWhere((story) => story.id == storyId);
+      notifyListeners();
+      debugPrint("✅ 캐싱된 스토리 삭제 완료!");
+    } catch (e) {
+      debugPrint("❌ 캐싱된 스토리 삭제 실패: $e");
+    }
   }
 }

@@ -1,10 +1,12 @@
+import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/core/utils/animations.dart';
 import 'package:eng_story/core/utils/colors.dart';
 import 'package:eng_story/core/utils/fonts.dart';
 import 'package:eng_story/core/utils/images.dart';
-import 'package:eng_story/view_models/home_view_model.dart';
-import 'package:eng_story/view_models/story_view_model.dart';
+import 'package:eng_story/services/local/device_info_manager.dart';
+import 'package:eng_story/view_models/user/home_view_model.dart';
+import 'package:eng_story/view_models/user/story_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,7 +22,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: context.read<HomeViewModel>().initializeApp(),
+      future: context.read<HomeViewModel>().initializeApp(false),
       builder: (context, snapshot) => Scaffold(
         backgroundColor: AppColors.background,
         body: _body(
@@ -38,14 +40,40 @@ class HomeView extends StatelessWidget {
     HomeViewModel homeViewModel,
     bool isLoading,
   ) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 178.h,
+    bool isAdmin = DeviceInfoManager().isAdmin();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (isAdmin)
+          Padding(
+            padding: EdgeInsets.only(top: 70.h, right: 30.w),
+            child: GestureDetector(
+              onTap: () {
+                HapticFeedback.heavyImpact();
+                DeviceInfoManager().isDeviceManagerChecked = false;
+                DeviceInfoManager().adminMode = true;
+                context.goNamed("adminView");
+              },
+              child: Container(
+                width: 50.w,
+                height: 50.h,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(25.r),
+                ),
+                child: Icon(
+                  Icons.admin_panel_settings_outlined,
+                  color: Colors.white,
+                  size: 32.sp,
+                ),
+              ),
+            ),
           ),
-          AnimatedContainer(
+        SizedBox(height: isAdmin ? 58.h : 178.h),
+        Center(
+          child: AnimatedContainer(
             duration: const Duration(milliseconds: 300), // 애니메이션 지속 시간
             curve: Curves.easeOut, // 부드러운 움직임
             transform: Matrix4.translationValues(
@@ -56,12 +84,12 @@ class HomeView extends StatelessWidget {
               height: 170.h,
             ),
           ),
-          _middleSection(context, homeViewModel),
-          const Spacer(),
-          _bottomSection(context, homeViewModel, isLoading),
-          SizedBox(height: 98.h),
-        ],
-      ),
+        ),
+        Center(child: _middleSection(context, homeViewModel)),
+        const Spacer(),
+        _bottomSection(context, homeViewModel, isLoading),
+        SizedBox(height: 98.h),
+      ],
     );
   }
 
