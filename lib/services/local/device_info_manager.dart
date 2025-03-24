@@ -9,6 +9,9 @@ class DeviceInfoManager {
   DeviceInfoManager._internal();
 
   String? deviceId;
+  bool isDeviceManagerChecked = false;
+
+  bool adminMode = true; // true: admin, false: user
 
   Future<void> getDeviceId() async {
     final deviceInfo = DeviceInfoPlugin();
