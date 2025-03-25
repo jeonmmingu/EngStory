@@ -8,6 +8,7 @@ class Story implements JsonSerializable {
   String source;
   String category;
   String readTime;
+  int storyLevel;
   Timestamp updatedAt;
 
   Story({
@@ -16,6 +17,7 @@ class Story implements JsonSerializable {
     required this.source,
     required this.category,
     required this.readTime,
+    required this.storyLevel,
     required this.updatedAt,
   });
 
@@ -26,13 +28,13 @@ class Story implements JsonSerializable {
       source: map['source'],
       category: map['category'],
       readTime: map['readTime'],
+      storyLevel: map['storyLevel'],
       updatedAt: map['updatedAt'],
     );
   }
 
   factory Story.fromJson(String jsonString) {
     final Map<String, dynamic> map = jsonDecode(jsonString);
-    // updatedAt String을 TimpeStamp로 변환
     map['updatedAt'] = Timestamp.fromDate(DateTime.parse(map['updatedAt']));
     map['readTime'] = (map['readTime']);
     return Story.fromMap(map);
@@ -46,6 +48,7 @@ class Story implements JsonSerializable {
       'source': source,
       'category': category,
       'readTime': readTime,
+      'storyLevel': storyLevel,
       'updatedAt': updatedAt,
     };
   }

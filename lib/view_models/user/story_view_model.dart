@@ -136,7 +136,7 @@ class StoryViewModel with ChangeNotifier {
         removeStoryTellerScript();
         _currentIdx--;
 
-        if (getScript(_currentIdx).role == "me") {
+        if (currentIdx != 0 && getScript(_currentIdx).role == "me") {
           addMeScript(getScript(_currentIdx));
           var tmpIdx = _currentIdx - 1;
           while (tmpIdx > 0 && getScript(tmpIdx).role == "story_teller") {
