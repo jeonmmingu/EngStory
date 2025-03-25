@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/repositories/local/cached_story_repository.dart';
@@ -11,9 +10,29 @@ class HomeViewModel with ChangeNotifier {
   final CachedStoryRepository _cacheRepository = CachedStoryRepository();
   final StoryRepository _storyRepository = StoryRepository();
 
-  // 📌 스토리 읽기 시간 설정 (기본값: short)
-  StoryTime _storyTime = StoryTime.short;
-  StoryTime get storyTime => _storyTime;
+  // 📌 스토리 읽기 시간 설정
+  StoryTime? _storyTime;
+  StoryTime? get storyTime => _storyTime;
+
+  // 📌 카테고리 설정
+  StoryCategory? _storyCategory;
+  StoryCategory? get storyCategory => _storyCategory;
+
+  // 📌 스토리 레벨 설정
+  int? _storyLevel;
+  int? get storyLevel => _storyLevel;
+
+  // 📌 필터링 된 스토리 리스트
+  List<CachedStory>? _filteredStories;
+  List<CachedStory>? get filteredStories => _filteredStories;
+
+  // 📌 필터링 된 스토리 리스트 index
+  int _filteredStoryIndex = 0;
+  int get filteredStoryIndex => _filteredStoryIndex;
+
+  // 📌 card page view controller
+  PageController? _pageController;
+  PageController? get pageController => _pageController;
 
   // 📌 현재 선택된 스토리
   CachedStory? _selectedStory;
@@ -61,15 +80,49 @@ class HomeViewModel with ChangeNotifier {
   }
 
   /// 🔹 스토리 읽기 시간 설정
-  void setStoryTime(StoryTime storyTime) {
+  void setStoryTime(StoryTime? storyTime) {
     _storyTime = storyTime;
+    setFilteredStories();
+    if (pageController?.hasClients ?? false) {
+      pageController!.jumpToPage(0);
+    }
     notifyListeners();
+  }
+
+  /// 🔹 카테고리 설정
+  void setStoryCategory(StoryCategory? category) {
+    _storyCategory = category;
+    setFilteredStories();
+    if (pageController?.hasClients ?? false) {
+      pageController!.jumpToPage(0);
+    }
+    notifyListeners();
+  }
+
+  /// 🔹 스토리 레벨 설정
+  void setStoryLevel(int? level) {
+    _storyLevel = level;
+    setFilteredStories();
+    if (pageController?.hasClients ?? false) {
+      pageController!.jumpToPage(0);
+    }
+    notifyListeners();
+  }
+
+  /// 🔹 필터링된 스토리 인덱스 설정
+  void setFilteredStoryIndex(int index) {
+    _filteredStoryIndex = index;
+    notifyListeners();
+  }
+
+  /// 🔹 PageController 설정
+  void setPageController(PageController controller) {
+    _pageController = controller;
   }
 
   /// 🔹 선택된 스토리 설정
   void setSelectedStory(CachedStory story) {
     _selectedStory = story;
-    notifyListeners();
   }
 
   /// 🔹 삭제 로딩 변수 설정
@@ -126,30 +179,92 @@ class HomeViewModel with ChangeNotifier {
     );
   }
 
+  /// 🔹 storyTime, storyCategory, storyLevel 필터링 해서 story list 가져오기
+  void setFilteredStories() {
+    List<CachedStory> filteredStories = cachedStories;
+
+    if (_storyTime != null) {
+      filteredStories = filteredStories
+          .where((story) => story.readTime == storyTime!.typeText)
+          .toList();
+    }
+
+    if (_storyCategory != null) {
+      filteredStories = filteredStories
+          .where(
+              (story) => story.category == displayCategoryText(_storyCategory!))
+          .toList();
+    }
+
+    if (_storyLevel != null) {
+      filteredStories = filteredStories
+          .where((story) => story.storyLevel == storyLevel)
+          .toList();
+    }
+
+    if (filteredStories.isEmpty ||
+        (_storyTime == null && _storyCategory == null && _storyLevel == null)) {
+      _filteredStories = null;
+    } else {
+      _filteredStories = filteredStories;
+      _filteredStoryIndex = 1;
+    }
+  }
+
+  /// 🔹 storyTime 중 현재 선택 가능한 항목을 반환
+  List<StoryTime> getAvailableStoryTimes() {
+    return StoryTime.values
+        .where(
+          (time) => cachedStories.any((story) {
+            return story.readTime == time.typeText &&
+                ((story.storyLevel == storyLevel) || (storyLevel == null)) &&
+                ((_storyCategory != null &&
+                        story.category ==
+                            displayCategoryText(_storyCategory)) ||
+                    (_storyCategory == null));
+          }),
+        )
+        .toList();
+  }
+
+  /// 🔹 storyCategory 중 현재 선택 가능한 항목을 반환
+  List<StoryCategory> getAvailableStoryCategories() {
+    return StoryCategory.values
+        .where(
+          (category) => cachedStories.any((story) {
+            return story.category == displayCategoryText(category) &&
+                ((story.storyLevel == storyLevel) || (storyLevel == null)) &&
+                ((_storyTime == null) ||
+                    (story.readTime == storyTime!.typeText));
+          }),
+        )
+        .toList();
+  }
+
+  /// 🔹 storyLevel(1~4) 중 현재 선택 가능한 항목을 반환
+  List<int> getAvailableStoryLevels() {
+    return List.generate(4, (index) => index + 1)
+        .where(
+          (level) => cachedStories.any((story) {
+            return story.storyLevel == level &&
+                ((_storyTime == null) ||
+                    (story.readTime == storyTime!.typeText)) &&
+                ((_storyCategory == null) ||
+                    (story.category == displayCategoryText(_storyCategory)));
+          }),
+        )
+        .toList();
+  }
+
   /// 🔹 특정 스토리의 `lastReadScriptIndex` 업데이트
   Future<void> updateLastReadScriptIndex(String storyId, int newIndex) async {
     try {
       await _cacheRepository.updateLastReadScriptIndex(storyId, newIndex);
       debugPrint("✅ lastReadScriptIndex 업데이트 완료!");
+      notifyListeners();
     } catch (e) {
       debugPrint("❌ lastReadScriptIndex 업데이트 실패: $e");
     }
-  }
-
-  /// 🔹 캐싱된 스토리 중 설정한 readTime에 맞는 스토리 중 랜덤으로 하나 반환하기
-  CachedStory getRandomStoryByReadTime() {
-    final filteredStories = _cachedStories
-        .where((story) =>
-            story.readTime == storyTime.typeText &&
-            story.id != _selectedStory?.id)
-        .toList();
-
-    if (filteredStories.isEmpty) {
-      return _selectedStory!;
-    }
-
-    final randomIndex = Random().nextInt(filteredStories.length);
-    return filteredStories[randomIndex];
   }
 
   /// 🔹 캐싱된 스토리 삭제하기

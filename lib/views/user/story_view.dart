@@ -8,7 +8,6 @@ import 'package:eng_story/view_models/user/story_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -177,9 +176,9 @@ class StoryView extends StatelessWidget {
         TtsManager().speak(storyScript.text_en);
       },
       child: Padding(
-        padding: EdgeInsets.only(bottom: 10.h),
+        padding: EdgeInsets.only(bottom: 12.h),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
           width: double.infinity,
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
@@ -187,7 +186,7 @@ class StoryView extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
               color: Colors.black,
-              width: 0.6.w,
+              width: 0.4.w,
             ),
           ),
           child: Column(
@@ -237,7 +236,7 @@ class StoryView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
                 border: Border.all(
                   color: Colors.black,
-                  width: 1.w,
+                  width: 0.4.w,
                 ),
               ),
               alignment: Alignment.centerLeft,

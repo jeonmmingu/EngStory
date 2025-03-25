@@ -3,7 +3,7 @@ import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/core/utils/animations.dart';
 import 'package:eng_story/core/utils/colors.dart';
 import 'package:eng_story/core/utils/fonts.dart';
-import 'package:eng_story/core/utils/images.dart';
+import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
 import 'package:eng_story/view_models/user/story_view_model.dart';
@@ -77,7 +77,10 @@ class HomeView extends StatelessWidget {
             duration: const Duration(milliseconds: 300), // 애니메이션 지속 시간
             curve: Curves.easeOut, // 부드러운 움직임
             transform: Matrix4.translationValues(
-                0, homeViewModel.selectedStory != null ? -50.h : 0, 0),
+              0,
+              homeViewModel.filteredStories != null ? -50.h : 0,
+              0,
+            ),
             child: Lottie.asset(
               AppAnimations.robot,
               width: 170.w,
@@ -95,130 +98,234 @@ class HomeView extends StatelessWidget {
 
   // MARK: - middleSection
   Widget _middleSection(BuildContext context, HomeViewModel homeViewModel) {
-    return homeViewModel.selectedStory == null
+    if (homeViewModel.pageController == null) {
+      homeViewModel.setPageController(PageController(
+          viewportFraction: 393.w / MediaQuery.of(context).size.width));
+    }
+    return homeViewModel.filteredStories == null
         ? _storyNotSelected(context, homeViewModel)
         : _storySelected(context, homeViewModel);
   }
 
   // MARK: - storyNotSelected (middleSection)
   Widget _storyNotSelected(BuildContext context, HomeViewModel homeViewModel) {
-    return Column(
-      children: [
-        SizedBox(height: 30.h),
-        Text(
-          "Hello! I'm EngBot.\nPress the dice button to choose a story.",
-          textAlign: TextAlign.center,
-          style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-            color: AppColors.text_1,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 30.w),
+      child: Column(
+        children: [
+          SizedBox(height: 30.h),
+          Text(
+            "Hi! I'm EngBot (잉봇).\nYou can set the expected time, category, and difficulty below to get a story :)",
+            textAlign: TextAlign.center,
+            style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+              color: AppColors.text_1,
+            ),
           ),
-        ),
-        SizedBox(height: 10.h),
-        Text(
-          "안녕! 나는 EngBot이야.\n주사위 버튼을 눌러서 스토리를 선택해줘.",
-          textAlign: TextAlign.center,
-          style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-            color: AppColors.text_2,
+          SizedBox(height: 10.h),
+          Text(
+            "안녕! 나는 EngBot(잉봇)이야.\n밑의 예상시간, 카테고리, 난이도를 설정해서 스토리를 불러올 수 있어 :)",
+            textAlign: TextAlign.center,
+            style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+              color: AppColors.text_2,
+            ),
           ),
-        )
-      ],
+        ],
+      ),
     );
   }
 
   // MARK: - storySelected (middleSection)
   Widget _storySelected(BuildContext context, HomeViewModel homeViewModel) {
-    return Container(
-      width: 341.w,
-      height: 173.h,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(
-          color: Colors.black,
-          width: 1.w,
+    final stories = homeViewModel.filteredStories;
+    if (stories == null || stories.isEmpty) {
+      return const Center(child: Text("스토리가 없습니다"));
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 220.h,
+          child: PageView.builder(
+            controller: homeViewModel.pageController,
+            itemCount: stories.length,
+            onPageChanged: (index) {
+              homeViewModel.setFilteredStoryIndex(index + 1);
+            },
+            itemBuilder: (context, index) {
+              return _storyCard(
+                context,
+                stories[index],
+                "${homeViewModel.filteredStoryIndex}/${stories.length}",
+              );
+            },
+          ),
         ),
-      ),
-      child: Column(
-        children: [
-          SizedBox(height: 27.h),
-          Row(
-            children: [
-              SizedBox(width: 21.w),
-              Text(
-                "제목",
-                textAlign: TextAlign.center,
-                style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                  color: AppColors.text_1,
+      ],
+    );
+  }
+
+  // MARK: - storyCard
+  Widget _storyCard(BuildContext context, CachedStory story, String indexText) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            color: Colors.black,
+            width: 0.2.w,
+          ),
+        ),
+        child: Column(
+          children: [
+            SizedBox(height: 15.h),
+            Row(
+              children: [
+                SizedBox(width: 21.w),
+                Text(
+                  "제목",
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
+                    color: AppColors.text_2,
+                  ),
                 ),
-              ),
-              const Spacer(),
-              SizedBox(
-                width: 200.w,
-                child: Text(
-                  homeViewModel.selectedStory!.title,
+                const Spacer(),
+                Text(
+                  indexText,
+                  textAlign: TextAlign.end,
+                  style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
+                    color: AppColors.text_2,
+                  ),
+                ),
+                SizedBox(width: 21.w),
+              ],
+            ),
+            SizedBox(height: 10.h),
+            Row(
+              children: [
+                SizedBox(width: 30.w),
+                if (story.lastReadScriptIndex == 0) ...[
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 7.w,
+                      right: 7.w,
+                      bottom: 2.h,
+                      top: 2.h,
+                    ),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(5.r),
+                    ),
+                    child: Text(
+                      'New',
+                      style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                ],
+                if (story.lastReadScriptIndex != 0) ...[
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 7.w,
+                      right: 7.w,
+                      bottom: 2.h,
+                      top: 2.h,
+                    ),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5.r),
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 0.8.w,
+                      ),
+                    ),
+                    child: Text(
+                      'Read',
+                      style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                ],
+                Text(
+                  story.title,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.right,
                   style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
                     color: AppColors.text_1,
                   ),
                 ),
-              ),
-              SizedBox(width: 21.w),
-            ],
-          ),
-          SizedBox(height: 14.h),
-          Row(
-            children: [
-              SizedBox(width: 21.w),
-              Text(
-                "카테고리",
-                textAlign: TextAlign.center,
-                style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                  color: AppColors.text_1,
+              ],
+            ),
+            SizedBox(height: 17.h),
+            Row(
+              children: [
+                SizedBox(width: 21.w),
+                Text(
+                  "카테고리",
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
+                    color: AppColors.text_2,
+                  ),
                 ),
-              ),
-              const Spacer(),
-              Text(
-                homeViewModel.selectedStory!.category,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                  color: AppColors.text_2,
+              ],
+            ),
+            SizedBox(height: 10.h),
+            Row(
+              children: [
+                SizedBox(width: 30.w),
+                Text(
+                  story.category,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    color: AppColors.text_1,
+                  ),
                 ),
-              ),
-              SizedBox(width: 21.w),
-            ],
-          ),
-          SizedBox(height: 21.h),
-          // MARK: - Read Button
-          GestureDetector(
-            onTap: () async {
-              HapticFeedback.heavyImpact();
-              final getScripts = await context
-                  .read<StoryViewModel>()
-                  .getScripts(homeViewModel.selectedStory!.id);
-              context
-                  .read<StoryViewModel>()
-                  .init(homeViewModel.selectedStory!.lastReadScriptIndex);
-              if (getScripts) {
-                context.goNamed("storyView");
-              }
-            },
-            child: Container(
-              width: 277.w,
-              height: 39.h,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.button,
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Text(
-                "읽기",
-                style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                  color: Colors.white,
+              ],
+            ),
+            const Spacer(),
+            // MARK: - Read Button
+            GestureDetector(
+              onTap: () async {
+                HapticFeedback.heavyImpact();
+                context.read<HomeViewModel>().setSelectedStory(story);
+
+                final getScripts =
+                    await context.read<StoryViewModel>().getScripts(story.id);
+                context.read<StoryViewModel>().init(story.lastReadScriptIndex);
+                if (getScripts) {
+                  context.goNamed("storyView");
+                }
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 21.w),
+                child: Container(
+                  height: 39.h,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.button,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Text(
+                    "읽기",
+                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
-          )
-        ],
+            SizedBox(height: 20.h),
+          ],
+        ),
       ),
     );
   }
@@ -263,67 +370,141 @@ class HomeView extends StatelessWidget {
         // 🔹 로딩이 끝나면 기존 버튼 UI 표시
         if (!isLoading)
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(width: 45.w),
-              // MARK: - Story Time Button (Short)
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.heavyImpact();
-                  homeViewModel.setStoryTime(StoryTime.short);
-                },
-                child: Container(
-                  width: 80.w,
-                  height: 61.h,
-                  alignment: Alignment.center,
-                  child: Text(
-                    StoryTime.short.displayText,
-                    style: homeViewModel.storyTime == StoryTime.short
-                        ? AppTextStyles.SejongGeulggot_20_regular.copyWith(
-                            color: AppColors.button)
-                        : AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                            color: AppColors.text_1,
-                          ),
+              SizedBox(width: 5.w),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 0.2.w,
                   ),
                 ),
-              ),
-              const Spacer(),
-              // MARK: - Dice Button
-              GestureDetector(
-                onTap: () async {
-                  HapticFeedback.heavyImpact();
-                  final story = homeViewModel.getRandomStoryByReadTime();
-                  homeViewModel.setSelectedStory(story);
-                },
-                child: Container(
-                  width: 61.w,
-                  height: 61.h,
+                child: DropdownButton<String?>(
+                  value: homeViewModel.storyTime?.displayText,
+                  hint: const Text("예상시간"),
+                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                      color: AppColors.text_1),
                   alignment: Alignment.center,
-                  child: Image.asset(AppImages.diceButton),
+                  underline: const SizedBox.shrink(),
+                  onChanged: (String? newValue) {
+                    HapticFeedback.heavyImpact();
+                    homeViewModel.setStoryTime(newValue == null
+                        ? null
+                        : StoryTime.values.firstWhere(
+                            (element) => element.displayText == newValue));
+                  },
+                  items: [
+                    DropdownMenuItem<String?>(
+                      value: null,
+                      child: Text(
+                        "예상시간",
+                        style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    ...homeViewModel
+                        .getAvailableStoryTimes()
+                        .map<DropdownMenuItem<String?>>((StoryTime value) {
+                      return DropdownMenuItem<String?>(
+                        value: value.displayText,
+                        child: Text(value.displayText),
+                      );
+                    }),
+                  ],
                 ),
               ),
-              const Spacer(),
-              // MARK: - Story Time Button (Medium)
-              GestureDetector(
-                onTap: () async {
-                  HapticFeedback.heavyImpact();
-                  homeViewModel.setStoryTime(StoryTime.medium);
-                },
-                child: Container(
-                  width: 80.w,
-                  height: 61.h,
-                  alignment: Alignment.center,
-                  child: Text(
-                    StoryTime.medium.displayText,
-                    style: homeViewModel.storyTime == StoryTime.medium
-                        ? AppTextStyles.SejongGeulggot_20_regular.copyWith(
-                            color: AppColors.button)
-                        : AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                            color: AppColors.text_1,
-                          ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 0.2.w,
                   ),
                 ),
+                child: DropdownButton<StoryCategory?>(
+                  value: homeViewModel.storyCategory,
+                  alignment: Alignment.center,
+                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                      color: AppColors.text_1),
+                  menuMaxHeight: 250.h,
+                  underline: const SizedBox.shrink(),
+                  onChanged: (StoryCategory? newValue) {
+                    HapticFeedback.heavyImpact();
+                    homeViewModel.setStoryCategory(newValue);
+                  },
+                  items: [
+                    DropdownMenuItem<StoryCategory?>(
+                      value: null,
+                      child: Text(
+                        "카테고리",
+                        style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    ...homeViewModel
+                        .getAvailableStoryCategories()
+                        .map<DropdownMenuItem<StoryCategory?>>(
+                      (StoryCategory value) {
+                        return DropdownMenuItem<StoryCategory?>(
+                          value: value,
+                          child: Text(displayCategoryText(value)),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(width: 45.w),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 0.2.w,
+                  ),
+                ),
+                child: DropdownButton<int?>(
+                  value: homeViewModel.storyLevel,
+                  alignment: Alignment.center,
+                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                      color: AppColors.text_1),
+                  menuMaxHeight: 250.h,
+                  underline: const SizedBox.shrink(),
+                  onChanged: (int? newValue) {
+                    HapticFeedback.heavyImpact();
+                    homeViewModel.setStoryLevel(newValue);
+                  },
+                  items: [
+                    DropdownMenuItem<int?>(
+                      value: null,
+                      child: Text(
+                        "난이도",
+                        style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    ...homeViewModel
+                        .getAvailableStoryLevels()
+                        .map<DropdownMenuItem<int?>>((int value) {
+                      return DropdownMenuItem<int?>(
+                        value: value,
+                        child: Text(value.toString()),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              SizedBox(width: 5.w),
             ],
           ),
       ],

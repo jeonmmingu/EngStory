@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 part 'cached_story.g.dart';
 
-@HiveType(typeId: 0) // TypeId는 다른 모델과 겹치지 않게 설정
+@HiveType(typeId: 0)
 class CachedStory extends HiveObject {
   @HiveField(0)
   String id;
@@ -22,10 +22,13 @@ class CachedStory extends HiveObject {
   String readTime;
 
   @HiveField(5)
-  DateTime updatedAt; // Hive에서는 DateTime 사용
+  DateTime updatedAt;
 
   @HiveField(6)
-  int lastReadScriptIndex; // 🔹 마지막으로 읽은 script index (캐싱 전용)
+  int lastReadScriptIndex;
+
+  @HiveField(7)
+  int storyLevel;
 
   CachedStory({
     required this.id,
@@ -34,23 +37,24 @@ class CachedStory extends HiveObject {
     required this.category,
     required this.readTime,
     required this.updatedAt,
-    this.lastReadScriptIndex = 0, // 기본값: 0 (처음부터 시작)
+    required this.storyLevel,
+    this.lastReadScriptIndex = 0,
   });
 
-  /// 🔹 Firestore `Story` 객체를 `CachedStory`로 변환
-  factory CachedStory.fromStory(Story story, {int lastReadScriptIndex = 0}) {
+  factory CachedStory.fromStory(Story story,
+      {int lastReadScriptIndex = 0}) {
     return CachedStory(
       id: story.id,
       title: story.title,
       source: story.source,
       category: story.category,
       readTime: story.readTime,
-      updatedAt: story.updatedAt.toDate(), // Timestamp → DateTime 변환
-      lastReadScriptIndex: lastReadScriptIndex, // 기본값 0 또는 저장된 값 사용
+      updatedAt: story.updatedAt.toDate(),
+      lastReadScriptIndex: lastReadScriptIndex,
+      storyLevel: story.storyLevel,
     );
   }
 
-  /// 🔹 `CachedStory`를 Firestore `Story`로 변환
   Story toStory() {
     return Story(
       id: id,
@@ -58,11 +62,11 @@ class CachedStory extends HiveObject {
       source: source,
       category: category,
       readTime: readTime,
-      updatedAt: Timestamp.fromDate(updatedAt), // DateTime → Timestamp 변환
+      storyLevel: storyLevel,
+      updatedAt: Timestamp.fromDate(updatedAt),
     );
   }
 
-  /// 🔹 Firestore에서 받아온 JSON → `CachedStory` 변환
   factory CachedStory.fromJson(Map<String, dynamic> json) {
     return CachedStory(
       id: json['id'] as String,
@@ -70,11 +74,11 @@ class CachedStory extends HiveObject {
       source: json['source'] as String,
       category: json['category'] as String,
       readTime: json['readTime'] as String,
-      updatedAt: (json['updatedAt'] as Timestamp).toDate(), // Firestore Timestamp → DateTime 변환
+      updatedAt: (json['updatedAt'] as Timestamp).toDate(),
+      storyLevel: json['storyLevel'] as int,
     );
   }
 
-  /// 🔹 `CachedStory`를 JSON으로 변환 (Firestore 저장용) → lastReadScriptIndex 제외
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -82,7 +86,8 @@ class CachedStory extends HiveObject {
       'source': source,
       'category': category,
       'readTime': readTime,
-      'updatedAt': Timestamp.fromDate(updatedAt), // DateTime → Timestamp 변환
+      'updatedAt': Timestamp.fromDate(updatedAt),
+      'storyLevel': storyLevel,
     };
   }
 }

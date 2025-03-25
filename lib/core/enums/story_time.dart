@@ -19,6 +19,8 @@ extension StoryTimeExtension on StoryTime {
         return "1-5 min";
       case StoryTime.medium:
         return "5-10 min";
+      default:
+        return "";
     }
   }
 }
