@@ -23,7 +23,8 @@ enum StoryCategory {
 }
 
 // 카테고리 enum → 한글 변환
-String displayCategoryText(StoryCategory category) {
+String displayCategoryText(StoryCategory? category) {
+  if (category == null) return 'null';
   switch (category) {
     case StoryCategory.scienceExploration:
       return '과학 탐험';
