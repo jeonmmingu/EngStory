@@ -1,12 +1,14 @@
 import 'package:eng_story/core/utils/colors.dart';
 import 'package:eng_story/core/utils/fonts.dart';
 import 'package:eng_story/core/utils/images.dart';
+import 'package:eng_story/core/utils/tts_manager.dart';
 import 'package:eng_story/models/story_script.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
 import 'package:eng_story/view_models/user/story_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -169,26 +171,46 @@ class StoryView extends StatelessWidget {
     StoryScript storyScript,
     StoryViewModel storyViewModel,
   ) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10.h),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-        width: double.infinity,
-        alignment: Alignment.centerLeft,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10.r),
-          border: Border.all(
-            color: Colors.black,
-            width: 1.w,
+    return GestureDetector(
+      onTap: () async {
+        HapticFeedback.mediumImpact();
+        TtsManager().speak(storyScript.text_en);
+      },
+      child: Padding(
+        padding: EdgeInsets.only(bottom: 10.h),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+          width: double.infinity,
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(
+              color: Colors.black,
+              width: 0.6.w,
+            ),
           ),
-        ),
-        child: Text(
-          storyViewModel.languageMode == "Eng"
-              ? storyScript.text_en
-              : storyScript.text_ko,
-          style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
-            color: AppColors.text_1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                storyScript.text_en,
+                style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
+                  color: AppColors.text_1,
+                ),
+              ),
+              if (storyViewModel.languageMode != "Eng") ...[
+                Divider(color: AppColors.text_2, thickness: 0.4.h),
+                Text(
+                  storyScript.text_ko,
+                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    color: AppColors.text_2,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+              ],
+            ],
           ),
         ),
       ),
@@ -202,24 +224,43 @@ class StoryView extends StatelessWidget {
     StoryViewModel storyViewModel,
   ) {
     return meScript != null
-        ? Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppColors.text_2,
-              borderRadius: BorderRadius.circular(10.r),
-              border: Border.all(
-                color: Colors.black,
-                width: 1.w,
+        ? GestureDetector(
+            onTap: () async {
+              HapticFeedback.mediumImpact();
+              TtsManager().speak(meScript.text_en);
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColors.text_2,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1.w,
+                ),
               ),
-            ),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              storyViewModel.languageMode == "Eng"
-                  ? meScript.text_en
-                  : meScript.text_ko,
-              style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
-                color: Colors.white,
+              alignment: Alignment.centerLeft,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    meScript.text_en,
+                    style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  if (storyViewModel.languageMode != "Eng") ...[
+                    Divider(color: Colors.white, thickness: 0.4.h),
+                    Text(
+                      meScript.text_ko,
+                      style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           )
