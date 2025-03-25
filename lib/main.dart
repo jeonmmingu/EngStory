@@ -1,4 +1,5 @@
 import 'package:eng_story/app.dart';
+import 'package:eng_story/core/utils/tts_manager.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/models/cache/cached_story_script.dart';
 import 'package:eng_story/providers/app_providers.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await TtsManager().init();
   await DeviceInfoManager().getDeviceId(); // admin 인지 확인하기 위한 코드
   await initializeApp();
 
