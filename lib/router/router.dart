@@ -12,16 +12,16 @@ import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/', // 기본 경로 (redirect에서 변경됨)
-  redirect: (context, state) {
-    if (!DeviceInfoManager().isDeviceManagerChecked) {
-      DeviceInfoManager().isDeviceManagerChecked = true;
-      final bool isAdmin = DeviceInfoManager().isAdmin();
-      final bool adminMode = DeviceInfoManager().adminMode;
-      return isAdmin && adminMode ? '/adminView' : '/';
-    } else {
-      return null;
-    }
-  },
+  // redirect: (context, state) {
+  //   if (!DeviceInfoManager().isDeviceManagerChecked) {
+  //     DeviceInfoManager().isDeviceManagerChecked = true;
+  //     final bool isAdmin = DeviceInfoManager().isAdmin();
+  //     final bool adminMode = DeviceInfoManager().adminMode;
+  //     return isAdmin && adminMode ? '/adminView' : '/';
+  //   } else {
+  //     return null;
+  //   }
+  // },
   routes: [
     GoRoute(
       path: '/',
