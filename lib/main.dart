@@ -16,6 +16,8 @@ void main() async {
   await DeviceInfoManager().getDeviceId(); // admin 인지 확인하기 위한 코드
   await initializeApp();
 
+  await Future.delayed(const Duration(milliseconds: 1500));
+
   runApp(
     MultiProvider(
       providers: AppProviders.providers,

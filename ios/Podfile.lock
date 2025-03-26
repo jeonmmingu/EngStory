@@ -1196,6 +1196,8 @@ PODS:
     - nanopb (~> 3.30910.0)
   - FirebaseSharedSwift (11.6.0)
   - Flutter (1.0.0)
+  - flutter_native_splash (0.0.1):
+    - Flutter
   - flutter_tts (0.0.1):
     - Flutter
   - GoogleUtilities/Environment (8.0.2):
@@ -1311,6 +1313,7 @@ DEPENDENCIES:
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
+  - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
 
@@ -1341,6 +1344,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
+  flutter_native_splash:
+    :path: ".symlinks/plugins/flutter_native_splash/ios"
   flutter_tts:
     :path: ".symlinks/plugins/flutter_tts/ios"
   path_provider_foundation:
@@ -1361,6 +1366,7 @@ SPEC CHECKSUMS:
   FirebaseFirestoreInternal: 9fcc0ccb987ab73163f2249444e4bfd9eac63748
   FirebaseSharedSwift: a4e5dfca3e210633bb3a3dfb94176c019211948b
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
   flutter_tts: 0f492aab6accf87059b72354fcb4ba934304771d
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   "gRPC-C++": 2fa52b3141e7789a28a737f251e0c45b4cb20a87
