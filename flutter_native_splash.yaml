@@ -1,0 +1,18 @@
+flutter_native_splash:
+  # Customize the splash screen by setting the parameters below.
+  # Run `dart run flutter_native_splash:create` to apply changes.
+  # Run `dart run flutter_native_splash:remove` to restore defaults.
+
+  # Background color or image (only one can be set).
+  color: "#ffffff"
+  #background_image: "assets/background.png"
+
+  # Splash screen image (png, 4x pixel density recommended).
+  image: assets/icon/appIcon_nb.png
+
+  # Android 12+ specific settings.
+  android_12:
+    # Background color.
+    color: "#ffffff"
+
+  # Uncomment and configure additional parameters as needed.
