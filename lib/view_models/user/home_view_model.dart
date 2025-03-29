@@ -52,6 +52,10 @@ class HomeViewModel with ChangeNotifier {
   bool _isDeleting = false;
   bool get isDeleting => _isDeleting;
 
+  // 📌 선택된 Theme Color index
+  int _selectedThemeColorIndex = 0;
+  int get selectedThemeColorIndex => _selectedThemeColorIndex;
+
   /// 🔹 앱 실행 시 초기화 작업 수행
   Future<void> initializeApp(bool isAdmin) async {
     try {
@@ -130,6 +134,12 @@ class HomeViewModel with ChangeNotifier {
   /// 🔹 삭제 로딩 변수 설정
   void setIsDeleting(bool isDeleting) {
     _isDeleting = isDeleting;
+    notifyListeners();
+  }
+
+  /// 🔹 선택된 테마 색상 인덱스 설정
+  void setSelectedThemeColorIndex(int index) {
+    _selectedThemeColorIndex = index;
     notifyListeners();
   }
 

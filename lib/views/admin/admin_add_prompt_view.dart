@@ -31,7 +31,7 @@ class AdminAddPromptView extends StatelessWidget {
               width: double.infinity,
               alignment: Alignment.topCenter,
               decoration: BoxDecoration(
-                color: Colors.blue[200],
+                color: ThemeManager.current.grey_2,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
@@ -440,7 +440,7 @@ class AdminAddPromptView extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: adminPromptViewModel.checkSaveValidation == true
-                ? Colors.blue[200]
+                ? ThemeManager.current.grey_2
                 : Colors.grey[300],
             borderRadius: BorderRadius.circular(20.r),
           ),

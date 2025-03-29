@@ -26,7 +26,7 @@ class AdminView extends StatelessWidget {
               width: double.infinity,
               alignment: Alignment.topCenter,
               decoration: BoxDecoration(
-                color: Colors.blue[200],
+                color: ThemeManager.current.grey_2,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
@@ -92,7 +92,7 @@ class AdminView extends StatelessWidget {
               height: 50.h,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: ThemeManager.current.black,
+                color: ThemeManager.current.grey_3,
                 borderRadius: BorderRadius.circular(25.r),
               ),
               child: Icon(

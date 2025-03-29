@@ -26,14 +26,13 @@ class AdminPromptDetailView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration:
-               BoxDecoration(color: ThemeManager.current.background),
+            decoration: BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
               alignment: Alignment.topCenter,
               decoration: BoxDecoration(
-                color: Colors.blue[200],
+                color: ThemeManager.current.grey_2,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
