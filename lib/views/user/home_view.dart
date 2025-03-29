@@ -45,33 +45,63 @@ class HomeView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (isAdmin)
-          Padding(
-            padding: EdgeInsets.only(top: 70.h, right: 30.w),
-            child: GestureDetector(
-              onTap: () {
-                HapticFeedback.heavyImpact();
-                DeviceInfoManager().isDeviceManagerChecked = false;
-                DeviceInfoManager().adminMode = true;
-                context.goNamed("adminView");
-              },
-              child: Container(
-                width: 50.w,
-                height: 50.h,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: ThemeManager.current.black,
-                  borderRadius: BorderRadius.circular(25.r),
-                ),
-                child: Icon(
-                  Icons.admin_panel_settings_outlined,
-                  color: ThemeManager.current.white,
-                  size: 32.sp,
+        Padding(
+          padding: EdgeInsets.only(top: 70.h, right: 30.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // MARK: - theme button
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  _showThemeSettingBottomModal(context);
+                },
+                child: Container(
+                  width: 50.w,
+                  height: 50.h,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: ThemeManager.current.background,
+                    borderRadius: BorderRadius.circular(25.r),
+                  ),
+                  child: Icon(
+                    Icons.color_lens_outlined,
+                    color: ThemeManager.current.grey_4,
+                    size: 32.sp,
+                  ),
                 ),
               ),
-            ),
+
+              if (isAdmin) ...[
+                SizedBox(width: 20.w),
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.heavyImpact();
+                    DeviceInfoManager().isDeviceManagerChecked = false;
+                    DeviceInfoManager().adminMode = true;
+                    context.goNamed("adminView");
+                  },
+                  child: Container(
+                    width: 50.w,
+                    height: 50.h,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: ThemeManager.current.button,
+                      borderRadius: BorderRadius.circular(25.r),
+                    ),
+                    child: Icon(
+                      Icons.admin_panel_settings_outlined,
+                      color: ThemeManager.current.white,
+                      size: 32.sp,
+                    ),
+                  ),
+                ),
+              ]
+            ],
           ),
-        SizedBox(height: isAdmin ? 58.h : 178.h),
+        ),
+        SizedBox(height: isAdmin ? 62.h : 178.h),
         Center(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300), // 애니메이션 지속 시간
@@ -508,6 +538,158 @@ class HomeView extends StatelessWidget {
             ],
           ),
       ],
+    );
+  }
+
+  // MARK: - theme setting bottom modal
+  void _showThemeSettingBottomModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: ThemeManager.current.white,
+      builder: (context) {
+        return Container(
+          height: 350.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: ThemeManager.current.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(40.r)),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 300.h,
+                  width: double.infinity,
+                  child: _colorThemePageView(context),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // MARK: - color theme page view
+  Widget _colorThemePageView(BuildContext context) {
+    return SizedBox(
+      child: PageView.builder(
+        scrollDirection: Axis.horizontal,
+        controller: PageController(
+            viewportFraction: 393.w / MediaQuery.of(context).size.width),
+        itemCount: ThemeManager().getThemeCount(),
+        onPageChanged: (index) {
+          context.read<HomeViewModel>().setSelectedThemeColorIndex(index);
+        },
+        itemBuilder: (context, index) {
+          final colors = ThemeManager()
+              .getAllThemeColors()
+              .map((e) => ThemeManager().getThemeColorFromEnum(e))
+              .toList();
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: 30.h),
+              Text(
+                '테마 색상 선택',
+                style: AppTextStyles.SejongGeulggot_20_regular.copyWith(
+                  color: colors[index].text_1,
+                ),
+              ),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  4,
+                  (i) {
+                    return Container(
+                      height: 50.h,
+                      width: 50.w,
+                      decoration: BoxDecoration(
+                        color: [
+                          colors[index].grey_1,
+                          colors[index].grey_2,
+                          colors[index].grey_3,
+                          colors[index].grey_4,
+                        ][i],
+                        border: Border.all(
+                          color: colors[index].black.withAlpha(30),
+                          width: 0.1.w,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  ThemeManager().getThemeCount(),
+                  (i) {
+                    if (i == index) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Container(
+                          height: 16.h,
+                          width: 16.w,
+                          decoration: BoxDecoration(
+                            color: colors[index].button,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Container(
+                          height: 16.h,
+                          width: 16.w,
+                          decoration: BoxDecoration(
+                            color: colors[index].background,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () async {
+                  HapticFeedback.heavyImpact();
+                  final selectedThemeIndex =
+                      context.read<HomeViewModel>().selectedThemeColorIndex;
+                  final selectedTheme =
+                      ThemeManager().getAllThemeColors()[selectedThemeIndex];
+                  await ThemeManager().setTheme(selectedTheme);
+                  context
+                      .read<HomeViewModel>()
+                      .setSelectedThemeColorIndex(0); // 초기화
+                  context.pop();
+                },
+                child: Container(
+                  height: 45.h,
+                  width: 300.w,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: colors[index].button,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Text(
+                    "적용",
+                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                      color: ThemeManager.current.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

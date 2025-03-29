@@ -242,7 +242,7 @@ class RedThemeColors extends AppColors {
   Color get button => const Color(0xFFE6A5A5);
 }
 
-/// MARK: - Paper Theme
+/// MARK: - Ivory Theme
 class IvoryThemeColors extends AppColors {
   @override
   Color get white => const Color(0xFFFFFFFF);
