@@ -125,7 +125,7 @@ class HomeView extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: isAdmin ? 62.h : 178.h),
+        SizedBox(height: isAdmin ? 62.h : 78.h),
         Center(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300), // 애니메이션 지속 시간
@@ -669,7 +669,7 @@ class HomeView extends StatelessWidget {
                   4,
                   (i) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4.w),
+                      padding: EdgeInsets.symmetric(horizontal: 3.w),
                       child: Container(
                         height: 50.h,
                         width: 50.w,
@@ -684,7 +684,7 @@ class HomeView extends StatelessWidget {
                             color: colors[index].black.withAlpha(30),
                             width: 0.1.w,
                           ),
-                          borderRadius: BorderRadius.circular(25.r),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                     );
