@@ -1,7 +1,7 @@
 import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/core/utils/animations.dart';
-import 'package:eng_story/core/utils/colors.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/fonts.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/services/local/device_info_manager.dart';
@@ -24,7 +24,7 @@ class HomeView extends StatelessWidget {
     return FutureBuilder(
       future: context.read<HomeViewModel>().initializeApp(false),
       builder: (context, snapshot) => Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: ThemeManager.current.background,
         body: _body(
           context,
           Provider.of<HomeViewModel>(context),
@@ -60,12 +60,12 @@ class HomeView extends StatelessWidget {
                 height: 50.h,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: ThemeManager.current.black,
                   borderRadius: BorderRadius.circular(25.r),
                 ),
                 child: Icon(
                   Icons.admin_panel_settings_outlined,
-                  color: Colors.white,
+                  color: ThemeManager.current.white,
                   size: 32.sp,
                 ),
               ),
@@ -118,7 +118,7 @@ class HomeView extends StatelessWidget {
             "Hi! I'm EngBot (잉봇).\nYou can set the expected time, category, and difficulty below to get a story :)",
             textAlign: TextAlign.center,
             style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-              color: AppColors.text_1,
+              color: ThemeManager.current.text_1,
             ),
           ),
           SizedBox(height: 10.h),
@@ -126,7 +126,7 @@ class HomeView extends StatelessWidget {
             "안녕! 나는 EngBot(잉봇)이야.\n밑의 예상시간, 카테고리, 난이도를 설정해서 스토리를 불러올 수 있어 :)",
             textAlign: TextAlign.center,
             style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-              color: AppColors.text_2,
+              color: ThemeManager.current.text_2,
             ),
           ),
         ],
@@ -172,10 +172,10 @@ class HomeView extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemeManager.current.white,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: Colors.black,
+            color: ThemeManager.current.black,
             width: 0.2.w,
           ),
         ),
@@ -189,7 +189,7 @@ class HomeView extends StatelessWidget {
                   "제목",
                   textAlign: TextAlign.center,
                   style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                    color: AppColors.text_2,
+                    color: ThemeManager.current.text_2,
                   ),
                 ),
                 const Spacer(),
@@ -197,7 +197,7 @@ class HomeView extends StatelessWidget {
                   indexText,
                   textAlign: TextAlign.end,
                   style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                    color: AppColors.text_2,
+                    color: ThemeManager.current.text_2,
                   ),
                 ),
                 SizedBox(width: 21.w),
@@ -217,13 +217,13 @@ class HomeView extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: ThemeManager.current.black,
                       borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: Text(
                       'New',
                       style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                        color: Colors.white,
+                        color: ThemeManager.current.white,
                       ),
                     ),
                   ),
@@ -239,17 +239,17 @@ class HomeView extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: ThemeManager.current.white,
                       borderRadius: BorderRadius.circular(5.r),
                       border: Border.all(
-                        color: Colors.black,
+                        color: ThemeManager.current.black,
                         width: 0.8.w,
                       ),
                     ),
                     child: Text(
                       'Read',
                       style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                        color: Colors.black,
+                        color: ThemeManager.current.black,
                       ),
                     ),
                   ),
@@ -260,7 +260,7 @@ class HomeView extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.right,
                   style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                    color: AppColors.text_1,
+                    color: ThemeManager.current.text_1,
                   ),
                 ),
               ],
@@ -273,7 +273,7 @@ class HomeView extends StatelessWidget {
                   "카테고리",
                   textAlign: TextAlign.center,
                   style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                    color: AppColors.text_2,
+                    color: ThemeManager.current.text_2,
                   ),
                 ),
               ],
@@ -286,7 +286,7 @@ class HomeView extends StatelessWidget {
                   story.category,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                    color: AppColors.text_1,
+                    color: ThemeManager.current.text_1,
                   ),
                 ),
               ],
@@ -311,13 +311,13 @@ class HomeView extends StatelessWidget {
                   height: 39.h,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.button,
+                    color: ThemeManager.current.button,
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Text(
                     "읽기",
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: Colors.white,
+                      color: ThemeManager.current.white,
                     ),
                   ),
                 ),
@@ -351,16 +351,16 @@ class HomeView extends StatelessWidget {
                 SizedBox(
                   width: 24.w,
                   height: 24.h,
-                  child: const CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                     strokeWidth: 3,
-                    color: AppColors.button,
+                    color: ThemeManager.current.button,
                   ),
                 ),
                 SizedBox(width: 12.w),
                 Text(
                   loadingText,
                   style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                    color: AppColors.text_1,
+                    color: ThemeManager.current.text_1,
                   ),
                 ),
               ],
@@ -376,10 +376,10 @@ class HomeView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ThemeManager.current.white,
                   borderRadius: BorderRadius.circular(10.r),
                   border: Border.all(
-                    color: Colors.black,
+                    color: ThemeManager.current.black,
                     width: 0.2.w,
                   ),
                 ),
@@ -387,7 +387,7 @@ class HomeView extends StatelessWidget {
                   value: homeViewModel.storyTime?.displayText,
                   hint: const Text("예상시간"),
                   style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_1),
+                      color: ThemeManager.current.text_1),
                   alignment: Alignment.center,
                   underline: const SizedBox.shrink(),
                   onChanged: (String? newValue) {
@@ -403,7 +403,7 @@ class HomeView extends StatelessWidget {
                       child: Text(
                         "예상시간",
                         style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                          color: Colors.grey,
+                          color: ThemeManager.current.grey_2,
                         ),
                       ),
                     ),
@@ -421,10 +421,10 @@ class HomeView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ThemeManager.current.white,
                   borderRadius: BorderRadius.circular(10.r),
                   border: Border.all(
-                    color: Colors.black,
+                    color: ThemeManager.current.black,
                     width: 0.2.w,
                   ),
                 ),
@@ -432,7 +432,7 @@ class HomeView extends StatelessWidget {
                   value: homeViewModel.storyCategory,
                   alignment: Alignment.center,
                   style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_1),
+                      color: ThemeManager.current.text_1),
                   menuMaxHeight: 250.h,
                   underline: const SizedBox.shrink(),
                   onChanged: (StoryCategory? newValue) {
@@ -445,7 +445,7 @@ class HomeView extends StatelessWidget {
                       child: Text(
                         "카테고리",
                         style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                          color: Colors.grey,
+                          color: ThemeManager.current.grey_2,
                         ),
                       ),
                     ),
@@ -465,10 +465,10 @@ class HomeView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ThemeManager.current.white,
                   borderRadius: BorderRadius.circular(10.r),
                   border: Border.all(
-                    color: Colors.black,
+                    color: ThemeManager.current.black,
                     width: 0.2.w,
                   ),
                 ),
@@ -476,7 +476,7 @@ class HomeView extends StatelessWidget {
                   value: homeViewModel.storyLevel,
                   alignment: Alignment.center,
                   style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_1),
+                      color: ThemeManager.current.text_1),
                   menuMaxHeight: 250.h,
                   underline: const SizedBox.shrink(),
                   onChanged: (int? newValue) {
@@ -489,7 +489,7 @@ class HomeView extends StatelessWidget {
                       child: Text(
                         "난이도",
                         style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                          color: Colors.grey,
+                          color: ThemeManager.current.grey_2,
                         ),
                       ),
                     ),

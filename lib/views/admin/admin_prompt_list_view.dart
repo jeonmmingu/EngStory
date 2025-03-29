@@ -1,4 +1,4 @@
-import 'package:eng_story/core/utils/colors.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/fonts.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/admin/admin_prompt_view_model.dart';
@@ -21,7 +21,8 @@ class AdminPromptListView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(color: AppColors.background),
+            decoration:
+                BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
@@ -93,7 +94,7 @@ class AdminPromptListView extends StatelessWidget {
             child: Text(
               "프롬프트를 이용해서 스토리를 만들거나, 수정, 삭제 할 수 있습니다.",
               style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                color: AppColors.text_2,
+                color: ThemeManager.current.text_2,
               ),
             ),
           ),
@@ -146,9 +147,9 @@ class AdminPromptListView extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ThemeManager.current.white,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black, width: 0.3),
+            border: Border.all(color: ThemeManager.current.black, width: 0.3),
           ),
           child: Row(
             children: [
