@@ -10,6 +10,7 @@ class Story implements JsonSerializable {
   String readTime;
   int storyLevel;
   Timestamp updatedAt;
+  bool isDeleted;
 
   Story({
     required this.id,
@@ -19,6 +20,7 @@ class Story implements JsonSerializable {
     required this.readTime,
     required this.storyLevel,
     required this.updatedAt,
+    this.isDeleted = false,
   });
 
   factory Story.fromMap(Map<String, dynamic> map) {
@@ -30,6 +32,7 @@ class Story implements JsonSerializable {
       readTime: map['readTime'],
       storyLevel: map['storyLevel'],
       updatedAt: map['updatedAt'],
+      isDeleted: map['isDeleted'] ?? false,
     );
   }
 
@@ -50,6 +53,7 @@ class Story implements JsonSerializable {
       'readTime': readTime,
       'storyLevel': storyLevel,
       'updatedAt': updatedAt,
+      'isDeleted': isDeleted,
     };
   }
 }

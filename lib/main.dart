@@ -2,6 +2,7 @@ import 'package:eng_story/app.dart';
 import 'package:eng_story/core/utils/tts_manager.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/models/cache/cached_story_script.dart';
+import 'package:eng_story/models/cache/cached_sync_meta.dart';
 import 'package:eng_story/providers/app_providers.dart';
 import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:eng_story/services/remote/firebase_options.dart';
@@ -45,4 +46,5 @@ Future<void> initializeHive() async {
   // 자동 생성된 type adapter 등록
   Hive.registerAdapter(CachedStoryAdapter());
   Hive.registerAdapter(CachedStoryScriptAdapter());
+  Hive.registerAdapter(CachedSyncMetaAdapter());
 }

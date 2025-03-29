@@ -2,12 +2,14 @@ import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/repositories/local/cached_story_repository.dart';
+import 'package:eng_story/repositories/local/cached_sync_repository.dart';
 import 'package:eng_story/repositories/remote/story_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeViewModel with ChangeNotifier {
-  final CachedStoryRepository _cacheRepository = CachedStoryRepository();
+  final CachedStoryRepository _cacheStoryRepository = CachedStoryRepository();
+  final CachedSyncRepository _cacheSyncRepository = CachedSyncRepository();
   final StoryRepository _storyRepository = StoryRepository();
 
   // 📌 스토리 읽기 시간 설정
@@ -134,49 +136,57 @@ class HomeViewModel with ChangeNotifier {
   /// 🔹 캐싱된 스토리 불러오기 (한 번만 실행)
   Future<void> _loadCachedStories() async {
     try {
-      _cachedStories = await _cacheRepository.getAllStories();
+      _cachedStories = await _cacheStoryRepository.getAllStories();
       debugPrint("🗂 캐싱된 스토리 개수: ${_cachedStories.length}");
     } catch (e) {
       debugPrint("⚠ 캐싱된 스토리 불러오기 실패: $e");
     }
   }
 
-  /// 🔹 Firestore에서 최신 스토리 가져와 동기화
+  /// 🔹 Firestore에서 새로운 이야기, 삭제된 이야기 동기화
   Future<void> _syncStories() async {
     try {
-      final lastUpdated = _getLastUpdatedAt();
+      // 새로운 이야기 & updated 된 이야기 동기화
+      final lastUpdated = await _cacheSyncRepository.getLastSyncedAt() ??
+          DateTime.fromMillisecondsSinceEpoch(0);
+
       final newStories = await _storyRepository.readFilteredStories(
-        field: 'updatedAt',
-        value: Timestamp.fromDate(
-          lastUpdated.toDate().add(const Duration(seconds: 10)),
+        field1: 'updatedAt',
+        value1: Timestamp.fromDate(
+          lastUpdated.add(const Duration(seconds: 10)),
         ),
-        condition: "isGreaterThan",
+        condition1: "isGreaterThan",
       );
 
       if (newStories.isNotEmpty) {
         for (var story in newStories) {
           debugPrint("📥 Firestore 스토리 동기화: ${story.title}");
           CachedStory cachedStory = CachedStory.fromStory(story);
-          await _cacheRepository.saveStory(cachedStory);
+          await _cacheStoryRepository.saveStory(cachedStory);
           _cachedStories.add(cachedStory); // 🔹 동기화된 데이터 바로 리스트에 추가
         }
-        notifyListeners(); // 🔹 UI 업데이트
       }
+
+      // 삭제된 이야기 동기화
+      final deletedStories =
+          _cachedStories.where((cachedStory) => cachedStory.isDeleted).toList();
+
+      debugPrint("삭제된 이야기 개수: ${deletedStories.length}");
+
+      for (var deletedStory in deletedStories) {
+        debugPrint("🗑 Firestore 스토리 삭제 동기화: ${deletedStory.title}");
+        await _cacheStoryRepository.deleteStory(deletedStory.id);
+        _cachedStories.remove(deletedStory);
+      }
+
+      await _cacheSyncRepository.saveLastSyncedAt(DateTime.now());
+
+      notifyListeners(); // 🔹 UI 업데이트
 
       debugPrint("✅ Firestore 스토리 동기화 완료!");
     } catch (e) {
       debugPrint("❌ Firestore 동기화 실패: $e");
     }
-  }
-
-  /// 🔹 가장 최신 업데이트된 `updatedAt` 찾기
-  Timestamp _getLastUpdatedAt() {
-    if (_cachedStories.isEmpty) return Timestamp(0, 0);
-    return Timestamp.fromDate(
-      _cachedStories
-          .map((story) => story.updatedAt)
-          .reduce((a, b) => a.isAfter(b) ? a : b),
-    );
   }
 
   /// 🔹 storyTime, storyCategory, storyLevel 필터링 해서 story list 가져오기
@@ -259,7 +269,7 @@ class HomeViewModel with ChangeNotifier {
   /// 🔹 특정 스토리의 `lastReadScriptIndex` 업데이트
   Future<void> updateLastReadScriptIndex(String storyId, int newIndex) async {
     try {
-      await _cacheRepository.updateLastReadScriptIndex(storyId, newIndex);
+      await _cacheStoryRepository.updateLastReadScriptIndex(storyId, newIndex);
       debugPrint("✅ lastReadScriptIndex 업데이트 완료!");
       notifyListeners();
     } catch (e) {
@@ -270,7 +280,7 @@ class HomeViewModel with ChangeNotifier {
   /// 🔹 캐싱된 스토리 삭제하기
   Future<void> deleteCachedStory(String storyId) async {
     try {
-      await _cacheRepository.deleteStory(storyId);
+      await _cacheStoryRepository.deleteStory(storyId);
       _cachedStories.removeWhere((story) => story.id == storyId);
       notifyListeners();
       debugPrint("✅ 캐싱된 스토리 삭제 완료!");

@@ -25,13 +25,14 @@ class CachedStoryAdapter extends TypeAdapter<CachedStory> {
       updatedAt: fields[5] as DateTime,
       storyLevel: fields[7] as int,
       lastReadScriptIndex: fields[6] as int,
+      isDeleted: fields[8] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, CachedStory obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class CachedStoryAdapter extends TypeAdapter<CachedStory> {
       ..writeByte(6)
       ..write(obj.lastReadScriptIndex)
       ..writeByte(7)
-      ..write(obj.storyLevel);
+      ..write(obj.storyLevel)
+      ..writeByte(8)
+      ..write(obj.isDeleted);
   }
 
   @override
