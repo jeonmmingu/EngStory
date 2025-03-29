@@ -1,5 +1,5 @@
 import 'package:eng_story/core/utils/color/theme_manager.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/admin/admin_prompt_view_model.dart';
 import 'package:flutter/material.dart';
@@ -77,13 +77,18 @@ class AdminPromptListView extends StatelessWidget {
                   width: 18.w,
                   height: 18.h,
                   alignment: Alignment.center,
-                  child: Image.asset(AppImages.backButton),
+                  child: Image.asset(
+                    AppImages.backButton,
+                    color: ThemeManager.current.text_1,
+                  ),
                 ),
               ),
               SizedBox(width: 18.w),
               Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 "프롬프트 관리",
-                style: AppTextStyles.SejongGeulggot_22_regular,
+                style: FontManager.current.font_22,
               ),
             ],
           ),
@@ -91,8 +96,10 @@ class AdminPromptListView extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
               "프롬프트를 이용해서 스토리를 만들거나, 수정, 삭제 할 수 있습니다.",
-              style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+              style: FontManager.current.font_16.copyWith(
                 color: ThemeManager.current.text_2,
               ),
             ),
@@ -153,8 +160,10 @@ class AdminPromptListView extends StatelessWidget {
           child: Row(
             children: [
               Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 context.read<AdminPromptViewModel>().promptList[index].title,
-                style: AppTextStyles.SejongGeulggot_16_regular,
+                style: FontManager.current.font_16,
               ),
               const Spacer(),
               const Icon(Icons.chevron_right),

@@ -2,7 +2,7 @@ import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/core/enums/story_tone.dart';
 import 'package:eng_story/core/utils/color/theme_manager.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/admin/admin_prompt_view_model.dart';
 import 'package:flutter/material.dart';
@@ -88,13 +88,18 @@ class AdminAddPromptView extends StatelessWidget {
                 width: 18.w,
                 height: 18.h,
                 alignment: Alignment.center,
-                child: Image.asset(AppImages.backButton),
+                child: Image.asset(
+                  AppImages.backButton,
+                  color: ThemeManager.current.text_1,
+                ),
               ),
             ),
             SizedBox(width: 18.w),
             Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
               "prompt 생성",
-              style: AppTextStyles.SejongGeulggot_22_regular,
+              style: FontManager.current.font_22,
             ),
           ],
         ),
@@ -102,8 +107,10 @@ class AdminAddPromptView extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(left: 30.w, right: 30.w),
           child: Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "제목, 주제, 카테고리, 소요시간, 말투, 분위기를 작성해주세요",
-            style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+            style: FontManager.current.font_16.copyWith(
               color: ThemeManager.current.text_2,
             ),
           ),
@@ -154,8 +161,10 @@ class AdminAddPromptView extends StatelessWidget {
         SizedBox(
           width: 40.w,
           child: Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "제목",
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
         ),
         SizedBox(width: 10.w),
@@ -164,7 +173,7 @@ class AdminAddPromptView extends StatelessWidget {
             height: 50.h,
             child: TextField(
               controller: adminPromptViewModel.titleController,
-              style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+              style: FontManager.current.font_16.copyWith(
                 color: ThemeManager.current.black,
               ),
               onChanged: (value) => context
@@ -191,8 +200,10 @@ class AdminAddPromptView extends StatelessWidget {
         SizedBox(
           width: 40.w,
           child: Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "주제",
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
         ),
         SizedBox(width: 10.w),
@@ -201,7 +212,7 @@ class AdminAddPromptView extends StatelessWidget {
             height: 50.h,
             child: TextField(
               controller: adminPromptViewModel.contentController,
-              style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+              style: FontManager.current.font_16.copyWith(
                 color: ThemeManager.current.black,
               ),
               onChanged: (value) => context
@@ -228,8 +239,10 @@ class AdminAddPromptView extends StatelessWidget {
         SizedBox(
           width: 40.w,
           child: Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "분위기",
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
         ),
         SizedBox(width: 10.w),
@@ -238,7 +251,7 @@ class AdminAddPromptView extends StatelessWidget {
             height: 50.h,
             child: TextField(
               controller: adminPromptViewModel.moodController,
-              style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+              style: FontManager.current.font_16.copyWith(
                 color: ThemeManager.current.black,
               ),
               onChanged: (value) => context
@@ -265,8 +278,10 @@ class AdminAddPromptView extends StatelessWidget {
         SizedBox(
           width: 60.w,
           child: Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "카테고리",
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
         ),
         SizedBox(width: 30.w),
@@ -275,7 +290,7 @@ class AdminAddPromptView extends StatelessWidget {
           width: 100.w,
           child: DropdownButton(
             menuMaxHeight: 300.h,
-            style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+            style: FontManager.current.font_16.copyWith(
               color: ThemeManager.current.black,
             ),
             value: adminPromptViewModel.category == null
@@ -286,7 +301,8 @@ class AdminAddPromptView extends StatelessWidget {
                 .map(
                   (e) => DropdownMenuItem(
                     value: e,
-                    child: Text(e),
+                    child:
+                        Text(maxLines: 5, overflow: TextOverflow.ellipsis, e),
                   ),
                 )
                 .toList(),
@@ -315,8 +331,10 @@ class AdminAddPromptView extends StatelessWidget {
         SizedBox(
           width: 60.w,
           child: Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "소요시간",
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
         ),
         SizedBox(width: 30.w),
@@ -325,7 +343,7 @@ class AdminAddPromptView extends StatelessWidget {
           width: 100.w,
           child: DropdownButton(
             menuMaxHeight: 300.h,
-            style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+            style: FontManager.current.font_16.copyWith(
               color: ThemeManager.current.black,
             ),
             value: adminPromptViewModel.readTime?.displayText,
@@ -334,7 +352,10 @@ class AdminAddPromptView extends StatelessWidget {
                 .map(
                   (e) => DropdownMenuItem(
                     value: e.displayText,
-                    child: Text(e.displayText),
+                    child: Text(
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                        e.displayText),
                   ),
                 )
                 .toList(),
@@ -363,8 +384,10 @@ class AdminAddPromptView extends StatelessWidget {
         SizedBox(
           width: 60.w,
           child: Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "말투",
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
         ),
         SizedBox(width: 30.w),
@@ -373,7 +396,7 @@ class AdminAddPromptView extends StatelessWidget {
           width: 250.w,
           child: DropdownButton(
             menuMaxHeight: 300.h,
-            style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+            style: FontManager.current.font_16.copyWith(
               color: ThemeManager.current.black,
             ),
             value: adminPromptViewModel.tone == null
@@ -384,7 +407,8 @@ class AdminAddPromptView extends StatelessWidget {
                 .map(
                   (e) => DropdownMenuItem(
                     value: e,
-                    child: Text(e),
+                    child:
+                        Text(maxLines: 5, overflow: TextOverflow.ellipsis, e),
                   ),
                 )
                 .toList(),
@@ -423,8 +447,10 @@ class AdminAddPromptView extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 "prompt 생성에 실패했습니다. 다시 시도해주세요.",
-                style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                style: FontManager.current.font_16.copyWith(
                   color: ThemeManager.current.white,
                 ),
               ),
@@ -445,8 +471,10 @@ class AdminAddPromptView extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.r),
           ),
           child: Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "저장",
-            style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
+            style: FontManager.current.font_18.copyWith(
               color: adminPromptViewModel.checkSaveValidation == true
                   ? ThemeManager.current.black
                   : Colors.black54,

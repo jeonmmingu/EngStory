@@ -2,7 +2,7 @@
 
 import 'package:eng_story/core/tests/manage_story.dart';
 import 'package:eng_story/core/utils/color/theme_manager.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
 import 'package:flutter/material.dart';
@@ -86,13 +86,18 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 18.w,
                   height: 18.h,
                   alignment: Alignment.center,
-                  child: Image.asset(AppImages.backButton),
+                  child: Image.asset(
+                    AppImages.backButton,
+                    color: ThemeManager.current.text_1,
+                  ),
                 ),
               ),
               SizedBox(width: 18.w),
               Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 context.read<HomeViewModel>().selectedStory!.title,
-                style: AppTextStyles.SejongGeulggot_22_regular,
+                style: FontManager.current.font_22,
               ),
             ],
           ),
@@ -163,7 +168,10 @@ class AdminStoryDetailView extends StatelessWidget {
                     // 스토리 삭제 완료 알림 snackBar 띄우기
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text("스토리가 삭제되었습니다."),
+                        content: Text(
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            "스토리가 삭제되었습니다."),
                       ),
                     );
                   } catch (e) {
@@ -233,13 +241,19 @@ class AdminStoryDetailView extends StatelessWidget {
             Row(
               children: [
                 SizedBox(width: 30.w),
-                Text("제목", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "제목",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.title,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -253,13 +267,19 @@ class AdminStoryDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("카테고리", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "카테고리",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.category,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -273,13 +293,19 @@ class AdminStoryDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("소요시간", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "소요시간",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.readTime,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -293,13 +319,19 @@ class AdminStoryDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("출처", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "출처",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.source,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -313,13 +345,19 @@ class AdminStoryDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("생성일자", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "생성일자",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.updatedAt.toString(),
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),

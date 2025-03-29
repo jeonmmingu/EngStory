@@ -9,7 +9,7 @@ class TestScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: null,
-          child: Text("테스트 시작"),
+          child: Text(maxLines: 5, overflow: TextOverflow.ellipsis, "테스트 시작"),
         ),
       ),
     );

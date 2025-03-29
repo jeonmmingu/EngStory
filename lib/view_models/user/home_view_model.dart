@@ -56,6 +56,10 @@ class HomeViewModel with ChangeNotifier {
   int _selectedThemeColorIndex = 0;
   int get selectedThemeColorIndex => _selectedThemeColorIndex;
 
+  // 📌 선택된 Theme font index
+  int _selectedThemeFontIndex = 0;
+  int get selectedThemeFontIndex => _selectedThemeFontIndex;
+
   /// 🔹 앱 실행 시 초기화 작업 수행
   Future<void> initializeApp(bool isAdmin) async {
     try {
@@ -140,6 +144,12 @@ class HomeViewModel with ChangeNotifier {
   /// 🔹 선택된 테마 색상 인덱스 설정
   void setSelectedThemeColorIndex(int index) {
     _selectedThemeColorIndex = index;
+    notifyListeners();
+  }
+
+  /// 🔹 선택된 테마 폰트 인덱스 설정
+  void setSelectedThemeFontIndex(int index) {
+    _selectedThemeFontIndex = index;
     notifyListeners();
   }
 
