@@ -55,22 +55,36 @@ class StoryRepository {
     }
   }
 
-  /// 🔹 필터링된 스토리 조회 (조건 옵션 추가)
+  /// 🔹 필터링된 스토리 조회 (다중 조건 옵션 추가)
   Future<List<Story>> readFilteredStories({
-    required String field,
-    required dynamic value,
-    String condition = "isEqualTo",
+    required String field1,
+    required dynamic value1,
+    required String condition1,
+    String? field2,
+    dynamic value2,
+    String condition2 = "isEqualTo",
   }) async {
     try {
       Query query = FirebaseRefs.colRefStory;
 
-      if (condition == "isEqualTo") {
-        query = query.where(field, isEqualTo: value);
-      } else if (condition == "isGreaterThan") {
-        query = query.where(field, isGreaterThan: value);
-
+      // 첫 번째 조건 추가
+      if (condition1 == "isEqualTo") {
+        query = query.where(field1, isEqualTo: value1);
+      } else if (condition1 == "isGreaterThan") {
+        query = query.where(field1, isGreaterThan: value1);
       } else {
-        throw Exception("❌ 지원하지 않는 조건: $condition");
+        throw Exception("❌ 지원하지 않는 조건: $condition1");
+      }
+
+      // 두 번째 조건이 제공된 경우 추가
+      if (field2 != null && value2 != null) {
+        if (condition2 == "isEqualTo") {
+          query = query.where(field2, isEqualTo: value2);
+        } else if (condition2 == "isGreaterThan") {
+          query = query.where(field2, isGreaterThan: value2);
+        } else {
+          throw Exception("❌ 지원하지 않는 조건: $condition2");
+        }
       }
 
       final querySnapshot = await query.get();
