@@ -30,6 +30,9 @@ class CachedStory extends HiveObject {
   @HiveField(7)
   int storyLevel;
 
+  @HiveField(8)
+  bool isDeleted;
+
   CachedStory({
     required this.id,
     required this.title,
@@ -39,10 +42,10 @@ class CachedStory extends HiveObject {
     required this.updatedAt,
     required this.storyLevel,
     this.lastReadScriptIndex = 0,
+    this.isDeleted = false,
   });
 
-  factory CachedStory.fromStory(Story story,
-      {int lastReadScriptIndex = 0}) {
+  factory CachedStory.fromStory(Story story, {int lastReadScriptIndex = 0}) {
     return CachedStory(
       id: story.id,
       title: story.title,
@@ -52,6 +55,7 @@ class CachedStory extends HiveObject {
       updatedAt: story.updatedAt.toDate(),
       lastReadScriptIndex: lastReadScriptIndex,
       storyLevel: story.storyLevel,
+      isDeleted: story.isDeleted,
     );
   }
 
@@ -76,6 +80,7 @@ class CachedStory extends HiveObject {
       readTime: json['readTime'] as String,
       updatedAt: (json['updatedAt'] as Timestamp).toDate(),
       storyLevel: json['storyLevel'] as int,
+      isDeleted: json['isDeleted'] as bool? ?? false,
     );
   }
 
@@ -88,6 +93,7 @@ class CachedStory extends HiveObject {
       'readTime': readTime,
       'updatedAt': Timestamp.fromDate(updatedAt),
       'storyLevel': storyLevel,
+      'isDeleted': isDeleted,
     };
   }
 }

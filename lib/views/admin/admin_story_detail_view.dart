@@ -150,7 +150,7 @@ class AdminStoryDetailView extends StatelessWidget {
                   try {
                     // homeViewModel 의 isDeleting 상태 변경
                     context.read<HomeViewModel>().setIsDeleting(true);
-                    await ManageStory().deleteStory(
+                    await ManageStory().softDeleteStory(
                       context.read<HomeViewModel>().selectedStory!.id,
                     );
                     await context.read<HomeViewModel>().deleteCachedStory(
