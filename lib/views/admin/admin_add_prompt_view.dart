@@ -1,7 +1,7 @@
 import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/core/enums/story_tone.dart';
-import 'package:eng_story/core/utils/colors.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/fonts.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/admin/admin_prompt_view_model.dart';
@@ -25,7 +25,7 @@ class AdminAddPromptView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(color: AppColors.background),
+            decoration: BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
@@ -104,7 +104,7 @@ class AdminAddPromptView extends StatelessWidget {
           child: Text(
             "제목, 주제, 카테고리, 소요시간, 말투, 분위기를 작성해주세요",
             style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-              color: AppColors.text_2,
+              color: ThemeManager.current.text_2,
             ),
           ),
         ),
@@ -165,7 +165,7 @@ class AdminAddPromptView extends StatelessWidget {
             child: TextField(
               controller: adminPromptViewModel.titleController,
               style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                color: Colors.black,
+                color: ThemeManager.current.black,
               ),
               onChanged: (value) => context
                   .read<AdminPromptViewModel>()
@@ -202,7 +202,7 @@ class AdminAddPromptView extends StatelessWidget {
             child: TextField(
               controller: adminPromptViewModel.contentController,
               style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                color: Colors.black,
+                color: ThemeManager.current.black,
               ),
               onChanged: (value) => context
                   .read<AdminPromptViewModel>()
@@ -239,7 +239,7 @@ class AdminAddPromptView extends StatelessWidget {
             child: TextField(
               controller: adminPromptViewModel.moodController,
               style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                color: Colors.black,
+                color: ThemeManager.current.black,
               ),
               onChanged: (value) => context
                   .read<AdminPromptViewModel>()
@@ -276,7 +276,7 @@ class AdminAddPromptView extends StatelessWidget {
           child: DropdownButton(
             menuMaxHeight: 300.h,
             style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-              color: Colors.black,
+              color: ThemeManager.current.black,
             ),
             value: adminPromptViewModel.category == null
                 ? null
@@ -326,7 +326,7 @@ class AdminAddPromptView extends StatelessWidget {
           child: DropdownButton(
             menuMaxHeight: 300.h,
             style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-              color: Colors.black,
+              color: ThemeManager.current.black,
             ),
             value: adminPromptViewModel.readTime?.displayText,
             isExpanded: true,
@@ -374,7 +374,7 @@ class AdminAddPromptView extends StatelessWidget {
           child: DropdownButton(
             menuMaxHeight: 300.h,
             style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-              color: Colors.black,
+              color: ThemeManager.current.black,
             ),
             value: adminPromptViewModel.tone == null
                 ? null
@@ -425,10 +425,10 @@ class AdminAddPromptView extends StatelessWidget {
               content: Text(
                 "prompt 생성에 실패했습니다. 다시 시도해주세요.",
                 style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                  color: Colors.white,
+                  color: ThemeManager.current.white,
                 ),
               ),
-              backgroundColor: Colors.black,
+              backgroundColor: ThemeManager.current.black,
             ),
           );
         }
@@ -448,7 +448,7 @@ class AdminAddPromptView extends StatelessWidget {
             "저장",
             style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
               color: adminPromptViewModel.checkSaveValidation == true
-                  ? Colors.black
+                  ? ThemeManager.current.black
                   : Colors.black54,
             ),
           ),

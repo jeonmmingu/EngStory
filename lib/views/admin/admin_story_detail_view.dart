@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:eng_story/core/tests/manage_story.dart';
-import 'package:eng_story/core/utils/colors.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/fonts.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
@@ -25,7 +25,7 @@ class AdminStoryDetailView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(color: AppColors.background),
+            decoration: BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
@@ -110,14 +110,15 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.indeterminate_check_box_rounded,
                     size: 30.h,
-                    color: AppColors.grey_1,
+                    color: ThemeManager.current.grey_1,
                   ),
                 ),
               ),
@@ -130,14 +131,15 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.indeterminate_check_box_rounded,
                     size: 30.h,
-                    color: AppColors.grey_1,
+                    color: ThemeManager.current.grey_1,
                   ),
                 ),
               ),
@@ -173,16 +175,17 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.delete,
                     size: 30.h,
                     color: context.read<HomeViewModel>().isDeleting == true
-                        ? AppColors.grey_1
-                        : AppColors.button,
+                        ? ThemeManager.current.grey_1
+                        : ThemeManager.current.button,
                   ),
                 ),
               ),
@@ -195,14 +198,15 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.indeterminate_check_box_rounded,
                     size: 26.h,
-                    color: AppColors.grey_1,
+                    color: ThemeManager.current.grey_1,
                   ),
                 ),
               ),
@@ -236,7 +240,7 @@ class AdminStoryDetailView extends StatelessWidget {
                   child: Text(
                     story.title,
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -256,7 +260,7 @@ class AdminStoryDetailView extends StatelessWidget {
                   child: Text(
                     story.category,
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -276,7 +280,7 @@ class AdminStoryDetailView extends StatelessWidget {
                   child: Text(
                     story.readTime,
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -296,7 +300,7 @@ class AdminStoryDetailView extends StatelessWidget {
                   child: Text(
                     story.source,
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -316,7 +320,7 @@ class AdminStoryDetailView extends StatelessWidget {
                   child: Text(
                     story.updatedAt.toString(),
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),

@@ -1,7 +1,7 @@
 import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/core/enums/story_tone.dart';
-import 'package:eng_story/core/utils/colors.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/fonts.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/admin/admin_prompt_view_model.dart';
@@ -26,7 +26,8 @@ class AdminPromptDetailView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(color: AppColors.background),
+            decoration:
+               BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
@@ -112,14 +113,15 @@ class AdminPromptDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.note_add,
                     size: 30.h,
-                    color: AppColors.button,
+                    color: ThemeManager.current.button,
                   ),
                 ),
               ),
@@ -133,14 +135,15 @@ class AdminPromptDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.edit,
                     size: 30.h,
-                    color: AppColors.button,
+                    color: ThemeManager.current.button,
                   ),
                 ),
               ),
@@ -166,14 +169,15 @@ class AdminPromptDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.delete,
                     size: 30.h,
-                    color: AppColors.button,
+                    color: ThemeManager.current.button,
                   ),
                 ),
               ),
@@ -196,14 +200,15 @@ class AdminPromptDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.copy,
                     size: 26.h,
-                    color: AppColors.button,
+                    color: ThemeManager.current.button,
                   ),
                 ),
               ),
@@ -236,7 +241,7 @@ class AdminPromptDetailView extends StatelessWidget {
                   child: Text(
                     adminPromptViewModel.selectedPrompt!.title,
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -256,7 +261,7 @@ class AdminPromptDetailView extends StatelessWidget {
                   child: Text(
                     adminPromptViewModel.selectedPrompt!.content,
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -276,7 +281,7 @@ class AdminPromptDetailView extends StatelessWidget {
                   child: Text(
                     adminPromptViewModel.selectedPrompt!.mood,
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -297,7 +302,7 @@ class AdminPromptDetailView extends StatelessWidget {
                     displayCategoryTextFromString(
                         adminPromptViewModel.selectedPrompt!.category),
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -319,7 +324,7 @@ class AdminPromptDetailView extends StatelessWidget {
                         ? StoryTime.short.displayText
                         : StoryTime.medium.displayText,
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -340,7 +345,7 @@ class AdminPromptDetailView extends StatelessWidget {
                     displayToneTextFromString(
                         adminPromptViewModel.selectedPrompt!.tone),
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -360,7 +365,7 @@ class AdminPromptDetailView extends StatelessWidget {
                   child: Text(
                     adminPromptViewModel.selectedPrompt!.promptText,
                     style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),

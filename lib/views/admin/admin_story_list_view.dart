@@ -1,4 +1,4 @@
-import 'package:eng_story/core/utils/colors.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/fonts.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
@@ -21,7 +21,7 @@ class AdminStoryListView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(color: AppColors.background),
+            decoration: BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
@@ -93,7 +93,7 @@ class AdminStoryListView extends StatelessWidget {
             child: Text(
               "생성된 스토리를 보거나, 삭제 하는 등 관리할 수 있는 페이지 입니다.",
               style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                color: AppColors.text_2,
+                color: ThemeManager.current.text_2,
               ),
             ),
           ),
@@ -146,9 +146,9 @@ class AdminStoryListView extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ThemeManager.current.white,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.black, width: 0.3),
+              border: Border.all(color: ThemeManager.current.black, width: 0.3),
             ),
             child: Row(
               children: [

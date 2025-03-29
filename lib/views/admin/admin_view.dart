@@ -1,4 +1,4 @@
-import 'package:eng_story/core/utils/colors.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/fonts.dart';
 import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class AdminView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(color: AppColors.background),
+            decoration: BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
@@ -92,12 +92,12 @@ class AdminView extends StatelessWidget {
               height: 50.h,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: ThemeManager.current.black,
                 borderRadius: BorderRadius.circular(25.r),
               ),
               child: Icon(
                 Icons.person,
-                color: Colors.white,
+                color: ThemeManager.current.white,
                 size: 30.sp,
               ),
             ),
@@ -124,9 +124,9 @@ class AdminView extends StatelessWidget {
           right: 30.w,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemeManager.current.white,
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: Colors.black, width: 0.3),
+          border: Border.all(color: ThemeManager.current.black, width: 0.3),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -161,9 +161,9 @@ class AdminView extends StatelessWidget {
           left: 30.w,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemeManager.current.white,
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: Colors.black, width: 0.3),
+          border: Border.all(color: ThemeManager.current.black, width: 0.3),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -198,10 +198,10 @@ class AdminView extends StatelessWidget {
           right: 30.w,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemeManager.current.white,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: Colors.black,
+            color: ThemeManager.current.black,
             width: 0.3,
           ),
         ),
