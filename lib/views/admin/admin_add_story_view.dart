@@ -1,5 +1,5 @@
 import 'package:eng_story/core/utils/color/theme_manager.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/admin/admin_story_view_model.dart';
 import 'package:flutter/material.dart';
@@ -105,13 +105,18 @@ class AdminAddStoryView extends StatelessWidget {
                   width: 18.w,
                   height: 18.h,
                   alignment: Alignment.center,
-                  child: Image.asset(AppImages.backButton),
+                  child: Image.asset(
+                    AppImages.backButton,
+                    color: ThemeManager.current.text_1,
+                  ),
                 ),
               ),
               SizedBox(width: 18.w),
               Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 "스토리 추가",
-                style: AppTextStyles.SejongGeulggot_22_regular,
+                style: FontManager.current.font_22,
               ),
             ],
           ),
@@ -123,8 +128,10 @@ class AdminAddStoryView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                   "스크립트 index 개수:",
-                  style: AppTextStyles.SejongGeulggot_18_regular,
+                  style: FontManager.current.font_18,
                 ),
                 SizedBox(width: 20.w),
                 Container(
@@ -143,8 +150,10 @@ class AdminAddStoryView extends StatelessWidget {
                       (index) => DropdownMenuItem(
                         value: index + 1,
                         child: Text(
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
                           (index + 1).toString(),
-                          style: AppTextStyles.SejongGeulggot_16_regular,
+                          style: FontManager.current.font_16,
                         ),
                       ),
                     ),
@@ -172,8 +181,10 @@ class AdminAddStoryView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "Story Json Script",
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
           SizedBox(height: 10.h),
           Container(
@@ -222,8 +233,10 @@ class AdminAddStoryView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             title,
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
           SizedBox(height: 10.h),
           Container(
@@ -288,8 +301,10 @@ class AdminAddStoryView extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: Text(
+          maxLines: 5,
+          overflow: TextOverflow.ellipsis,
           "스토리 생성",
-          style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+          style: FontManager.current.font_16.copyWith(
             color: ThemeManager.current.white,
           ),
         ),

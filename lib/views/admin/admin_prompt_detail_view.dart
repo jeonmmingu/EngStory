@@ -2,7 +2,7 @@ import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/core/enums/story_tone.dart';
 import 'package:eng_story/core/utils/color/theme_manager.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/admin/admin_prompt_view_model.dart';
 import 'package:flutter/material.dart';
@@ -86,13 +86,18 @@ class AdminPromptDetailView extends StatelessWidget {
                   width: 18.w,
                   height: 18.h,
                   alignment: Alignment.center,
-                  child: Image.asset(AppImages.backButton),
+                  child: Image.asset(
+                    AppImages.backButton,
+                    color: ThemeManager.current.text_1,
+                  ),
                 ),
               ),
               SizedBox(width: 18.w),
               Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 adminPromptViewModel.selectedPrompt!.title,
-                style: AppTextStyles.SejongGeulggot_22_regular,
+                style: FontManager.current.font_22,
               ),
             ],
           ),
@@ -159,7 +164,10 @@ class AdminPromptDetailView extends StatelessWidget {
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text("프롬프트 삭제에 실패했습니다. ($e)"),
+                        content: Text(
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            "프롬프트 삭제에 실패했습니다. ($e)"),
                       ),
                     );
                   }
@@ -191,7 +199,10 @@ class AdminPromptDetailView extends StatelessWidget {
                   );
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("클립보드에 복사되었습니다!"),
+                      content: Text(
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                          "클립보드에 복사되었습니다!"),
                     ),
                   );
                 },
@@ -233,13 +244,19 @@ class AdminPromptDetailView extends StatelessWidget {
             Row(
               children: [
                 SizedBox(width: 30.w),
-                Text("제목", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "제목",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 280.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     adminPromptViewModel.selectedPrompt!.title,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -253,13 +270,19 @@ class AdminPromptDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("주제", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "주제",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 280.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     adminPromptViewModel.selectedPrompt!.content,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -273,13 +296,19 @@ class AdminPromptDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("분위기", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "분위기",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 280.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     adminPromptViewModel.selectedPrompt!.mood,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -293,14 +322,20 @@ class AdminPromptDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("카테고리", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "카테고리",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 260.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     displayCategoryTextFromString(
                         adminPromptViewModel.selectedPrompt!.category),
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -314,15 +349,21 @@ class AdminPromptDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("소요시간", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "소요시간",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 260.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     adminPromptViewModel.selectedPrompt!.readTime == "short"
                         ? StoryTime.short.displayText
                         : StoryTime.medium.displayText,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -336,14 +377,20 @@ class AdminPromptDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("말투", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "말투",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 260.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     displayToneTextFromString(
                         adminPromptViewModel.selectedPrompt!.tone),
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),
@@ -357,13 +404,19 @@ class AdminPromptDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("프롬프트", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "프롬프트",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 260.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     adminPromptViewModel.selectedPrompt!.promptText,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
+                    style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.text_2,
                     ),
                   ),

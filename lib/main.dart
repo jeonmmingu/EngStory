@@ -1,6 +1,8 @@
 import 'package:eng_story/app.dart';
 import 'package:eng_story/core/utils/color/theme_manager.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/tts_manager.dart';
+import 'package:eng_story/models/cache/cached_font_meta.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/models/cache/cached_story_script.dart';
 import 'package:eng_story/models/cache/cached_sync_meta.dart';
@@ -34,6 +36,7 @@ Future<void> initializeApp() async {
   await initializeFirebase();
   await initializeHive();
   await initializeUI();
+  await initializeFont();
 }
 
 // MARK: - Firebase 초기화
@@ -51,6 +54,7 @@ Future<void> initializeHive() async {
   Hive.registerAdapter(CachedStoryScriptAdapter());
   Hive.registerAdapter(CachedSyncMetaAdapter());
   Hive.registerAdapter(CachedUIMetaAdapter());
+  Hive.registerAdapter(CachedFontMetaAdapter());
 }
 
 // MARK: - UI 초기화
@@ -58,4 +62,11 @@ Future<void> initializeUI() async {
   // UI 초기화 코드
   // 테마 설정
   await ThemeManager().initializeTheme();
+}
+
+// MARK: - Font 초기화
+Future<void> initializeFont() async {
+  // Font 초기화 코드
+  // 폰트 설정
+  await FontManager().initializeFont();
 }
