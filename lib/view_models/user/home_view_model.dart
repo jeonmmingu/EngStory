@@ -167,8 +167,11 @@ class HomeViewModel with ChangeNotifier {
   Future<void> _syncStories() async {
     try {
       // 새로운 이야기 & updated 된 이야기 동기화
+      // 저장된 lastSyncedAt 값이 없으면 가장 오래전 시간으로 설정
       final lastUpdated = await _cacheSyncRepository.getLastSyncedAt() ??
           DateTime.fromMillisecondsSinceEpoch(0);
+
+      debugPrint("lastUpdated: $lastUpdated");
 
       final newStories = await _storyRepository.readFilteredStories(
         field1: 'updatedAt',
@@ -199,7 +202,10 @@ class HomeViewModel with ChangeNotifier {
         _cachedStories.remove(deletedStory);
       }
 
-      await _cacheSyncRepository.saveLastSyncedAt(DateTime.now());
+      // 동기화된 데이터가 있을 때만 lastSyncedAt 업데이트
+      if (deletedStories.isNotEmpty || newStories.isNotEmpty) {
+        await _cacheSyncRepository.saveLastSyncedAt(DateTime.now());
+      }
 
       notifyListeners(); // 🔹 UI 업데이트
 
