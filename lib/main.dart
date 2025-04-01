@@ -50,6 +50,12 @@ Future<void> initializeFirebase() async {
 Future<void> initializeHive() async {
   await Hive.initFlutter();
   // 자동 생성된 type adapter 등록
+  // await Hive.deleteBoxFromDisk('stories_cache');
+  // await Hive.deleteBoxFromDisk('sync_cache');
+  // await Hive.deleteBoxFromDisk('ui_cache');
+  // await Hive.deleteBoxFromDisk('font_cache');
+  // await Hive.deleteBoxFromDisk('story_scripts_cache');
+
   Hive.registerAdapter(CachedStoryAdapter());
   Hive.registerAdapter(CachedStoryScriptAdapter());
   Hive.registerAdapter(CachedSyncMetaAdapter());

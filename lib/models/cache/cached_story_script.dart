@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 import 'package:eng_story/models/story_script.dart';
 
@@ -24,9 +23,6 @@ class CachedStoryScript extends HiveObject {
   @HiveField(5)
   String textKo;
 
-  @HiveField(6)
-  DateTime updatedAt; // Hive에서는 DateTime을 사용
-
   CachedStoryScript({
     required this.id,
     required this.storyId,
@@ -34,7 +30,6 @@ class CachedStoryScript extends HiveObject {
     required this.role,
     required this.textEn,
     required this.textKo,
-    required this.updatedAt,
   });
 
   /// 🔹 Firestore `StoryScript` → `CachedStoryScript` 변환
@@ -46,7 +41,6 @@ class CachedStoryScript extends HiveObject {
       role: script.role,
       textEn: script.text_en,
       textKo: script.text_ko,
-      updatedAt: script.updatedAt.toDate(), // 🔹 Timestamp → DateTime 변환
     );
   }
 
@@ -59,7 +53,6 @@ class CachedStoryScript extends HiveObject {
       role: role,
       text_en: textEn,
       text_ko: textKo,
-      updatedAt: Timestamp.fromDate(updatedAt), // 🔹 DateTime → Timestamp 변환
     );
   }
 
@@ -72,7 +65,6 @@ class CachedStoryScript extends HiveObject {
       role: json['role'] as String,
       textEn: json['text_en'] as String,
       textKo: json['text_ko'] as String,
-      updatedAt: (json['updatedAt'] as Timestamp).toDate(), // 🔹 Timestamp → DateTime 변환
     );
   }
 
@@ -85,7 +77,6 @@ class CachedStoryScript extends HiveObject {
       'role': role,
       'text_en': textEn,
       'text_ko': textKo,
-      'updatedAt': Timestamp.fromDate(updatedAt), // 🔹 DateTime → Timestamp 변환
     };
   }
 }

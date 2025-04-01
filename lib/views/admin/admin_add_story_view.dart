@@ -100,6 +100,7 @@ class AdminAddStoryView extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   context.pop();
+                  adminStoryViewModel.resetAllStates();
                 },
                 child: Container(
                   width: 18.w,
