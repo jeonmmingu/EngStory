@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
@@ -59,7 +61,7 @@ class StoryView extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          height: 50.h,
+          height: Platform.isAndroid ? 80.h : 50.h,
           alignment: Alignment.center,
           child: SizedBox(
             width: 300.w,
@@ -81,8 +83,8 @@ class StoryView extends StatelessWidget {
               context.pop();
             },
             child: Container(
-              width: 50.w,
-              height: 50.h,
+              width: Platform.isAndroid ? 75.w : 50.w,
+              height: Platform.isAndroid ? 75.h : 50.h,
               color: Colors.transparent,
               alignment: Alignment.center,
               child: Image.asset(
