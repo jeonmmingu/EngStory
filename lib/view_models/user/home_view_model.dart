@@ -245,6 +245,20 @@ class HomeViewModel with ChangeNotifier {
       _filteredStories = filteredStories;
       _filteredStoryIndex = 1;
     }
+
+    // 1. Cached Story의 lastReadScriptIndex 가 0인 것이 우선 오도록 정렬
+    // 2. 그 다음은 updatedAt 기준 최신 순으로 정렬
+    _filteredStories?.sort(
+      (a, b) {
+        if (a.lastReadScriptIndex == 0 && b.lastReadScriptIndex != 0) {
+          return -1;
+        } else if (a.lastReadScriptIndex != 0 && b.lastReadScriptIndex == 0) {
+          return 1;
+        } else {
+          return b.updatedAt.compareTo(a.updatedAt);
+        }
+      },
+    );
   }
 
   /// 🔹 storyTime 중 현재 선택 가능한 항목을 반환
