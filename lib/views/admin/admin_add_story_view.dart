@@ -1,5 +1,5 @@
-import 'package:eng_story/core/utils/colors.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/admin/admin_story_view_model.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +24,13 @@ class AdminAddStoryView extends StatelessWidget {
               width: double.infinity,
               height: double.infinity, // 배경 높이 조절
               alignment: Alignment.topCenter,
-              decoration: const BoxDecoration(color: AppColors.background),
+              decoration: BoxDecoration(color: ThemeManager.current.background),
               child: Container(
                 height: 220.h,
                 width: double.infinity,
                 alignment: Alignment.topCenter,
                 decoration: BoxDecoration(
-                  color: Colors.blue[200],
+                  color: ThemeManager.current.grey_2,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30.r),
                     bottomRight: Radius.circular(30.r),
@@ -100,18 +100,24 @@ class AdminAddStoryView extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   context.pop();
+                  adminStoryViewModel.resetAllStates();
                 },
                 child: Container(
                   width: 18.w,
                   height: 18.h,
                   alignment: Alignment.center,
-                  child: Image.asset(AppImages.backButton),
+                  child: Image.asset(
+                    AppImages.backButton,
+                    color: ThemeManager.current.text_1,
+                  ),
                 ),
               ),
               SizedBox(width: 18.w),
               Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 "스토리 추가",
-                style: AppTextStyles.SejongGeulggot_22_regular,
+                style: FontManager.current.font_22,
               ),
             ],
           ),
@@ -123,17 +129,20 @@ class AdminAddStoryView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                   "스크립트 index 개수:",
-                  style: AppTextStyles.SejongGeulggot_18_regular,
+                  style: FontManager.current.font_18,
                 ),
                 SizedBox(width: 20.w),
                 Container(
                   height: 40.h,
                   padding: EdgeInsets.symmetric(horizontal: 10.w),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: ThemeManager.current.white,
                     borderRadius: BorderRadius.circular(10.r),
-                    border: Border.all(color: Colors.black, width: 0.3),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.3),
                   ),
                   child: DropdownButton<int>(
                     value: adminStoryViewModel.scriptIndexCount,
@@ -142,8 +151,10 @@ class AdminAddStoryView extends StatelessWidget {
                       (index) => DropdownMenuItem(
                         value: index + 1,
                         child: Text(
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
                           (index + 1).toString(),
-                          style: AppTextStyles.SejongGeulggot_16_regular,
+                          style: FontManager.current.font_16,
                         ),
                       ),
                     ),
@@ -171,17 +182,19 @@ class AdminAddStoryView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "Story Json Script",
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
           SizedBox(height: 10.h),
           Container(
             width: 393.w,
             height: 200.h,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ThemeManager.current.white,
               borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(color: Colors.black, width: 0.3),
+              border: Border.all(color: ThemeManager.current.black, width: 0.3),
             ),
             child: TextField(
                 maxLines: 10,
@@ -190,8 +203,8 @@ class AdminAddStoryView extends StatelessWidget {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.r),
-                    borderSide:
-                        const BorderSide(color: Colors.black, width: 0.3),
+                    borderSide: BorderSide(
+                        color: ThemeManager.current.black, width: 0.3),
                   ),
                   contentPadding: EdgeInsets.only(
                     top: 20.h,
@@ -221,17 +234,19 @@ class AdminAddStoryView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             title,
-            style: AppTextStyles.SejongGeulggot_16_regular,
+            style: FontManager.current.font_16,
           ),
           SizedBox(height: 10.h),
           Container(
             width: 393.w,
             height: 200.h,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ThemeManager.current.white,
               borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(color: Colors.black, width: 0.3),
+              border: Border.all(color: ThemeManager.current.black, width: 0.3),
             ),
             child: TextField(
                 controller: context
@@ -241,8 +256,8 @@ class AdminAddStoryView extends StatelessWidget {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.r),
-                    borderSide:
-                        const BorderSide(color: Colors.black, width: 0.3),
+                    borderSide: BorderSide(
+                        color: ThemeManager.current.black, width: 0.3),
                   ),
                   contentPadding: EdgeInsets.only(
                     top: 20.h,
@@ -280,15 +295,18 @@ class AdminAddStoryView extends StatelessWidget {
         height: 60.h,
         width: 200.w,
         decoration: BoxDecoration(
-          color: inputValidation ? Colors.blue[200] : Colors.grey[400],
+          color:
+              inputValidation ? ThemeManager.current.grey_2 : Colors.grey[400],
           borderRadius: BorderRadius.circular(15.r),
-          border: Border.all(color: Colors.black, width: 0.1),
+          border: Border.all(color: ThemeManager.current.black, width: 0.1),
         ),
         alignment: Alignment.center,
         child: Text(
+          maxLines: 5,
+          overflow: TextOverflow.ellipsis,
           "스토리 생성",
-          style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-            color: Colors.white,
+          style: FontManager.current.font_16.copyWith(
+            color: ThemeManager.current.white,
           ),
         ),
       ),

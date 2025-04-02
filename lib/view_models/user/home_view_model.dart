@@ -52,6 +52,14 @@ class HomeViewModel with ChangeNotifier {
   bool _isDeleting = false;
   bool get isDeleting => _isDeleting;
 
+  // 📌 선택된 Theme Color index
+  int _selectedThemeColorIndex = 0;
+  int get selectedThemeColorIndex => _selectedThemeColorIndex;
+
+  // 📌 선택된 Theme font index
+  int _selectedThemeFontIndex = 0;
+  int get selectedThemeFontIndex => _selectedThemeFontIndex;
+
   /// 🔹 앱 실행 시 초기화 작업 수행
   Future<void> initializeApp(bool isAdmin) async {
     try {
@@ -133,6 +141,18 @@ class HomeViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  /// 🔹 선택된 테마 색상 인덱스 설정
+  void setSelectedThemeColorIndex(int index) {
+    _selectedThemeColorIndex = index;
+    notifyListeners();
+  }
+
+  /// 🔹 선택된 테마 폰트 인덱스 설정
+  void setSelectedThemeFontIndex(int index) {
+    _selectedThemeFontIndex = index;
+    notifyListeners();
+  }
+
   /// 🔹 캐싱된 스토리 불러오기 (한 번만 실행)
   Future<void> _loadCachedStories() async {
     try {
@@ -147,8 +167,11 @@ class HomeViewModel with ChangeNotifier {
   Future<void> _syncStories() async {
     try {
       // 새로운 이야기 & updated 된 이야기 동기화
+      // 저장된 lastSyncedAt 값이 없으면 가장 오래전 시간으로 설정
       final lastUpdated = await _cacheSyncRepository.getLastSyncedAt() ??
           DateTime.fromMillisecondsSinceEpoch(0);
+
+      debugPrint("lastUpdated: $lastUpdated");
 
       final newStories = await _storyRepository.readFilteredStories(
         field1: 'updatedAt',
@@ -179,7 +202,10 @@ class HomeViewModel with ChangeNotifier {
         _cachedStories.remove(deletedStory);
       }
 
-      await _cacheSyncRepository.saveLastSyncedAt(DateTime.now());
+      // 동기화된 데이터가 있을 때만 lastSyncedAt 업데이트
+      if (deletedStories.isNotEmpty || newStories.isNotEmpty) {
+        await _cacheSyncRepository.saveLastSyncedAt(DateTime.now());
+      }
 
       notifyListeners(); // 🔹 UI 업데이트
 
@@ -219,6 +245,20 @@ class HomeViewModel with ChangeNotifier {
       _filteredStories = filteredStories;
       _filteredStoryIndex = 1;
     }
+
+    // 1. Cached Story의 lastReadScriptIndex 가 0인 것이 우선 오도록 정렬
+    // 2. 그 다음은 updatedAt 기준 최신 순으로 정렬
+    _filteredStories?.sort(
+      (a, b) {
+        if (a.lastReadScriptIndex == 0 && b.lastReadScriptIndex != 0) {
+          return -1;
+        } else if (a.lastReadScriptIndex != 0 && b.lastReadScriptIndex == 0) {
+          return 1;
+        } else {
+          return b.updatedAt.compareTo(a.updatedAt);
+        }
+      },
+    );
   }
 
   /// 🔹 storyTime 중 현재 선택 가능한 항목을 반환

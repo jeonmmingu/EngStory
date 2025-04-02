@@ -76,4 +76,14 @@ class AdminStoryViewModel with ChangeNotifier {
   List<StoryScript> transformStoryScriptFromJson(String jsonString) {
     return StoryScript.fromJsonList(jsonString);
   }
+
+  void resetAllStates() {
+    _scriptIndexCount = 1;
+    storyJsonController.clear();
+    for (int i = 0; i < storyScriptJsonControllers.length; i++) {
+      storyScriptJsonControllers[i].clear();
+    }
+    _story = null;
+    _storyScripts.clear();
+  }
 }
