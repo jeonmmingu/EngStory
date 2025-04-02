@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/core/utils/animations.dart';
@@ -49,7 +51,10 @@ class HomeView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 70.h, right: 30.w),
+          padding: EdgeInsets.only(
+            top: Platform.isAndroid ? 55.h : 70.h,
+            right: 30.w,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
