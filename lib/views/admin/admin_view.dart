@@ -1,5 +1,5 @@
-import 'package:eng_story/core/utils/colors.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,13 +20,13 @@ class AdminView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(color: AppColors.background),
+            decoration: BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
               alignment: Alignment.topCenter,
               decoration: BoxDecoration(
-                color: Colors.blue[200],
+                color: ThemeManager.current.grey_2,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
@@ -75,8 +75,10 @@ class AdminView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "관리자 페이지",
-            style: AppTextStyles.SejongGeulggot_24_regular,
+            style: FontManager.current.font_24,
           ),
           const Spacer(),
           GestureDetector(
@@ -92,12 +94,12 @@ class AdminView extends StatelessWidget {
               height: 50.h,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: ThemeManager.current.grey_3,
                 borderRadius: BorderRadius.circular(25.r),
               ),
               child: Icon(
                 Icons.person,
-                color: Colors.white,
+                color: ThemeManager.current.white,
                 size: 30.sp,
               ),
             ),
@@ -124,9 +126,9 @@ class AdminView extends StatelessWidget {
           right: 30.w,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemeManager.current.white,
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: Colors.black, width: 0.3),
+          border: Border.all(color: ThemeManager.current.black, width: 0.3),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -134,8 +136,10 @@ class AdminView extends StatelessWidget {
           children: [
             SizedBox(width: 20.w),
             Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
               "새로운 이야기 프롬프트 생성",
-              style: AppTextStyles.SejongGeulggot_16_regular,
+              style: FontManager.current.font_16,
             ),
             const Spacer(),
             const Icon(Icons.chevron_right),
@@ -161,9 +165,9 @@ class AdminView extends StatelessWidget {
           left: 30.w,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemeManager.current.white,
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: Colors.black, width: 0.3),
+          border: Border.all(color: ThemeManager.current.black, width: 0.3),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -171,8 +175,10 @@ class AdminView extends StatelessWidget {
           children: [
             SizedBox(width: 20.w),
             Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
               "프롬프트",
-              style: AppTextStyles.SejongGeulggot_16_regular,
+              style: FontManager.current.font_16,
             ),
             const Spacer(),
             const Icon(Icons.chevron_right),
@@ -198,10 +204,10 @@ class AdminView extends StatelessWidget {
           right: 30.w,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemeManager.current.white,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: Colors.black,
+            color: ThemeManager.current.black,
             width: 0.3,
           ),
         ),
@@ -211,8 +217,10 @@ class AdminView extends StatelessWidget {
           children: [
             SizedBox(width: 20.w),
             Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
               "스토리",
-              style: AppTextStyles.SejongGeulggot_16_regular,
+              style: FontManager.current.font_16,
             ),
             const Spacer(),
             const Icon(Icons.chevron_right),

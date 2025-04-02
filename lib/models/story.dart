@@ -38,7 +38,7 @@ class Story implements JsonSerializable {
 
   factory Story.fromJson(String jsonString) {
     final Map<String, dynamic> map = jsonDecode(jsonString);
-    map['updatedAt'] = Timestamp.fromDate(DateTime.parse(map['updatedAt']));
+    map['updatedAt'] = Timestamp.fromDate(DateTime.now());
     map['readTime'] = (map['readTime']);
     return Story.fromMap(map);
   }

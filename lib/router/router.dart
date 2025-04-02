@@ -1,4 +1,3 @@
-import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:eng_story/views/admin/admin_add_prompt_view.dart';
 import 'package:eng_story/views/admin/admin_add_story_view.dart';
 import 'package:eng_story/views/admin/admin_prompt_detail_view.dart';

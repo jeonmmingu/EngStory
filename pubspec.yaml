@@ -37,9 +37,21 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard.otf
     - family: SejongGeulggot
       fonts:
         - asset: assets/fonts/SejongGeulggot.ttf
+    - family: eunbyeol
+      fonts:
+        - asset: assets/fonts/eunbyeol.ttf
+    - family: Yeongdo
+      fonts:
+        - asset: assets/fonts/Yeongdo.ttf
+    - family: GowunDodum
+      fonts:
+        - asset: assets/fonts/GowunDodum.ttf
   assets:
     - assets/animations/
     - assets/images/

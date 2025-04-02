@@ -11,7 +11,6 @@ class StoryScript extends JsonSerializable {
   String role;
   String text_en;
   String text_ko;
-  Timestamp updatedAt;
 
   StoryScript({
     required this.id,
@@ -20,7 +19,6 @@ class StoryScript extends JsonSerializable {
     required this.role,
     required this.text_en,
     required this.text_ko,
-    required this.updatedAt,
   });
 
   factory StoryScript.fromMap(Map<String, dynamic> map) {
@@ -31,7 +29,6 @@ class StoryScript extends JsonSerializable {
       role: map['role'],
       text_en: map['text_en'],
       text_ko: map['text_ko'],
-      updatedAt: map['updatedAt'],
     );
   }
 
@@ -39,8 +36,6 @@ class StoryScript extends JsonSerializable {
     final List<dynamic> jsonList = jsonDecode(jsonString);
     return jsonList.map((json) {
       var scriptJson = json as Map<String, dynamic>;
-      scriptJson['updatedAt'] =
-          Timestamp.fromDate(DateTime.parse(scriptJson['updatedAt']));
       return StoryScript.fromMap(scriptJson);
     }).toList();
   }
@@ -54,7 +49,6 @@ class StoryScript extends JsonSerializable {
       'role': role,
       'text_en': text_en,
       'text_ko': text_ko,
-      'updatedAt': updatedAt,
     };
   }
 }

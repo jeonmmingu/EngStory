@@ -1,5 +1,5 @@
-import 'package:eng_story/core/utils/colors.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/core/utils/tts_manager.dart';
 import 'package:eng_story/models/story_script.dart';
@@ -22,7 +22,7 @@ class StoryView extends StatelessWidget {
     final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: ThemeManager.current.background,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -62,13 +62,14 @@ class StoryView extends StatelessWidget {
           height: 50.h,
           alignment: Alignment.center,
           child: SizedBox(
-            width: 250.w,
+            width: 300.w,
             child: Text(
-              homeViewModel.selectedStory!.title,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              homeViewModel.selectedStory!.title,
               textAlign: TextAlign.center,
-              style: AppTextStyles.SejongGeulggot_20_regular.copyWith(
-                color: AppColors.text_1,
+              style: FontManager.current.font_20.copyWith(
+                color: ThemeManager.current.text_1,
               ),
             ),
           ),
@@ -88,6 +89,7 @@ class StoryView extends StatelessWidget {
                 AppImages.backButton,
                 width: 16.w,
                 height: 16.h,
+                color: ThemeManager.current.text_1,
               ),
             ),
           ),
@@ -182,10 +184,10 @@ class StoryView extends StatelessWidget {
           width: double.infinity,
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ThemeManager.current.white,
             borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
-              color: Colors.black,
+              color: ThemeManager.current.black,
               width: 0.4.w,
             ),
           ),
@@ -194,17 +196,21 @@ class StoryView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 storyScript.text_en,
-                style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
-                  color: AppColors.text_1,
+                style: FontManager.current.font_18.copyWith(
+                  color: ThemeManager.current.text_1,
                 ),
               ),
               if (storyViewModel.languageMode != "Eng") ...[
-                Divider(color: AppColors.text_2, thickness: 0.4.h),
+                Divider(color: ThemeManager.current.text_2, thickness: 0.4.h),
                 Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                   storyScript.text_ko,
-                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                    color: AppColors.text_2,
+                  style: FontManager.current.font_16.copyWith(
+                    color: ThemeManager.current.text_2,
                   ),
                 ),
                 SizedBox(height: 2.h),
@@ -232,10 +238,10 @@ class StoryView extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: AppColors.text_2,
+                color: ThemeManager.current.text_2,
                 borderRadius: BorderRadius.circular(10.r),
                 border: Border.all(
-                  color: Colors.black,
+                  color: ThemeManager.current.black,
                   width: 0.4.w,
                 ),
               ),
@@ -245,17 +251,22 @@ class StoryView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     meScript.text_en,
-                    style: AppTextStyles.SejongGeulggot_18_regular.copyWith(
-                      color: Colors.white,
+                    style: FontManager.current.font_18.copyWith(
+                      color: ThemeManager.current.white,
                     ),
                   ),
                   if (storyViewModel.languageMode != "Eng") ...[
-                    Divider(color: Colors.white, thickness: 0.4.h),
+                    Divider(
+                        color: ThemeManager.current.white, thickness: 0.4.h),
                     Text(
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
                       meScript.text_ko,
-                      style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                        color: Colors.white,
+                      style: FontManager.current.font_16.copyWith(
+                        color: ThemeManager.current.white,
                       ),
                     ),
                   ],
@@ -277,7 +288,7 @@ class StoryView extends StatelessWidget {
         Container(
           width: double.infinity,
           height: 6.h,
-          color: AppColors.grey_1,
+          color: ThemeManager.current.grey_1,
         ),
         Positioned(
           child: Container(
@@ -285,7 +296,7 @@ class StoryView extends StatelessWidget {
                 storyViewModel.selectedScripts.length *
                 storyViewModel.currentIdx,
             height: 6.h,
-            color: AppColors.text_2,
+            color: ThemeManager.current.text_2,
           ),
         ),
       ],
@@ -317,6 +328,7 @@ class StoryView extends StatelessWidget {
                   AppImages.chatBackButton,
                   width: 35.w,
                   height: 35.h,
+                  color: ThemeManager.current.button,
                 ),
               ),
             ),
@@ -340,7 +352,7 @@ class StoryView extends StatelessWidget {
                   width: 80.w,
                   height: 80.h,
                   decoration: BoxDecoration(
-                    color: AppColors.button,
+                    color: ThemeManager.current.button,
                     borderRadius: BorderRadius.circular(40.r),
                   ),
                   child: Row(
@@ -373,6 +385,7 @@ class StoryView extends StatelessWidget {
                   AppImages.translateButton,
                   width: 35.w,
                   height: 35.h,
+                  color: ThemeManager.current.button,
                 ),
               ),
             ),

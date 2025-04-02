@@ -1,5 +1,5 @@
-import 'package:eng_story/core/utils/colors.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
 import 'package:flutter/material.dart';
@@ -21,13 +21,13 @@ class AdminStoryListView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(color: AppColors.background),
+            decoration: BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
               alignment: Alignment.topCenter,
               decoration: BoxDecoration(
-                color: Colors.blue[200],
+                color: ThemeManager.current.grey_2,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
@@ -77,13 +77,18 @@ class AdminStoryListView extends StatelessWidget {
                   width: 18.w,
                   height: 18.h,
                   alignment: Alignment.center,
-                  child: Image.asset(AppImages.backButton),
+                  child: Image.asset(
+                    AppImages.backButton,
+                    color: ThemeManager.current.text_1,
+                  ),
                 ),
               ),
               SizedBox(width: 18.w),
               Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 "스토리 관리",
-                style: AppTextStyles.SejongGeulggot_22_regular,
+                style: FontManager.current.font_22,
               ),
             ],
           ),
@@ -91,9 +96,11 @@ class AdminStoryListView extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
               "생성된 스토리를 보거나, 삭제 하는 등 관리할 수 있는 페이지 입니다.",
-              style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                color: AppColors.text_2,
+              style: FontManager.current.font_16.copyWith(
+                color: ThemeManager.current.text_2,
               ),
             ),
           ),
@@ -146,15 +153,17 @@ class AdminStoryListView extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ThemeManager.current.white,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.black, width: 0.3),
+              border: Border.all(color: ThemeManager.current.black, width: 0.3),
             ),
             child: Row(
               children: [
                 Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                   context.read<HomeViewModel>().cachedStories[index].title,
-                  style: AppTextStyles.SejongGeulggot_16_regular,
+                  style: FontManager.current.font_16,
                 ),
                 const Spacer(),
                 const Icon(Icons.chevron_right),

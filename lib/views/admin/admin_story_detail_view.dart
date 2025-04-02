@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:eng_story/core/tests/manage_story.dart';
-import 'package:eng_story/core/utils/colors.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/images.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +25,13 @@ class AdminStoryDetailView extends StatelessWidget {
             width: double.infinity,
             height: double.infinity, // 배경 높이 조절
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(color: AppColors.background),
+            decoration: BoxDecoration(color: ThemeManager.current.background),
             child: Container(
               height: 220.h,
               width: double.infinity,
               alignment: Alignment.topCenter,
               decoration: BoxDecoration(
-                color: Colors.blue[200],
+                color: ThemeManager.current.grey_2,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
@@ -86,13 +86,18 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 18.w,
                   height: 18.h,
                   alignment: Alignment.center,
-                  child: Image.asset(AppImages.backButton),
+                  child: Image.asset(
+                    AppImages.backButton,
+                    color: ThemeManager.current.text_1,
+                  ),
                 ),
               ),
               SizedBox(width: 18.w),
               Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 context.read<HomeViewModel>().selectedStory!.title,
-                style: AppTextStyles.SejongGeulggot_22_regular,
+                style: FontManager.current.font_22,
               ),
             ],
           ),
@@ -110,14 +115,15 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.indeterminate_check_box_rounded,
                     size: 30.h,
-                    color: AppColors.grey_1,
+                    color: ThemeManager.current.grey_1,
                   ),
                 ),
               ),
@@ -130,14 +136,15 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.indeterminate_check_box_rounded,
                     size: 30.h,
-                    color: AppColors.grey_1,
+                    color: ThemeManager.current.grey_1,
                   ),
                 ),
               ),
@@ -161,7 +168,10 @@ class AdminStoryDetailView extends StatelessWidget {
                     // 스토리 삭제 완료 알림 snackBar 띄우기
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text("스토리가 삭제되었습니다."),
+                        content: Text(
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            "스토리가 삭제되었습니다."),
                       ),
                     );
                   } catch (e) {
@@ -173,16 +183,17 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.delete,
                     size: 30.h,
                     color: context.read<HomeViewModel>().isDeleting == true
-                        ? AppColors.grey_1
-                        : AppColors.button,
+                        ? ThemeManager.current.grey_1
+                        : ThemeManager.current.button,
                   ),
                 ),
               ),
@@ -195,14 +206,15 @@ class AdminStoryDetailView extends StatelessWidget {
                   width: 60.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: ThemeManager.current.background,
                     borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(color: Colors.black, width: 0.1),
+                    border: Border.all(
+                        color: ThemeManager.current.black, width: 0.1),
                   ),
                   child: Icon(
                     Icons.indeterminate_check_box_rounded,
                     size: 26.h,
-                    color: AppColors.grey_1,
+                    color: ThemeManager.current.grey_1,
                   ),
                 ),
               ),
@@ -229,14 +241,20 @@ class AdminStoryDetailView extends StatelessWidget {
             Row(
               children: [
                 SizedBox(width: 30.w),
-                Text("제목", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "제목",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.title,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -249,14 +267,20 @@ class AdminStoryDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("카테고리", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "카테고리",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.category,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -269,14 +293,20 @@ class AdminStoryDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("소요시간", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "소요시간",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.readTime,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -289,14 +319,20 @@ class AdminStoryDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("출처", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "출처",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.source,
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),
@@ -309,14 +345,20 @@ class AdminStoryDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(width: 30.w),
-                Text("생성일자", style: AppTextStyles.SejongGeulggot_16_regular),
+                Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "생성일자",
+                    style: FontManager.current.font_16),
                 const Spacer(),
                 SizedBox(
                   width: 240.w,
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     story.updatedAt.toString(),
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_2,
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.text_2,
                     ),
                   ),
                 ),

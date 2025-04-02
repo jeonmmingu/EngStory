@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
 import 'package:eng_story/core/utils/animations.dart';
-import 'package:eng_story/core/utils/colors.dart';
-import 'package:eng_story/core/utils/fonts.dart';
+import 'package:eng_story/core/utils/color/theme_manager.dart';
+import 'package:eng_story/core/utils/font/font_manager.dart';
+import 'package:eng_story/core/utils/font/fonts.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
@@ -24,7 +27,7 @@ class HomeView extends StatelessWidget {
     return FutureBuilder(
       future: context.read<HomeViewModel>().initializeApp(false),
       builder: (context, snapshot) => Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: ThemeManager.current.background,
         body: _body(
           context,
           Provider.of<HomeViewModel>(context),
@@ -45,33 +48,84 @@ class HomeView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (isAdmin)
-          Padding(
-            padding: EdgeInsets.only(top: 70.h, right: 30.w),
-            child: GestureDetector(
-              onTap: () {
-                HapticFeedback.heavyImpact();
-                DeviceInfoManager().isDeviceManagerChecked = false;
-                DeviceInfoManager().adminMode = true;
-                context.goNamed("adminView");
-              },
-              child: Container(
-                width: 50.w,
-                height: 50.h,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(25.r),
-                ),
-                child: Icon(
-                  Icons.admin_panel_settings_outlined,
-                  color: Colors.white,
-                  size: 32.sp,
+        Padding(
+          padding: EdgeInsets.only(top: 70.h, right: 30.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // MARK: - theme button
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  _showThemeSettingBottomModal(context);
+                },
+                child: Container(
+                  width: 50.w,
+                  height: 50.h,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: ThemeManager.current.background,
+                    borderRadius: BorderRadius.circular(25.r),
+                  ),
+                  child: Icon(
+                    Icons.color_lens_outlined,
+                    color: ThemeManager.current.grey_4,
+                    size: 32.sp,
+                  ),
                 ),
               ),
-            ),
+              SizedBox(width: 20.w),
+              // Font Change Button
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  _showFontSettingBottomModal(context);
+                },
+                child: Container(
+                  width: 50.w,
+                  height: 50.h,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: ThemeManager.current.background,
+                    borderRadius: BorderRadius.circular(25.r),
+                  ),
+                  child: Icon(
+                    Icons.font_download_outlined,
+                    color: ThemeManager.current.grey_4,
+                    size: 32.sp,
+                  ),
+                ),
+              ),
+              if (isAdmin) ...[
+                SizedBox(width: 20.w),
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.heavyImpact();
+                    DeviceInfoManager().isDeviceManagerChecked = false;
+                    DeviceInfoManager().adminMode = true;
+                    context.goNamed("adminView");
+                  },
+                  child: Container(
+                    width: 50.w,
+                    height: 50.h,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: ThemeManager.current.button,
+                      borderRadius: BorderRadius.circular(25.r),
+                    ),
+                    child: Icon(
+                      Icons.admin_panel_settings_outlined,
+                      color: ThemeManager.current.white,
+                      size: 32.sp,
+                    ),
+                  ),
+                ),
+              ]
+            ],
           ),
-        SizedBox(height: isAdmin ? 58.h : 178.h),
+        ),
+        SizedBox(height: isAdmin ? 62.h : 78.h),
         Center(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300), // 애니메이션 지속 시간
@@ -115,18 +169,22 @@ class HomeView extends StatelessWidget {
         children: [
           SizedBox(height: 30.h),
           Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "Hi! I'm EngBot (잉봇).\nYou can set the expected time, category, and difficulty below to get a story :)",
             textAlign: TextAlign.center,
-            style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-              color: AppColors.text_1,
+            style: FontManager.current.font_16.copyWith(
+              color: ThemeManager.current.text_1,
             ),
           ),
           SizedBox(height: 10.h),
           Text(
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
             "안녕! 나는 EngBot(잉봇)이야.\n밑의 예상시간, 카테고리, 난이도를 설정해서 스토리를 불러올 수 있어 :)",
             textAlign: TextAlign.center,
-            style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-              color: AppColors.text_2,
+            style: FontManager.current.font_16.copyWith(
+              color: ThemeManager.current.text_2,
             ),
           ),
         ],
@@ -138,7 +196,9 @@ class HomeView extends StatelessWidget {
   Widget _storySelected(BuildContext context, HomeViewModel homeViewModel) {
     final stories = homeViewModel.filteredStories;
     if (stories == null || stories.isEmpty) {
-      return const Center(child: Text("스토리가 없습니다"));
+      return const Center(
+          child:
+              Text(maxLines: 5, overflow: TextOverflow.ellipsis, "스토리가 없습니다"));
     }
 
     return Column(
@@ -172,10 +232,10 @@ class HomeView extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemeManager.current.white,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: Colors.black,
+            color: ThemeManager.current.black,
             width: 0.2.w,
           ),
         ),
@@ -186,18 +246,22 @@ class HomeView extends StatelessWidget {
               children: [
                 SizedBox(width: 21.w),
                 Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                   "제목",
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                    color: AppColors.text_2,
+                  style: FontManager.current.font_14.copyWith(
+                    color: ThemeManager.current.text_2,
                   ),
                 ),
                 const Spacer(),
                 Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                   indexText,
                   textAlign: TextAlign.end,
-                  style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                    color: AppColors.text_2,
+                  style: FontManager.current.font_14.copyWith(
+                    color: ThemeManager.current.text_2,
                   ),
                 ),
                 SizedBox(width: 21.w),
@@ -217,13 +281,15 @@ class HomeView extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: ThemeManager.current.black,
                       borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: Text(
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
                       'New',
-                      style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                        color: Colors.white,
+                      style: FontManager.current.font_14.copyWith(
+                        color: ThemeManager.current.white,
                       ),
                     ),
                   ),
@@ -239,28 +305,31 @@ class HomeView extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: ThemeManager.current.white,
                       borderRadius: BorderRadius.circular(5.r),
                       border: Border.all(
-                        color: Colors.black,
+                        color: ThemeManager.current.black,
                         width: 0.8.w,
                       ),
                     ),
                     child: Text(
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
                       'Read',
-                      style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                        color: Colors.black,
+                      style: FontManager.current.font_14.copyWith(
+                        color: ThemeManager.current.black,
                       ),
                     ),
                   ),
                   SizedBox(width: 10.w),
                 ],
                 Text(
-                  story.title,
+                  maxLines: 5,
                   overflow: TextOverflow.ellipsis,
+                  story.title,
                   textAlign: TextAlign.right,
-                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                    color: AppColors.text_1,
+                  style: FontManager.current.font_16.copyWith(
+                    color: ThemeManager.current.text_1,
                   ),
                 ),
               ],
@@ -270,10 +339,12 @@ class HomeView extends StatelessWidget {
               children: [
                 SizedBox(width: 21.w),
                 Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                   "카테고리",
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.SejongGeulggot_14_regular.copyWith(
-                    color: AppColors.text_2,
+                  style: FontManager.current.font_14.copyWith(
+                    color: ThemeManager.current.text_2,
                   ),
                 ),
               ],
@@ -283,10 +354,12 @@ class HomeView extends StatelessWidget {
               children: [
                 SizedBox(width: 30.w),
                 Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                   story.category,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                    color: AppColors.text_1,
+                  style: FontManager.current.font_16.copyWith(
+                    color: ThemeManager.current.text_1,
                   ),
                 ),
               ],
@@ -311,13 +384,15 @@ class HomeView extends StatelessWidget {
                   height: 39.h,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.button,
+                    color: ThemeManager.current.button,
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                     "읽기",
-                    style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: Colors.white,
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.white,
                     ),
                   ),
                 ),
@@ -351,16 +426,18 @@ class HomeView extends StatelessWidget {
                 SizedBox(
                   width: 24.w,
                   height: 24.h,
-                  child: const CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                     strokeWidth: 3,
-                    color: AppColors.button,
+                    color: ThemeManager.current.button,
                   ),
                 ),
                 SizedBox(width: 12.w),
                 Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                   loadingText,
-                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                    color: AppColors.text_1,
+                  style: FontManager.current.font_16.copyWith(
+                    color: ThemeManager.current.text_1,
                   ),
                 ),
               ],
@@ -376,18 +453,19 @@ class HomeView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ThemeManager.current.white,
                   borderRadius: BorderRadius.circular(10.r),
                   border: Border.all(
-                    color: Colors.black,
+                    color: ThemeManager.current.black,
                     width: 0.2.w,
                   ),
                 ),
                 child: DropdownButton<String?>(
                   value: homeViewModel.storyTime?.displayText,
-                  hint: const Text("예상시간"),
-                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_1),
+                  hint: const Text(
+                      maxLines: 5, overflow: TextOverflow.ellipsis, "예상시간"),
+                  style: FontManager.current.font_16
+                      .copyWith(color: ThemeManager.current.text_1),
                   alignment: Alignment.center,
                   underline: const SizedBox.shrink(),
                   onChanged: (String? newValue) {
@@ -401,9 +479,11 @@ class HomeView extends StatelessWidget {
                     DropdownMenuItem<String?>(
                       value: null,
                       child: Text(
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
                         "예상시간",
-                        style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                          color: Colors.grey,
+                        style: FontManager.current.font_16.copyWith(
+                          color: ThemeManager.current.grey_2,
                         ),
                       ),
                     ),
@@ -412,7 +492,10 @@ class HomeView extends StatelessWidget {
                         .map<DropdownMenuItem<String?>>((StoryTime value) {
                       return DropdownMenuItem<String?>(
                         value: value.displayText,
-                        child: Text(value.displayText),
+                        child: Text(
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            value.displayText),
                       );
                     }),
                   ],
@@ -421,18 +504,18 @@ class HomeView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ThemeManager.current.white,
                   borderRadius: BorderRadius.circular(10.r),
                   border: Border.all(
-                    color: Colors.black,
+                    color: ThemeManager.current.black,
                     width: 0.2.w,
                   ),
                 ),
                 child: DropdownButton<StoryCategory?>(
                   value: homeViewModel.storyCategory,
                   alignment: Alignment.center,
-                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_1),
+                  style: FontManager.current.font_16
+                      .copyWith(color: ThemeManager.current.text_1),
                   menuMaxHeight: 250.h,
                   underline: const SizedBox.shrink(),
                   onChanged: (StoryCategory? newValue) {
@@ -443,9 +526,11 @@ class HomeView extends StatelessWidget {
                     DropdownMenuItem<StoryCategory?>(
                       value: null,
                       child: Text(
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
                         "카테고리",
-                        style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                          color: Colors.grey,
+                        style: FontManager.current.font_16.copyWith(
+                          color: ThemeManager.current.grey_2,
                         ),
                       ),
                     ),
@@ -455,7 +540,10 @@ class HomeView extends StatelessWidget {
                       (StoryCategory value) {
                         return DropdownMenuItem<StoryCategory?>(
                           value: value,
-                          child: Text(displayCategoryText(value)),
+                          child: Text(
+                              maxLines: 5,
+                              overflow: TextOverflow.ellipsis,
+                              displayCategoryText(value)),
                         );
                       },
                     ),
@@ -465,18 +553,18 @@ class HomeView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ThemeManager.current.white,
                   borderRadius: BorderRadius.circular(10.r),
                   border: Border.all(
-                    color: Colors.black,
+                    color: ThemeManager.current.black,
                     width: 0.2.w,
                   ),
                 ),
                 child: DropdownButton<int?>(
                   value: homeViewModel.storyLevel,
                   alignment: Alignment.center,
-                  style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                      color: AppColors.text_1),
+                  style: FontManager.current.font_16
+                      .copyWith(color: ThemeManager.current.text_1),
                   menuMaxHeight: 250.h,
                   underline: const SizedBox.shrink(),
                   onChanged: (int? newValue) {
@@ -487,9 +575,11 @@ class HomeView extends StatelessWidget {
                     DropdownMenuItem<int?>(
                       value: null,
                       child: Text(
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
                         "난이도",
-                        style: AppTextStyles.SejongGeulggot_16_regular.copyWith(
-                          color: Colors.grey,
+                        style: FontManager.current.font_16.copyWith(
+                          color: ThemeManager.current.grey_2,
                         ),
                       ),
                     ),
@@ -498,7 +588,10 @@ class HomeView extends StatelessWidget {
                         .map<DropdownMenuItem<int?>>((int value) {
                       return DropdownMenuItem<int?>(
                         value: value,
-                        child: Text(value.toString()),
+                        child: Text(
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            value.toString()),
                       );
                     }),
                   ],
@@ -508,6 +601,310 @@ class HomeView extends StatelessWidget {
             ],
           ),
       ],
+    );
+  }
+
+  // MARK: - theme setting bottom modal
+  void _showThemeSettingBottomModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: ThemeManager.current.white,
+      builder: (context) {
+        return Container(
+          height: 350.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: ThemeManager.current.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(40.r)),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 300.h,
+                  width: double.infinity,
+                  child: _colorThemePageView(context),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // MARK: - color theme page view
+  Widget _colorThemePageView(BuildContext context) {
+    return SizedBox(
+      child: PageView.builder(
+        scrollDirection: Axis.horizontal,
+        controller: PageController(
+            viewportFraction: 393.w / MediaQuery.of(context).size.width),
+        itemCount: ThemeManager().getThemeCount(),
+        onPageChanged: (index) {
+          context.read<HomeViewModel>().setSelectedThemeColorIndex(index);
+        },
+        itemBuilder: (context, index) {
+          final colors = ThemeManager()
+              .getAllThemeColors()
+              .map((e) => ThemeManager().getThemeColorFromEnum(e))
+              .toList();
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: 30.h),
+              Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+                '테마 색상 선택',
+                style: FontManager.current.font_20.copyWith(
+                  color: colors[index].text_1,
+                ),
+              ),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  4,
+                  (i) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3.w),
+                      child: Container(
+                        height: 50.h,
+                        width: 50.w,
+                        decoration: BoxDecoration(
+                          color: [
+                            colors[index].grey_1,
+                            colors[index].grey_2,
+                            colors[index].grey_3,
+                            colors[index].grey_4,
+                          ][i],
+                          border: Border.all(
+                            color: colors[index].black.withAlpha(30),
+                            width: 0.1.w,
+                          ),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 40.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  ThemeManager().getThemeCount(),
+                  (i) {
+                    if (i == index) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Container(
+                          height: 16.h,
+                          width: 16.w,
+                          decoration: BoxDecoration(
+                            color: colors[index].button,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Container(
+                          height: 12.h,
+                          width: 12.w,
+                          decoration: BoxDecoration(
+                            color: colors[index].background,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () async {
+                  HapticFeedback.heavyImpact();
+                  final selectedThemeIndex =
+                      context.read<HomeViewModel>().selectedThemeColorIndex;
+                  final selectedTheme =
+                      ThemeManager().getAllThemeColors()[selectedThemeIndex];
+                  await ThemeManager().setTheme(selectedTheme);
+                  context
+                      .read<HomeViewModel>()
+                      .setSelectedThemeColorIndex(0); // 초기화
+                  context.pop();
+                },
+                child: Container(
+                  height: 45.h,
+                  width: 300.w,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: colors[index].button,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "적용",
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  // MARK: - font setting bottom modal
+  void _showFontSettingBottomModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: ThemeManager.current.white,
+      builder: (context) {
+        return Container(
+          height: 350.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: ThemeManager.current.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(40.r)),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 300.h,
+                  width: double.infinity,
+                  child: _fontPageView(context),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // MARK: - font page view
+  Widget _fontPageView(BuildContext context) {
+    return SizedBox(
+      child: PageView.builder(
+        scrollDirection: Axis.horizontal,
+        controller: PageController(
+            viewportFraction: 393.w / MediaQuery.of(context).size.width),
+        itemCount: FontManager().getFontCount(),
+        onPageChanged: (index) {
+          context.read<HomeViewModel>().setSelectedThemeFontIndex(index);
+        },
+        itemBuilder: (context, index) {
+          final fonts =
+              FontManager().getFontNames().map((e) => e.name).toList();
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: 30.h),
+              Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+                '폰트 선택',
+                style: AppTextStyles(fonts[index]).font_20.copyWith(
+                      color: ThemeManager.current.text_1,
+                    ),
+              ),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "This is  [ ${FontManager().getFontName(fonts[index])} ]  입니다.",
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles(fonts[index]).font_18.copyWith(
+                          color: ThemeManager.current.text_1,
+                        ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 50.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  FontManager().getFontCount(),
+                  (i) {
+                    if (i == index) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Container(
+                          height: 16.h,
+                          width: 16.w,
+                          decoration: BoxDecoration(
+                            color: ThemeManager.current.button,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Container(
+                          height: 12.h,
+                          width: 12.w,
+                          decoration: BoxDecoration(
+                            color: ThemeManager.current.background,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () async {
+                  HapticFeedback.heavyImpact();
+                  final selectedFontIndex =
+                      context.read<HomeViewModel>().selectedThemeFontIndex;
+                  final selectedFont =
+                      FontManager().getFontNames()[selectedFontIndex].name;
+                  await FontManager().setFont(selectedFont);
+                  context
+                      .read<HomeViewModel>()
+                      .setSelectedThemeFontIndex(0); // 초기화
+                  context.pop();
+                },
+                child: Container(
+                  height: 45.h,
+                  width: 300.w,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: ThemeManager.current.button,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Text(
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    "적용",
+                    style: AppTextStyles(fonts[index]).font_16.copyWith(
+                          color: ThemeManager.current.white,
+                        ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
