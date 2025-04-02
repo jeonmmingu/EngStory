@@ -25,6 +25,6 @@ class DeviceInfoManager {
   }
 
   bool isAdmin() {
-    return deviceId == "FC2818C2-34C6-4962-92F1-256B74193C16";
+    return deviceId == "2A671044-304F-40A6-BC2D-7715BD585F46";
   }
 }
