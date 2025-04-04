@@ -286,7 +286,7 @@ class HomeView extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: ThemeManager.current.black,
+                      color: ThemeManager.current.text_2,
                       borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: Text(
@@ -313,7 +313,7 @@ class HomeView extends StatelessWidget {
                       color: ThemeManager.current.white,
                       borderRadius: BorderRadius.circular(5.r),
                       border: Border.all(
-                        color: ThemeManager.current.black,
+                        color: ThemeManager.current.text_1,
                         width: 0.8.w,
                       ),
                     ),
@@ -322,7 +322,7 @@ class HomeView extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       'Read',
                       style: FontManager.current.font_14.copyWith(
-                        color: ThemeManager.current.black,
+                        color: ThemeManager.current.text_1,
                       ),
                     ),
                   ),
