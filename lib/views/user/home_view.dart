@@ -240,7 +240,7 @@ class HomeView extends StatelessWidget {
           color: ThemeManager.current.white,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: ThemeManager.current.black,
+            color: ThemeManager.current.text_1,
             width: 0.2.w,
           ),
         ),
