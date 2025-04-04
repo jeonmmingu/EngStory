@@ -181,67 +181,70 @@ class StoryView extends StatelessWidget {
       },
       child: Padding(
         padding: EdgeInsets.only(bottom: 12.h),
-        child: Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 12.w,
-                vertical: 7.h,
-              ),
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                color: ThemeManager.current.white,
-                borderRadius: BorderRadius.circular(10.r),
-                border: Border.all(
-                  color: ThemeManager.current.text_1,
-                  width: 0.2.w,
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+            vertical: 7.h,
+          ),
+          width: double.infinity,
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            color: ThemeManager.current.white,
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(
+              color: ThemeManager.current.text_1,
+              width: 0.2.w,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  Text(
-                    maxLines: 5,
-                    overflow: TextOverflow.ellipsis,
-                    storyScript.text_en,
-                    style: FontManager.current.font_18.copyWith(
-                      color: ThemeManager.current.text_1,
-                    ),
-                  ),
-                  if (storyViewModel.languageMode != "Eng") ...[
-                    Divider(
-                        color: ThemeManager.current.text_2, thickness: 0.4.h),
-                    Text(
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
                       maxLines: 5,
                       overflow: TextOverflow.ellipsis,
-                      storyScript.text_ko,
-                      style: FontManager.current.font_16.copyWith(
-                        color: ThemeManager.current.text_2,
+                      storyScript.text_en,
+                      style: FontManager.current.font_18.copyWith(
+                        color: ThemeManager.current.text_1,
                       ),
                     ),
-                    SizedBox(height: 2.h),
-                  ],
+                  ),
+                  Positioned(
+                    right: -7.w,
+                    bottom: 1.h,
+                    child: SizedBox(
+                      width: 21.w,
+                      height: 21.h,
+                      child: Center(
+                        child: Icon(
+                          Icons.volume_up,
+                          color: ThemeManager.current.text_2,
+                          size: 15.w,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            Positioned(
-              right: 2.w,
-              bottom: 8.h,
-              child: SizedBox(
-                width: 21.w,
-                height: 21.h,
-                child: Center(
-                  child: Icon(
-                    Icons.volume_up,
+              if (storyViewModel.languageMode != "Eng") ...[
+                Divider(color: ThemeManager.current.text_2, thickness: 0.4.h),
+                Text(
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
+                  storyScript.text_ko,
+                  style: FontManager.current.font_16.copyWith(
                     color: ThemeManager.current.text_2,
-                    size: 15.w,
                   ),
                 ),
-              ),
-            ),
-          ],
+                SizedBox(height: 2.h),
+              ],
+            ],
+          ),
         ),
       ),
     );
@@ -259,66 +262,67 @@ class StoryView extends StatelessWidget {
               HapticFeedback.mediumImpact();
               TtsManager().speak(meScript.text_en);
             },
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: ThemeManager.current.text_2,
-                    borderRadius: BorderRadius.circular(10.r),
-                    border: Border.all(
-                      color: ThemeManager.current.black,
-                      width: 0.4.w,
-                    ),
-                  ),
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: ThemeManager.current.text_2,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(
+                  color: ThemeManager.current.black,
+                  width: 0.4.w,
+                ),
+              ),
+              alignment: Alignment.centerLeft,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
                     children: [
-                      Text(
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                        meScript.text_en,
-                        style: FontManager.current.font_18.copyWith(
-                          color: ThemeManager.current.white,
-                        ),
-                      ),
-                      if (storyViewModel.languageMode != "Eng") ...[
-                        Divider(
-                            color: ThemeManager.current.white,
-                            thickness: 0.4.h),
-                        Text(
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
                           maxLines: 5,
                           overflow: TextOverflow.ellipsis,
-                          meScript.text_ko,
-                          style: FontManager.current.font_16.copyWith(
+                          meScript.text_en,
+                          style: FontManager.current.font_18.copyWith(
                             color: ThemeManager.current.white,
                           ),
                         ),
-                      ],
+                      ),
+                      Positioned(
+                        right: -7.w,
+                        bottom: 1.h,
+                        child: SizedBox(
+                          width: 21.w,
+                          height: 21.h,
+                          child: Center(
+                            child: Icon(
+                              Icons.volume_up,
+                              color: ThemeManager.current.white,
+                              size: 15.w,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                Positioned(
-                  right: 2.w,
-                  bottom: 7.h,
-                  child: SizedBox(
-                    width: 21.w,
-                    height: 21.h,
-                    child: Center(
-                      child: Icon(
-                        Icons.volume_up,
+                  if (storyViewModel.languageMode != "Eng") ...[
+                    Divider(
+                        color: ThemeManager.current.white, thickness: 0.4.h),
+                    Text(
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
+                      meScript.text_ko,
+                      style: FontManager.current.font_16.copyWith(
                         color: ThemeManager.current.white,
-                        size: 15.w,
                       ),
                     ),
-                  ),
-                ),
-              ],
+                  ],
+                ],
+              ),
             ),
           )
         : const SizedBox.shrink();
