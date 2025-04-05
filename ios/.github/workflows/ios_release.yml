@@ -1,0 +1,38 @@
+name: iOS Release to App Store
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Set up API key (write .p8 file)
+        run: |
+          mkdir -p ~/.private_keys
+          echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > ~/.private_keys/AuthKey.p8
+        env:
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+
+      - name: Install CocoaPods dependencies
+        run: bundle exec pod install
+        working-directory: ios
+
+      - name: Release with Fastlane
+        working-directory: ios
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+        run: bundle exec fastlane release
