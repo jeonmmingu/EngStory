@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_story/models/json_serializable.dart';
 
 class StoryScript extends JsonSerializable {
