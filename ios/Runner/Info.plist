@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocalNetworkUsageDescription</key>
+  	<string>이 앱은 Firebase 서버와 원활하게 데이터를 동기화하기 위해 로컬 네트워크를 사용할 수 있습니다. 다른 기기와의 직접 연결이나 정보 수집은 하지 않습니다.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
