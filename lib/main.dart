@@ -12,6 +12,7 @@ import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:eng_story/services/remote/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -66,6 +67,10 @@ Future<void> initializeHive() async {
 // MARK: - UI 초기화
 Future<void> initializeUI() async {
   // UI 초기화 코드
+  // 핸드폰 방향 설정
+  // 핸드폰 방향을 세로로 고정
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   // 테마 설정
   await ThemeManager().initializeTheme();
 }
