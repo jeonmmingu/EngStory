@@ -1,0 +1,8 @@
+app_identifier ENV["DELIVER_APP_IDENTIFIER"]       # 앱의 번들 ID
+username ENV["DELIVER_USERNAME"]                   # Apple Developer 계정 이메일
+team_id ENV["DELIVER_TEAM_ID"]                     # 팀 ID
+
+metadata_path "./fastlane/metadata"                # 메타데이터 경로는 그대로 유지 가능
+
+submit_for_review true                             # 자동 제출 여부
+automatic_release false                            # 자동 출시 여부

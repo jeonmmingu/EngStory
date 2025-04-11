@@ -1,0 +1,44 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Push a new release build to the App Store"
+
+  lane :release do
+    setup_ci(force: true)   # ✅ CI 키체인 설정
+
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"]
+    )
+  
+    match(
+      type: "appstore",
+      git_url: ENV["MATCH_GIT_URL"],
+      readonly: false,
+      keychain_name: "login.keychain-db",
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+    )
+  
+    increment_build_number(xcodeproj: "Runner.xcodeproj")
+  
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "com.example.engStory" => "match AppStore com.example.engStory"
+        }
+      },
+      xcargs: "-allowProvisioningUpdates"
+    )
+  
+    upload_to_app_store(
+      api_key: api_key,
+      skip_metadata: false,
+      skip_screenshots: true,
+      force: true
+    )
+  end
+end
