@@ -1,0 +1,2 @@
+json_key_file("/Users/jeonmingu/Desktop/Programming/Git_Local_Storage/Flutter/eng_story/android/app/engstory-48526-551cab345ffb.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("io.mingu.engStory") # e.g. com.krausefx.app

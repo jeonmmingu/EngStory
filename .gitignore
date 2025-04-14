@@ -106,3 +106,7 @@ lib/generated_plugin_registrant.dart
 
 # lib/core/test/story 제외
 **/lib/core/tests/story/
+
+android/app/google-services.json
+android/app/engstory-48526-551cab345ffb.json
+ios/Runner/GoogleService-Info.plist
