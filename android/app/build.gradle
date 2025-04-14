@@ -15,12 +15,10 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
-if (keystorePropertiesFile.exists()) {
-    keystorePropertiesFile.withReader('UTF-8') { reader ->
-        keystoreProperties.load(reader)
-    }
+def keyStoreProperties = new Properties()
+def keyStoreFile = rootProject.file("key.properties")
+if (keyStoreFile.exists()) {
+    keyStoreProperties.load(new FileInputStream(keyStoreFile))
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -64,10 +62,20 @@ android {
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
+            keyAlias keyStoreProperties['keyAlias']
+            keyPassword keyStoreProperties['keyPassword']
+            storeFile keyStoreProperties['storeFile'] ? file(keyStoreProperties['storeFile']) : null
+            storePassword keyStoreProperties['storePassword']
+        }
+    }
+
+    // 설정 추가
+    signingConfigs {
+        release {
+            storeFile file(keyStoreProperties['storeFile'])
+            storePassword keyStoreProperties['storePassword']
+            keyAlias keyStoreProperties['keyAlias']
+            keyPassword keyStoreProperties['keyPassword']
         }
     }
 
