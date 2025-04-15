@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
@@ -8,6 +9,7 @@ import 'package:eng_story/core/utils/animations.dart';
 import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/font/fonts.dart';
+import 'package:eng_story/core/utils/reading_quotes.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
@@ -130,7 +132,7 @@ class HomeView extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: isAdmin ? 62.h : 78.h),
+        SizedBox(height: isAdmin ? 62.h : 70.h),
         Center(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300), // 애니메이션 지속 시간
@@ -147,7 +149,7 @@ class HomeView extends StatelessWidget {
             ),
           ),
         ),
-        Center(child: _middleSection(context, homeViewModel)),
+        _middleSection(context, homeViewModel),
         const Spacer(),
         _bottomSection(context, homeViewModel, isLoading),
         SizedBox(height: 98.h),
@@ -163,36 +165,55 @@ class HomeView extends StatelessWidget {
     }
     return homeViewModel.filteredStories == null
         ? _storyNotSelected(context, homeViewModel)
-        : _storySelected(context, homeViewModel);
+        : Center(child: _storySelected(context, homeViewModel));
   }
 
   // MARK: - storyNotSelected (middleSection)
   Widget _storyNotSelected(BuildContext context, HomeViewModel homeViewModel) {
+    final quote = readingQuotes[Random().nextInt(readingQuotes.length)];
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.w),
-      child: Column(
-        children: [
-          SizedBox(height: 30.h),
-          Text(
-            maxLines: 5,
-            overflow: TextOverflow.ellipsis,
-            "Hi! I'm EngBot (잉봇).\nYou can set the expected time, category, and difficulty below to get a story :)",
-            textAlign: TextAlign.center,
-            style: FontManager.current.font_16.copyWith(
-              color: ThemeManager.current.text_1,
+      child: Container(
+        width: 363.h,
+        alignment: Alignment.centerLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 30.h),
+            Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+              quote["text_en"] ?? "",
+              textAlign: TextAlign.left,
+              style: FontManager.current.font_16.copyWith(
+                color: ThemeManager.current.text_1,
+              ),
             ),
-          ),
-          SizedBox(height: 10.h),
-          Text(
-            maxLines: 5,
-            overflow: TextOverflow.ellipsis,
-            "안녕! 나는 EngBot(잉봇)이야.\n밑의 예상시간, 카테고리, 난이도를 설정해서 스토리를 불러올 수 있어 :)",
-            textAlign: TextAlign.center,
-            style: FontManager.current.font_16.copyWith(
-              color: ThemeManager.current.text_2,
+            SizedBox(height: 10.h),
+            Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+              quote["text_ko"] ?? "",
+              textAlign: TextAlign.left,
+              style: FontManager.current.font_16.copyWith(
+                color: ThemeManager.current.text_2,
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 10.h),
+            SizedBox(
+              width: 363.w,
+              child: Text(
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+                "- ${quote["author"] ?? ""}",
+                textAlign: TextAlign.right,
+                style: FontManager.current.font_16.copyWith(
+                  color: ThemeManager.current.text_2,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -455,152 +476,186 @@ class HomeView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(width: 5.w),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                decoration: BoxDecoration(
-                  color: ThemeManager.current.white,
-                  borderRadius: BorderRadius.circular(10.r),
-                  border: Border.all(
-                    color: ThemeManager.current.black,
-                    width: 0.2.w,
+              Column(
+                children: [
+                  Text(
+                    "난이도",
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.text_2,
+                    ),
                   ),
-                ),
-                child: DropdownButton<String?>(
-                  value: homeViewModel.storyTime?.displayText,
-                  hint: const Text(
-                      maxLines: 5, overflow: TextOverflow.ellipsis, "예상시간"),
-                  style: FontManager.current.font_16
-                      .copyWith(color: ThemeManager.current.text_1),
-                  alignment: Alignment.center,
-                  underline: const SizedBox.shrink(),
-                  onChanged: (String? newValue) {
-                    HapticFeedback.heavyImpact();
-                    homeViewModel.setStoryTime(newValue == null
-                        ? null
-                        : StoryTime.values.firstWhere(
-                            (element) => element.displayText == newValue));
-                  },
-                  items: [
-                    DropdownMenuItem<String?>(
-                      value: null,
-                      child: Text(
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                        "예상시간",
-                        style: FontManager.current.font_16.copyWith(
-                          color: ThemeManager.current.grey_2,
-                        ),
+                  SizedBox(height: 5.h),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    decoration: BoxDecoration(
+                      color: ThemeManager.current.white,
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: ThemeManager.current.black,
+                        width: 0.2.w,
                       ),
                     ),
-                    ...homeViewModel
-                        .getAvailableStoryTimes()
-                        .map<DropdownMenuItem<String?>>((StoryTime value) {
-                      return DropdownMenuItem<String?>(
-                        value: value.displayText,
-                        child: Text(
+                    child: DropdownButton<int?>(
+                      value: homeViewModel.storyLevel,
+                      alignment: Alignment.center,
+                      style: FontManager.current.font_16
+                          .copyWith(color: ThemeManager.current.text_1),
+                      menuMaxHeight: 250.h,
+                      underline: const SizedBox.shrink(),
+                      onChanged: (int? newValue) {
+                        HapticFeedback.heavyImpact();
+                        homeViewModel.setStoryLevel(newValue);
+                      },
+                      items: [
+                        DropdownMenuItem<int?>(
+                          value: null,
+                          child: Text(
                             maxLines: 5,
                             overflow: TextOverflow.ellipsis,
-                            value.displayText),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                decoration: BoxDecoration(
-                  color: ThemeManager.current.white,
-                  borderRadius: BorderRadius.circular(10.r),
-                  border: Border.all(
-                    color: ThemeManager.current.black,
-                    width: 0.2.w,
-                  ),
-                ),
-                child: DropdownButton<StoryCategory?>(
-                  value: homeViewModel.storyCategory,
-                  alignment: Alignment.center,
-                  style: FontManager.current.font_16
-                      .copyWith(color: ThemeManager.current.text_1),
-                  menuMaxHeight: 250.h,
-                  underline: const SizedBox.shrink(),
-                  onChanged: (StoryCategory? newValue) {
-                    HapticFeedback.heavyImpact();
-                    homeViewModel.setStoryCategory(newValue);
-                  },
-                  items: [
-                    DropdownMenuItem<StoryCategory?>(
-                      value: null,
-                      child: Text(
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                        "카테고리",
-                        style: FontManager.current.font_16.copyWith(
-                          color: ThemeManager.current.grey_2,
+                            "선택",
+                            style: FontManager.current.font_16.copyWith(
+                              color: ThemeManager.current.grey_2,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    ...homeViewModel
-                        .getAvailableStoryCategories()
-                        .map<DropdownMenuItem<StoryCategory?>>(
-                      (StoryCategory value) {
-                        return DropdownMenuItem<StoryCategory?>(
-                          value: value,
-                          child: Text(
+                        ...homeViewModel
+                            .getAvailableStoryLevels()
+                            .map<DropdownMenuItem<int?>>((int value) {
+                          return DropdownMenuItem<int?>(
+                            value: value,
+                            child: Text(
                               maxLines: 5,
                               overflow: TextOverflow.ellipsis,
-                              displayCategoryText(value)),
-                        );
-                      },
+                              value.toString(),
+                            ),
+                          );
+                        }),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                decoration: BoxDecoration(
-                  color: ThemeManager.current.white,
-                  borderRadius: BorderRadius.circular(10.r),
-                  border: Border.all(
-                    color: ThemeManager.current.black,
-                    width: 0.2.w,
                   ),
-                ),
-                child: DropdownButton<int?>(
-                  value: homeViewModel.storyLevel,
-                  alignment: Alignment.center,
-                  style: FontManager.current.font_16
-                      .copyWith(color: ThemeManager.current.text_1),
-                  menuMaxHeight: 250.h,
-                  underline: const SizedBox.shrink(),
-                  onChanged: (int? newValue) {
-                    HapticFeedback.heavyImpact();
-                    homeViewModel.setStoryLevel(newValue);
-                  },
-                  items: [
-                    DropdownMenuItem<int?>(
-                      value: null,
-                      child: Text(
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                        "난이도",
-                        style: FontManager.current.font_16.copyWith(
-                          color: ThemeManager.current.grey_2,
-                        ),
+                ],
+              ),
+              Column(
+                children: [
+                  Text(
+                    "카테고리",
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.text_2,
+                    ),
+                  ),
+                  SizedBox(height: 5.h),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    decoration: BoxDecoration(
+                      color: ThemeManager.current.white,
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: ThemeManager.current.black,
+                        width: 0.2.w,
                       ),
                     ),
-                    ...homeViewModel
-                        .getAvailableStoryLevels()
-                        .map<DropdownMenuItem<int?>>((int value) {
-                      return DropdownMenuItem<int?>(
-                        value: value,
-                        child: Text(
+                    child: DropdownButton<StoryCategory?>(
+                      value: homeViewModel.storyCategory,
+                      alignment: Alignment.center,
+                      style: FontManager.current.font_16
+                          .copyWith(color: ThemeManager.current.text_1),
+                      menuMaxHeight: 250.h,
+                      underline: const SizedBox.shrink(),
+                      onChanged: (StoryCategory? newValue) {
+                        HapticFeedback.heavyImpact();
+                        homeViewModel.setStoryCategory(newValue);
+                      },
+                      items: [
+                        DropdownMenuItem<StoryCategory?>(
+                          value: null,
+                          child: Text(
                             maxLines: 5,
                             overflow: TextOverflow.ellipsis,
-                            value.toString()),
-                      );
-                    }),
-                  ],
-                ),
+                            "선택",
+                            style: FontManager.current.font_16.copyWith(
+                              color: ThemeManager.current.grey_2,
+                            ),
+                          ),
+                        ),
+                        ...homeViewModel
+                            .getAvailableStoryCategories()
+                            .map<DropdownMenuItem<StoryCategory?>>(
+                          (StoryCategory value) {
+                            return DropdownMenuItem<StoryCategory?>(
+                              value: value,
+                              child: Text(
+                                  maxLines: 5,
+                                  overflow: TextOverflow.ellipsis,
+                                  displayCategoryText(value)),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Text(
+                    "예상시간",
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.text_2,
+                    ),
+                  ),
+                  SizedBox(height: 5.h),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    decoration: BoxDecoration(
+                      color: ThemeManager.current.white,
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: ThemeManager.current.black,
+                        width: 0.2.w,
+                      ),
+                    ),
+                    child: DropdownButton<String?>(
+                      value: homeViewModel.storyTime?.displayText,
+                      hint: const Text(
+                          maxLines: 5, overflow: TextOverflow.ellipsis, "예상시간"),
+                      style: FontManager.current.font_16
+                          .copyWith(color: ThemeManager.current.text_1),
+                      alignment: Alignment.center,
+                      underline: const SizedBox.shrink(),
+                      onChanged: (String? newValue) {
+                        HapticFeedback.heavyImpact();
+                        homeViewModel.setStoryTime(newValue == null
+                            ? null
+                            : StoryTime.values.firstWhere(
+                                (element) => element.displayText == newValue));
+                      },
+                      items: [
+                        DropdownMenuItem<String?>(
+                          value: null,
+                          child: Text(
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            "선택",
+                            style: FontManager.current.font_16.copyWith(
+                              color: ThemeManager.current.grey_2,
+                            ),
+                          ),
+                        ),
+                        ...homeViewModel
+                            .getAvailableStoryTimes()
+                            .map<DropdownMenuItem<String?>>((StoryTime value) {
+                          return DropdownMenuItem<String?>(
+                            value: value.displayText,
+                            child: Text(
+                                maxLines: 5,
+                                overflow: TextOverflow.ellipsis,
+                                value.displayText),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               SizedBox(width: 5.w),
             ],

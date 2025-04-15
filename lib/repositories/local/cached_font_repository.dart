@@ -16,6 +16,6 @@ class CachedFontRepository {
   /// 🔹 'font_cache' 박스에서 fontFamily 값 가져오기
   Future<String> getFontFamily() async {
     final cachedFontMeta = await _cacheService.getItemByKey('cachedFontMeta');
-    return cachedFontMeta?.fontFamily ?? 'Pretendard';
+    return cachedFontMeta?.fontFamily ?? 'sejongGeulggot';
   }
 }
