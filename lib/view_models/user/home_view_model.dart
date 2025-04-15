@@ -1,5 +1,6 @@
 import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
+import 'package:eng_story/core/utils/tutorial_coach_mark_manager.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/repositories/local/cached_story_repository.dart';
 import 'package:eng_story/repositories/local/cached_sync_repository.dart';
@@ -62,6 +63,7 @@ class HomeViewModel with ChangeNotifier {
 
   /// 🔹 앱 실행 시 초기화 작업 수행
   Future<void> initializeApp(bool isAdmin) async {
+    TutorialCoachMarkManager().initializeTargets();
     try {
       // 1️⃣ 1초 딜레이 후 캐싱된 데이터 불러오기
       if (!isAdmin) {
@@ -78,6 +80,7 @@ class HomeViewModel with ChangeNotifier {
       if (!isAdmin) {
         await Future.delayed(const Duration(milliseconds: 1300));
       }
+
       debugPrint("✅ 앱 초기화 완료!");
     } catch (e) {
       debugPrint("❌ 앱 초기화 실패: $e");

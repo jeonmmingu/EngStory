@@ -36,8 +36,8 @@ void main() async {
 Future<void> initializeApp() async {
   await initializeFirebase();
   await initializeHive();
-  await initializeUI();
   await initializeFont();
+  await initializeUI();
 }
 
 // MARK: - Firebase 초기화

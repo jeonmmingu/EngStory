@@ -10,6 +10,7 @@ import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/font/fonts.dart';
 import 'package:eng_story/core/utils/reading_quotes.dart';
+import 'package:eng_story/core/utils/tutorial_coach_mark_manager.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
@@ -58,9 +59,31 @@ class HomeView extends StatelessWidget {
             right: 30.w,
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(width: 20.w),
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  TutorialCoachMarkManager().showTutorial(context);
+                },
+                child: Container(
+                  width: 50.w,
+                  height: 50.h,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: ThemeManager.current.background,
+                    borderRadius: BorderRadius.circular(25.r),
+                  ),
+                  child: Icon(
+                    Icons.help_outline_rounded,
+                    color: ThemeManager.current.grey_4,
+                    size: 32.sp,
+                  ),
+                ),
+              ),
+              const Spacer(),
               // MARK: - theme button
               GestureDetector(
                 onTap: () {
@@ -68,6 +91,7 @@ class HomeView extends StatelessWidget {
                   _showThemeSettingBottomModal(context);
                 },
                 child: Container(
+                  key: TutorialCoachMarkManager().themeButtonKey,
                   width: 50.w,
                   height: 50.h,
                   alignment: Alignment.center,
@@ -90,6 +114,7 @@ class HomeView extends StatelessWidget {
                   _showFontSettingBottomModal(context);
                 },
                 child: Container(
+                  key: TutorialCoachMarkManager().fontButtonKey,
                   width: 50.w,
                   height: 50.h,
                   alignment: Alignment.center,
@@ -286,8 +311,8 @@ class HomeView extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   indexText,
                   textAlign: TextAlign.end,
-                  style: FontManager.current.font_14.copyWith(
-                    color: ThemeManager.current.text_2,
+                  style: FontManager.current.font_16.copyWith(
+                    color: ThemeManager.current.text_1,
                   ),
                 ),
                 SizedBox(width: 21.w),
@@ -477,6 +502,7 @@ class HomeView extends StatelessWidget {
             children: [
               SizedBox(width: 5.w),
               Column(
+                key: TutorialCoachMarkManager().levelButtonKey,
                 children: [
                   Text(
                     "난이도",
@@ -536,6 +562,7 @@ class HomeView extends StatelessWidget {
                 ],
               ),
               Column(
+                key: TutorialCoachMarkManager().categoryButtonKey,
                 children: [
                   Text(
                     "카테고리",
@@ -596,6 +623,7 @@ class HomeView extends StatelessWidget {
                 ],
               ),
               Column(
+                key: TutorialCoachMarkManager().requiredTimeButtonKey,
                 children: [
                   Text(
                     "예상시간",
