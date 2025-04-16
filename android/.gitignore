@@ -13,4 +13,4 @@ key.properties
 **/*.jks
 
 # Android NDK build folder
-android/app/.cxx/
+app/.cxx/
