@@ -30,7 +30,7 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: 'storyView',
           name: 'storyView',
-          builder: (context, state) => const StoryView(),
+          builder: (context, state) => StoryView(),
         ),
       ],
     ),

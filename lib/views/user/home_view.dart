@@ -1,4 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
+// 읽기 속도 지정 중 이었음
+// 캐시 데이터는 추가했고, tts init 재설정 했으니 테스트 후 진행
+// 읽기 속도를 조절하면 tts 속도가 조절되고, 테스트 문장 읽도록 설정
+// homeView에서 버튼을 누르면 현재 cached 된 speechSpeed를 가져와서 text에 기록하는 방식
+// 완료하면 cached 되도록 설정
 
 import 'dart:io';
 import 'dart:math';
@@ -10,6 +15,7 @@ import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/font/font_manager.dart';
 import 'package:eng_story/core/utils/font/fonts.dart';
 import 'package:eng_story/core/utils/reading_quotes.dart';
+import 'package:eng_story/core/utils/tts_manager.dart';
 import 'package:eng_story/core/utils/tutorial_coach_mark_manager.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
 import 'package:eng_story/services/local/device_info_manager.dart';
@@ -55,7 +61,7 @@ class HomeView extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(
-            top: Platform.isAndroid ? 55.h : 70.h,
+            top: Platform.isAndroid ? 55.h : 60.h,
             right: 30.w,
           ),
           child: Row(
@@ -79,12 +85,37 @@ class HomeView extends StatelessWidget {
                   child: Icon(
                     Icons.help_outline_rounded,
                     color: ThemeManager.current.grey_4,
-                    size: 32.sp,
+                    size: 28.sp,
                   ),
                 ),
               ),
               const Spacer(),
-              // MARK: - theme button
+              // Speech Speed Change Button
+              GestureDetector(
+                key: TutorialCoachMarkManager().speedButtonKey,
+                onTap: () async {
+                  HapticFeedback.heavyImpact();
+                  // homeviemodel 에서 sppechSpeed 가져와서 저장
+                  await homeViewModel.setSelectedSpeechSpeed();
+                  _showSpeechSpeedSettingBottomModal(context);
+                },
+                child: Container(
+                  width: 40.w,
+                  height: 50.h,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: ThemeManager.current.background,
+                    borderRadius: BorderRadius.circular(25.r),
+                  ),
+                  child: Icon(
+                    Icons.speed,
+                    color: ThemeManager.current.grey_4,
+                    size: 28.sp,
+                  ),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              // Theme button
               GestureDetector(
                 onTap: () {
                   HapticFeedback.heavyImpact();
@@ -92,7 +123,7 @@ class HomeView extends StatelessWidget {
                 },
                 child: Container(
                   key: TutorialCoachMarkManager().themeButtonKey,
-                  width: 50.w,
+                  width: 40.w,
                   height: 50.h,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -102,11 +133,11 @@ class HomeView extends StatelessWidget {
                   child: Icon(
                     Icons.color_lens_outlined,
                     color: ThemeManager.current.grey_4,
-                    size: 32.sp,
+                    size: 28.sp,
                   ),
                 ),
               ),
-              SizedBox(width: 20.w),
+              SizedBox(width: 10.w),
               // Font Change Button
               GestureDetector(
                 onTap: () {
@@ -115,7 +146,7 @@ class HomeView extends StatelessWidget {
                 },
                 child: Container(
                   key: TutorialCoachMarkManager().fontButtonKey,
-                  width: 50.w,
+                  width: 40.w,
                   height: 50.h,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -125,10 +156,11 @@ class HomeView extends StatelessWidget {
                   child: Icon(
                     Icons.font_download_outlined,
                     color: ThemeManager.current.grey_4,
-                    size: 32.sp,
+                    size: 28.sp,
                   ),
                 ),
               ),
+
               if (isAdmin) ...[
                 SizedBox(width: 20.w),
                 GestureDetector(
@@ -149,7 +181,7 @@ class HomeView extends StatelessWidget {
                     child: Icon(
                       Icons.admin_panel_settings_outlined,
                       color: ThemeManager.current.white,
-                      size: 32.sp,
+                      size: 28.sp,
                     ),
                   ),
                 ),
@@ -688,6 +720,184 @@ class HomeView extends StatelessWidget {
               SizedBox(width: 5.w),
             ],
           ),
+      ],
+    );
+  }
+
+  // MARK: - speech speed setting bottom modal
+  void _showSpeechSpeedSettingBottomModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: ThemeManager.current.white,
+      builder: (context) {
+        return Container(
+          height: 350.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: ThemeManager.current.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(40.r)),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 300.h,
+                  width: double.infinity,
+                  child: _speechSpeedPageView(context),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // MARK: - speech speed page view
+  Widget _speechSpeedPageView(BuildContext context) {
+    final homeViewModel = Provider.of<HomeViewModel>(context);
+    return Column(
+      children: [
+        SizedBox(height: 30.h),
+        Text(
+          maxLines: 5,
+          overflow: TextOverflow.ellipsis,
+          '읽기 속도 선택',
+          style: FontManager.current.font_20.copyWith(
+            color: ThemeManager.current.text_1,
+          ),
+        ),
+        SizedBox(height: 40.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+              "Hello, this is a test sentence.\nPlease check the speed.",
+              textAlign: TextAlign.center,
+              style: FontManager.current.font_16.copyWith(
+                color: ThemeManager.current.black,
+              ),
+            ),
+            SizedBox(width: 20.w),
+            GestureDetector(
+              onTap: () async {
+                HapticFeedback.heavyImpact();
+                await TtsManager().setSpeechRate(
+                  homeViewModel.selectedSpeechSpeed,
+                  true,
+                );
+                TtsManager().testTts.speak(
+                      "Hello, this is a test sentence.\n Please check the speed.",
+                    );
+              },
+              child: Container(
+                height: 40.h,
+                width: 40.w,
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.play_circle,
+                  color: ThemeManager.current.text_1,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 30.h),
+        SizedBox(
+          width: double.infinity,
+          height: 40.h,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  if (homeViewModel.selectedSpeechSpeed < 0.1) {
+                    return;
+                  }
+                  HapticFeedback.heavyImpact();
+                  homeViewModel.changeSpeechSpeed(false);
+                },
+                child: Container(
+                  height: 40.h,
+                  width: 40.w,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    color: homeViewModel.selectedSpeechSpeed < 0.1
+                        ? ThemeManager.current.grey_1
+                        : ThemeManager.current.text_1,
+                  ),
+                ),
+              ),
+              SizedBox(width: 20.w),
+              Container(
+                height: 40.h,
+                width: 40.w,
+                alignment: Alignment.center,
+                child: Text(
+                  homeViewModel.selectedSpeechSpeed.toStringAsFixed(1),
+                  style: FontManager.current.font_18.copyWith(
+                    color: ThemeManager.current.text_1,
+                  ),
+                ),
+              ),
+              SizedBox(width: 20.w),
+              GestureDetector(
+                onTap: () {
+                  if (homeViewModel.selectedSpeechSpeed == 1.0) {
+                    return;
+                  }
+                  HapticFeedback.heavyImpact();
+                  homeViewModel.changeSpeechSpeed(true);
+                },
+                child: Container(
+                  height: 40.h,
+                  width: 40.w,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: homeViewModel.selectedSpeechSpeed == 1.0
+                        ? ThemeManager.current.grey_1
+                        : ThemeManager.current.text_1,
+                  ),
+                ),
+              ),
+              const Spacer(),
+            ],
+          ),
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: () async {
+            HapticFeedback.heavyImpact();
+            await TtsManager().setSpeechRate(
+              homeViewModel.selectedSpeechSpeed,
+              false,
+            );
+            context.pop();
+          },
+          child: Container(
+            height: 45.h,
+            width: 300.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: ThemeManager.current.button,
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+              "적용",
+              style: FontManager.current.font_16.copyWith(
+                color: ThemeManager.current.white,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

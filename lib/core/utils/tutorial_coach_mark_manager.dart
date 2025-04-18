@@ -16,6 +16,7 @@ class TutorialCoachMarkManager {
   TutorialCoachMarkManager._internal();
 
   // 각 버튼에 대한 GlobalKey 정의
+  final GlobalKey speedButtonKey = GlobalKey();
   final GlobalKey themeButtonKey = GlobalKey();
   final GlobalKey fontButtonKey = GlobalKey();
   final GlobalKey levelButtonKey = GlobalKey();
@@ -32,6 +33,32 @@ class TutorialCoachMarkManager {
     targets.addAll(
       [
         TargetFocus(
+          identify: "speedButton",
+          keyTarget: speedButtonKey,
+          contents: [
+            TargetContent(
+              align: ContentAlign.bottom,
+              child: Column(
+                children: [
+                  Text(
+                    "스토리 읽기 속도를 조절할 수 있습니다.",
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.white,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "자신에게 적절한 속도를 찾아보세요.",
+                    style: FontManager.current.font_16.copyWith(
+                      color: ThemeManager.current.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        TargetFocus(
           identify: "themeButton",
           keyTarget: themeButtonKey,
           contents: [
@@ -40,7 +67,7 @@ class TutorialCoachMarkManager {
               child: Column(
                 children: [
                   Text(
-                    "여기에서 테마를 선택할 수 있어요.",
+                    "여러 색상의 테마를 선택할 수 있어요.",
                     style: FontManager.current.font_16.copyWith(
                       color: ThemeManager.current.white,
                     ),

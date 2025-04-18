@@ -77,7 +77,7 @@ class StoryView extends StatelessWidget {
           ),
         ),
         Positioned(
-          left: 0.w,
+          left: 5.w,
           child: GestureDetector(
             onTap: () {
               context.pop();
@@ -92,6 +92,27 @@ class StoryView extends StatelessWidget {
                 width: 16.w,
                 height: 16.h,
                 color: ThemeManager.current.text_1,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          right: 12.w,
+          child: GestureDetector(
+            onTap: () {
+              HapticFeedback.heavyImpact();
+              // show dialog (리셋 확인 다이어로그)
+            },
+            child: Container(
+              width: Platform.isAndroid ? 75.w : 50.w,
+              height: Platform.isAndroid ? 75.h : 50.h,
+              color: Colors.transparent,
+              alignment: Alignment.center,
+              // Icons에서 설정 이미지로 변경
+              child: Icon(
+                Icons.restart_alt_rounded,
+                color: ThemeManager.current.text_1,
+                size: 26.w,
               ),
             ),
           ),
@@ -186,6 +207,7 @@ class StoryView extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         HapticFeedback.mediumImpact();
+        await TtsManager().stop();
         TtsManager().speak(storyScript.text_en);
       },
       child: Padding(
@@ -274,6 +296,7 @@ class StoryView extends StatelessWidget {
         ? GestureDetector(
             onTap: () async {
               HapticFeedback.mediumImpact();
+              await TtsManager().stop();
               TtsManager().speak(meScript.text_en);
             },
             child: Container(
