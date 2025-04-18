@@ -1,9 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-// 읽기 속도 지정 중 이었음
-// 캐시 데이터는 추가했고, tts init 재설정 했으니 테스트 후 진행
-// 읽기 속도를 조절하면 tts 속도가 조절되고, 테스트 문장 읽도록 설정
-// homeView에서 버튼을 누르면 현재 cached 된 speechSpeed를 가져와서 text에 기록하는 방식
-// 완료하면 cached 되도록 설정
 
 import 'dart:io';
 import 'dart:math';
@@ -61,7 +56,7 @@ class HomeView extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(
-            top: Platform.isAndroid ? 55.h : 60.h,
+            top: Platform.isAndroid ? 50.h : 60.h,
             right: 30.w,
           ),
           child: Row(

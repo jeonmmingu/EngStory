@@ -102,6 +102,11 @@ class StoryView extends StatelessWidget {
             onTap: () {
               HapticFeedback.heavyImpact();
               // show dialog (리셋 확인 다이어로그)
+              _resetDialog(
+                context,
+                homeViewModel,
+                Provider.of<StoryViewModel>(context, listen: false),
+              );
             },
             child: Container(
               width: Platform.isAndroid ? 75.w : 50.w,
@@ -488,6 +493,62 @@ class StoryView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // MARK: - resetDialog
+  void _resetDialog(
+    BuildContext context,
+    HomeViewModel homeViewModel,
+    StoryViewModel storyViewModel,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "이야기 초기화",
+            style: FontManager.current.font_20.copyWith(
+              color: ThemeManager.current.text_1,
+            ),
+          ),
+          content: Text(
+            "이야기를 처음으로 되돌리시겠습니까?",
+            style: FontManager.current.font_16.copyWith(
+              color: ThemeManager.current.text_1,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                storyViewModel.resetStoryScripts();
+                homeViewModel.updateLastReadScriptIndex(
+                  homeViewModel.selectedStory!.id,
+                  0,
+                );
+                context.pop();
+              },
+              child: Text(
+                "확인",
+                style: FontManager.current.font_16.copyWith(
+                  color: ThemeManager.current.text_2,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: Text(
+                "취소",
+                style: FontManager.current.font_16.copyWith(
+                  color: ThemeManager.current.text_1,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
