@@ -9,11 +9,20 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(393, 852),
-      builder: (_, context) => MaterialApp.router(
-        // Go Router 설정
-        routerConfig: router,
-        debugShowCheckedModeBanner: false, // Debug 배너 없애기
-      ),
+      builder: (_, context) {
+        return Builder(
+          builder: (context) {
+            return MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(1.0)),
+              child: MaterialApp.router(
+                routerConfig: router,
+                debugShowCheckedModeBanner: false,
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

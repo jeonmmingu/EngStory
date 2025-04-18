@@ -199,6 +199,14 @@ class StoryViewModel with ChangeNotifier {
     _meScripts.clear();
   }
 
+  /// 🔹 읽은 스토리를 0번 index로 초기화
+  void resetStoryScripts() {
+    _currentIdx = 0;
+    clearStoryTellerScripts();
+    clearMeScripts();
+    notifyListeners();
+  }
+
   /// 🔹 모든 상태 초기화 (스토리 변경 시)
   void resetAllStates() {
     _selectedScripts.clear();

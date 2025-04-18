@@ -1,6 +1,8 @@
 import 'package:eng_story/core/enums/story_category.dart';
 import 'package:eng_story/core/enums/story_time.dart';
+import 'package:eng_story/core/utils/tutorial_coach_mark_manager.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
+import 'package:eng_story/repositories/local/cached_speech_speed_repository.dart';
 import 'package:eng_story/repositories/local/cached_story_repository.dart';
 import 'package:eng_story/repositories/local/cached_sync_repository.dart';
 import 'package:eng_story/repositories/remote/story_repository.dart';
@@ -11,6 +13,8 @@ class HomeViewModel with ChangeNotifier {
   final CachedStoryRepository _cacheStoryRepository = CachedStoryRepository();
   final CachedSyncRepository _cacheSyncRepository = CachedSyncRepository();
   final StoryRepository _storyRepository = StoryRepository();
+  final CachedSpeechSpeedRepository _cachedSpeechSpeedRepository =
+      CachedSpeechSpeedRepository();
 
   // 📌 스토리 읽기 시간 설정
   StoryTime? _storyTime;
@@ -60,8 +64,13 @@ class HomeViewModel with ChangeNotifier {
   int _selectedThemeFontIndex = 0;
   int get selectedThemeFontIndex => _selectedThemeFontIndex;
 
+  // 📌 선택된 Speech Speed
+  double _selectedSpeechSpeed = 0.5;
+  double get selectedSpeechSpeed => _selectedSpeechSpeed;
+
   /// 🔹 앱 실행 시 초기화 작업 수행
   Future<void> initializeApp(bool isAdmin) async {
+    TutorialCoachMarkManager().initializeTargets();
     try {
       // 1️⃣ 1초 딜레이 후 캐싱된 데이터 불러오기
       if (!isAdmin) {
@@ -78,6 +87,7 @@ class HomeViewModel with ChangeNotifier {
       if (!isAdmin) {
         await Future.delayed(const Duration(milliseconds: 1300));
       }
+
       debugPrint("✅ 앱 초기화 완료!");
     } catch (e) {
       debugPrint("❌ 앱 초기화 실패: $e");
@@ -150,6 +160,25 @@ class HomeViewModel with ChangeNotifier {
   /// 🔹 선택된 테마 폰트 인덱스 설정
   void setSelectedThemeFontIndex(int index) {
     _selectedThemeFontIndex = index;
+    notifyListeners();
+  }
+
+  /// 🔹 선택된 스피치 속도 설정
+  Future<void> setSelectedSpeechSpeed() async {
+    _selectedSpeechSpeed = await _cachedSpeechSpeedRepository.getSpeechSpeed();
+    notifyListeners();
+  }
+
+  /// 🔹 스피치 속도 0.1 증가 or 감소 (add, minus 옵션)
+  void changeSpeechSpeed(bool add) {
+    if (add) {
+      _selectedSpeechSpeed += 0.1;
+    } else {
+      _selectedSpeechSpeed -= 0.1;
+    }
+    if (_selectedSpeechSpeed == -0.0) {
+      _selectedSpeechSpeed = 0.0;
+    }
     notifyListeners();
   }
 
