@@ -110,3 +110,6 @@ lib/generated_plugin_registrant.dart
 android/app/google-services.json
 android/app/engstory-48526-551cab345ffb.json
 ios/Runner/GoogleService-Info.plist
+
+ios/Runner.app.dSYM.zip
+ios/Runner.ipa
