@@ -14,6 +14,7 @@ import 'package:eng_story/services/remote/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DeviceInfoManager().getDeviceId(); // admin 인지 확인하기 위한 코드
   await initializeApp();
+  MobileAds.instance.initialize(); // 광고 초기화
 
   await Future.delayed(const Duration(milliseconds: 1500));
 

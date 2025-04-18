@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -39,6 +40,16 @@ class HomeView extends StatelessWidget {
           Provider.of<HomeViewModel>(context),
           snapshot.connectionState == ConnectionState.waiting,
         ),
+        bottomNavigationBar:
+            Provider.of<HomeViewModel>(context, listen: false).bannerAd == null
+                ? Container()
+                : Container(
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    height: 55.h,
+                    child: AdWidget(
+                        ad: Provider.of<HomeViewModel>(context, listen: false)
+                            .bannerAd!),
+                  ),
       ),
     );
   }
@@ -184,14 +195,14 @@ class HomeView extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: isAdmin ? 62.h : 70.h),
+        SizedBox(height: isAdmin ? 42.h : 50.h),
         Center(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300), // 애니메이션 지속 시간
             curve: Curves.easeOut, // 부드러운 움직임
             transform: Matrix4.translationValues(
               0,
-              homeViewModel.filteredStories != null ? -50.h : 0,
+              homeViewModel.filteredStories != null ? -25.h : 0,
               0,
             ),
             child: Lottie.asset(
@@ -202,9 +213,23 @@ class HomeView extends StatelessWidget {
           ),
         ),
         _middleSection(context, homeViewModel),
+        if (homeViewModel.filteredStories != null) ...[
+          SizedBox(height: 15.h),
+          Center(
+            child: Text(
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+              "New 스토리를 처음 읽는 경우, 광고가 나와요.\n 읽기 시작한 스토리는 광고가 출력되지 않아요 :)",
+              textAlign: TextAlign.center,
+              style: FontManager.current.font_14.copyWith(
+                color: ThemeManager.current.text_1,
+              ),
+            ),
+          ),
+        ],
         const Spacer(),
         _bottomSection(context, homeViewModel, isLoading),
-        SizedBox(height: 98.h),
+        SizedBox(height: 40.h),
       ],
     );
   }
@@ -453,6 +478,9 @@ class HomeView extends StatelessWidget {
                     await context.read<StoryViewModel>().getScripts(story.id);
                 context.read<StoryViewModel>().init(story.lastReadScriptIndex);
                 if (getScripts) {
+                  if (story.lastReadScriptIndex == 0) {
+                    await _showInterstitialAd(context);
+                  }
                   context.goNamed("storyView");
                 }
               },
@@ -1199,5 +1227,26 @@ class HomeView extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _showInterstitialAd(BuildContext context) async {
+    final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+
+    await homeViewModel.createInterstitialAd();
+
+    if (homeViewModel.interstitialAd != null) {
+      homeViewModel.interstitialAd!.fullScreenContentCallback =
+          FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) async {
+          await ad.dispose();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) async {
+          await ad.dispose();
+          homeViewModel.setInterstitialAdNull();
+        },
+      );
+      await homeViewModel.interstitialAd!.show();
+      homeViewModel.setInterstitialAdNull();
+    }
   }
 }
