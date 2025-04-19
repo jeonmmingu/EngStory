@@ -113,3 +113,5 @@ ios/Runner/GoogleService-Info.plist
 
 ios/Runner.app.dSYM.zip
 ios/Runner.ipa
+
+lib/services/remote/firebase_options.dart
