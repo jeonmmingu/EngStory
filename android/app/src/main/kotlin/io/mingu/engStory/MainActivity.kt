@@ -1,4 +1,4 @@
-package com.example.eng_story
+package io.mingu.engStory
 
 import io.flutter.embedding.android.FlutterActivity
 
