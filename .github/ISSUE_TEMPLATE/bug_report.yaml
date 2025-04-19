@@ -1,0 +1,44 @@
+name: 🐞 Bug Report
+description: 앱에서 발생한 버그를 신고합니다.
+labels: [bug]
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: 📌 개요
+      description: 버그가 발생한 상황을 간단히 설명해 주세요.
+      placeholder: 로그인 버튼을 누르면 앱이 꺼집니다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: ▶️ 재현 방법
+      description: 어떤 과정을 통해 버그가 발생하는지 단계별로 작성해 주세요.
+      placeholder: |
+        1. 앱 실행
+        2. 로그인 버튼 클릭
+        3. 앱 강제 종료
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✅ 예상 동작
+      description: 원래 어떻게 동작했어야 하나요?
+      placeholder: 로그인 화면으로 이동해야 합니다.
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 🧾 로그/스크린샷
+      description: 에러 메시지, 콘솔 로그, 스크린샷 등
+      placeholder: 콘솔 로그, 디버그 메시지, 스택트레이스 등
+
+  - type: input
+    id: device
+    attributes:
+      label: 📱 디바이스 정보
+      placeholder: iPhone 14 Pro / Android 13

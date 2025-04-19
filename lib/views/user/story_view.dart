@@ -77,7 +77,7 @@ class StoryView extends StatelessWidget {
           ),
         ),
         Positioned(
-          left: 0.w,
+          left: 5.w,
           child: GestureDetector(
             onTap: () {
               context.pop();
@@ -96,6 +96,32 @@ class StoryView extends StatelessWidget {
             ),
           ),
         ),
+        Positioned(
+          right: 12.w,
+          child: GestureDetector(
+            onTap: () {
+              HapticFeedback.heavyImpact();
+              // show dialog (리셋 확인 다이어로그)
+              _resetDialog(
+                context,
+                homeViewModel,
+                Provider.of<StoryViewModel>(context, listen: false),
+              );
+            },
+            child: Container(
+              width: Platform.isAndroid ? 75.w : 50.w,
+              height: Platform.isAndroid ? 75.h : 50.h,
+              color: Colors.transparent,
+              alignment: Alignment.center,
+              // Icons에서 설정 이미지로 변경
+              child: Icon(
+                Icons.restart_alt_rounded,
+                color: ThemeManager.current.text_1,
+                size: 26.w,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -107,46 +133,55 @@ class StoryView extends StatelessWidget {
     StoryViewModel storyViewModel,
   ) {
     return Expanded(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10.h),
-            Center(
-              child: Lottie.asset(
-                "assets/animations/robot.json",
-                width: 130.w,
-                height: 130.h,
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 10.h),
+          Center(
+            child: Lottie.asset(
+              "assets/animations/robot.json",
+              width: 130.w,
+              height: 130.h,
             ),
-            SizedBox(height: 25.h),
-            Expanded(
-              child: SingleChildScrollView(
-                reverse: true,
-                child: Column(
-                  children: [
-                    _storyTellerChatSections(
+          ),
+          SizedBox(height: 25.h),
+          Expanded(
+            child: SingleChildScrollView(
+              reverse: true,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 0.w,
+                      right: 20.w,
+                    ),
+                    child: _storyTellerChatSections(
                       context,
                       storyViewModel.storyTellerScripts,
                       storyViewModel,
                     ),
-                    SizedBox(height: 30.h),
-                    _myChat(
+                  ),
+                  SizedBox(height: 30.h),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 20.w,
+                      right: 0.w,
+                    ),
+                    child: _myChat(
                       context,
                       storyViewModel.meScripts.isEmpty
                           ? null
                           : storyViewModel.meScripts.first,
                       storyViewModel,
                     ),
-                    SizedBox(height: 45.h),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: 45.h),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -177,20 +212,26 @@ class StoryView extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         HapticFeedback.mediumImpact();
+        await TtsManager().stop();
         TtsManager().speak(storyScript.text_en);
       },
       child: Padding(
         padding: EdgeInsets.only(bottom: 12.h),
         child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 12.w,
-            vertical: 7.h,
+          padding: EdgeInsets.only(
+            left: 20.w,
+            right: 20.w,
+            top: 7.h,
+            bottom: 7.h,
           ),
           width: double.infinity,
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
             color: ThemeManager.current.white,
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(12.r),
+              bottomRight: Radius.circular(20.r),
+            ),
             border: Border.all(
               color: ThemeManager.current.text_1,
               width: 0.2.w,
@@ -215,8 +256,8 @@ class StoryView extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    right: -7.w,
-                    bottom: 1.h,
+                    right: -14.w,
+                    bottom: 0.h,
                     child: SizedBox(
                       width: 21.w,
                       height: 21.h,
@@ -260,16 +301,25 @@ class StoryView extends StatelessWidget {
         ? GestureDetector(
             onTap: () async {
               HapticFeedback.mediumImpact();
+              await TtsManager().stop();
               TtsManager().speak(meScript.text_en);
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+              padding: EdgeInsets.only(
+                left: 12.w,
+                right: 20.w,
+                top: 7.h,
+                bottom: 7.h,
+              ),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: ThemeManager.current.text_2,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.r),
+                  bottomLeft: Radius.circular(12.r),
+                ),
                 border: Border.all(
-                  color: ThemeManager.current.black,
+                  color: ThemeManager.current.text_1,
                   width: 0.4.w,
                 ),
               ),
@@ -293,7 +343,7 @@ class StoryView extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        right: -7.w,
+                        right: -14.w,
                         bottom: 1.h,
                         child: SizedBox(
                           width: 21.w,
@@ -443,6 +493,62 @@ class StoryView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // MARK: - resetDialog
+  void _resetDialog(
+    BuildContext context,
+    HomeViewModel homeViewModel,
+    StoryViewModel storyViewModel,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "이야기 초기화",
+            style: FontManager.current.font_20.copyWith(
+              color: ThemeManager.current.text_1,
+            ),
+          ),
+          content: Text(
+            "이야기를 처음으로 되돌리시겠습니까?",
+            style: FontManager.current.font_16.copyWith(
+              color: ThemeManager.current.text_1,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                storyViewModel.resetStoryScripts();
+                homeViewModel.updateLastReadScriptIndex(
+                  homeViewModel.selectedStory!.id,
+                  0,
+                );
+                context.pop();
+              },
+              child: Text(
+                "확인",
+                style: FontManager.current.font_16.copyWith(
+                  color: ThemeManager.current.text_2,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: Text(
+                "취소",
+                style: FontManager.current.font_16.copyWith(
+                  color: ThemeManager.current.text_1,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
