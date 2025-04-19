@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/font/font_manager.dart';
@@ -30,7 +31,6 @@ class StoryView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _header(context, homeViewModel),
             _body(context, homeViewModel, storyViewModel),
             Container(
               width: double.infinity,
@@ -133,51 +133,58 @@ class StoryView extends StatelessWidget {
     StoryViewModel storyViewModel,
   ) {
     return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          SizedBox(height: 10.h),
-          Center(
-            child: Lottie.asset(
-              "assets/animations/robot.json",
-              width: 130.w,
-              height: 130.h,
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: storyViewModel.scrollController,
+                  reverse: true,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: Platform.isAndroid ? 210.h : 180.h,
+                      ),
+                      _chatSection(
+                        context,
+                        storyViewModel,
+                      ),
+                      SizedBox(height: 20.h),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 25.h),
-          Expanded(
-            child: SingleChildScrollView(
-              reverse: true,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 0.w,
-                      right: 20.w,
-                    ),
-                    child: _storyTellerChatSections(
-                      context,
-                      storyViewModel.storyTellerScripts,
-                      storyViewModel,
-                    ),
+          Positioned(
+            top: 0.h,
+            left: 0.w,
+            right: 0.w,
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                  height: Platform.isAndroid ? 200.h : 170.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: ThemeManager.current.background.withOpacity(0.85),
                   ),
-                  SizedBox(height: 30.h),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 20.w,
-                      right: 0.w,
-                    ),
-                    child: _myChat(
-                      context,
-                      storyViewModel.meScripts.isEmpty
-                          ? null
-                          : storyViewModel.meScripts.first,
-                      storyViewModel,
-                    ),
+                  child: Column(
+                    children: [
+                      _header(context, homeViewModel),
+                      Center(
+                        child: Lottie.asset(
+                          "assets/animations/robot.json",
+                          width: 120.w,
+                          height: 120.h,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 45.h),
-                ],
+                ),
               ),
             ),
           ),
@@ -187,19 +194,30 @@ class StoryView extends StatelessWidget {
   }
 
   // MARK: - storyTellerChatSections
-  Widget _storyTellerChatSections(
+  Widget _chatSection(
     BuildContext context,
-    List<StoryScript> storyScripts,
     StoryViewModel storyViewModel,
   ) {
+    var scripts = List.from(storyViewModel.storyTellerScripts);
+    scripts.addAll(storyViewModel.meScripts);
+    scripts.sort((a, b) => a.index.compareTo(b.index));
+
+    if (scripts.isEmpty) {
+      return Container(
+        color: ThemeManager.current.background,
+      );
+    }
+
     return Column(
-      children: storyScripts.map((script) {
-        return _storyTellerChat(
-          context,
-          script,
-          storyViewModel,
-        );
-      }).toList(),
+      children: scripts.map(
+        (script) {
+          if (script.role != "me") {
+            return _storyTellerChat(context, script, storyViewModel);
+          } else {
+            return _myChat(context, script, storyViewModel);
+          }
+        },
+      ).toList(),
     );
   }
 
@@ -216,7 +234,7 @@ class StoryView extends StatelessWidget {
         TtsManager().speak(storyScript.text_en);
       },
       child: Padding(
-        padding: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.only(bottom: 15.h, right: 30.w),
         child: Container(
           padding: EdgeInsets.only(
             left: 20.w,
@@ -304,74 +322,77 @@ class StoryView extends StatelessWidget {
               await TtsManager().stop();
               TtsManager().speak(meScript.text_en);
             },
-            child: Container(
-              padding: EdgeInsets.only(
-                left: 12.w,
-                right: 20.w,
-                top: 7.h,
-                bottom: 7.h,
-              ),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: ThemeManager.current.text_2,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.r),
-                  bottomLeft: Radius.circular(12.r),
+            child: Padding(
+              padding: EdgeInsets.only(top: 15.h, bottom: 30.h, left: 30.w),
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: 12.w,
+                  right: 20.w,
+                  top: 7.h,
+                  bottom: 7.h,
                 ),
-                border: Border.all(
-                  color: ThemeManager.current.text_1,
-                  width: 0.4.w,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: ThemeManager.current.text_2,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.r),
+                    bottomLeft: Radius.circular(12.r),
+                  ),
+                  border: Border.all(
+                    color: ThemeManager.current.text_1,
+                    width: 0.4.w,
+                  ),
                 ),
-              ),
-              alignment: Alignment.centerLeft,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
-                          meScript.text_en,
-                          style: FontManager.current.font_18.copyWith(
-                            color: ThemeManager.current.white,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        right: -14.w,
-                        bottom: 1.h,
-                        child: SizedBox(
-                          width: 21.w,
-                          height: 21.h,
-                          child: Center(
-                            child: Icon(
-                              Icons.volume_up,
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            meScript.text_en,
+                            style: FontManager.current.font_18.copyWith(
                               color: ThemeManager.current.white,
-                              size: 15.w,
                             ),
                           ),
                         ),
+                        Positioned(
+                          right: -14.w,
+                          bottom: 1.h,
+                          child: SizedBox(
+                            width: 21.w,
+                            height: 21.h,
+                            child: Center(
+                              child: Icon(
+                                Icons.volume_up,
+                                color: ThemeManager.current.white,
+                                size: 15.w,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (storyViewModel.languageMode != "Eng") ...[
+                      Divider(
+                          color: ThemeManager.current.white, thickness: 0.4.h),
+                      Text(
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                        meScript.text_ko,
+                        style: FontManager.current.font_16.copyWith(
+                          color: ThemeManager.current.white,
+                        ),
                       ),
                     ],
-                  ),
-                  if (storyViewModel.languageMode != "Eng") ...[
-                    Divider(
-                        color: ThemeManager.current.white, thickness: 0.4.h),
-                    Text(
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
-                      meScript.text_ko,
-                      style: FontManager.current.font_16.copyWith(
-                        color: ThemeManager.current.white,
-                      ),
-                    ),
                   ],
-                ],
+                ),
               ),
             ),
           )
@@ -438,7 +459,7 @@ class StoryView extends StatelessWidget {
           Flexible(
             flex: 1,
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 HapticFeedback.mediumImpact();
                 storyViewModel.playStory();
                 homeViewModel.updateLastReadScriptIndex(

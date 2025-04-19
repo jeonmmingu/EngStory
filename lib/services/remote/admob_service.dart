@@ -11,9 +11,9 @@ class AdMobService {
       // TODO: 배너 광고 ID 변경
       return 'ca-app-pub-3940256099942544/6300978111';
     } else if (Platform.isIOS) {
-      // return 'ca-app-pub-3940256099942544/2934735716';
+      return 'ca-app-pub-3940256099942544/2934735716';
       // 변경 완료
-      return 'ca-app-pub-6460600693792652/2876639841';
+      // return 'ca-app-pub-6460600693792652/2876639841';
     }
     return null;
   }
@@ -25,9 +25,9 @@ class AdMobService {
       return 'ca-app-pub-3940256099942544/1033173712';
     } else if (Platform.isIOS) {
       // TODO: 전면 광고 ID 변경
-      // return 'ca-app-pub-3940256099942544/4411468910';
+      return 'ca-app-pub-3940256099942544/4411468910';
       // 변경 완료
-      return 'ca-app-pub-6460600693792652/1899434246';
+      // return 'ca-app-pub-6460600693792652/1899434246';
     }
     return null;
   }
