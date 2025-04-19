@@ -1,0 +1,25 @@
+name: ✨ Feature Request
+description: 새로운 기능을 제안합니다.
+labels: [feature]
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: 📌 기능 설명
+      description: 제안하는 기능에 대해 간단히 설명해 주세요.
+      placeholder: 사용자 프로필 편집 기능
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 💡 필요 이유
+      description: 이 기능이 왜 필요한지 설명해 주세요.
+
+  - type: textarea
+    id: todo
+    attributes:
+      label: ✅ 할 일
+      placeholder: |
+        - [ ] UI 작성
+        - [ ] API 연동
+        - [ ] 테스트 코드 작성
