@@ -9,6 +9,9 @@ class StoryViewModel with ChangeNotifier {
   final CachedStoryScriptRepository _cachedStoryScriptRepository =
       CachedStoryScriptRepository();
 
+  // StoryViewModel에 추가
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+
   // 📌 선택된 스토리의 전체 스크립트 리스트
   final List<StoryScript> _selectedScripts = [];
   List<StoryScript> get selectedScripts => _selectedScripts;
@@ -49,6 +52,15 @@ class StoryViewModel with ChangeNotifier {
       }
     }
     storyTellerScripts.sort((a, b) => a.index.compareTo(b.index));
+
+    Future.delayed(
+      const Duration(milliseconds: 50),
+      () {
+        _scrollController.jumpTo(
+          _scrollController.position.maxScrollExtent,
+        );
+      },
+    );
   }
 
   /// 🔹 언어 모드 변경 (Eng ↔ Kor)
@@ -112,39 +124,26 @@ class StoryViewModel with ChangeNotifier {
       addMeScript(script);
     }
 
-    // 스크롤 위치 조정 (처음 스크립트로 이동)
-    _scrollController.animateTo(
-      _scrollController.position.minScrollExtent,
-      duration: const Duration(milliseconds: 1000),
-      curve: Curves.easeInOut,
+    listKey.currentState?.insertItem(
+      _storyTellerScripts.length + _meScripts.length - 1,
+      duration: const Duration(milliseconds: 600),
     );
+
+    Future.delayed(const Duration(milliseconds: 50), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
 
     notifyListeners();
   }
 
   /// 🔹 스토리 되감기 (이전 스크립트)
-  void rewindStory() {
-    if (_currentIdx == 0) return;
-    debugPrint("🔹 rewindStory($_currentIdx/${_selectedScripts.length})");
-
-    final script = getScript(_currentIdx);
-
-    if (script.role == "me") {
-      removeMeScript();
-    } else {
-      removeStoryTellerScript();
-    }
-
-    _currentIdx--;
-
-    // 스크롤 위치 조정 (처음 스크립트로 이동)
-    _scrollController.animateTo(
-      _scrollController.position.minScrollExtent,
-      duration: const Duration(milliseconds: 1000),
-      curve: Curves.easeInOut,
-    );
-
-    notifyListeners();
+  Future<void> rewindStory() async {
+    debugPrint("필요 없음");
+    return;
   }
 
   /// 🔹 현재 인덱스의 스크립트 반환
@@ -199,3 +198,4 @@ class StoryViewModel with ChangeNotifier {
     clearMeScripts();
   }
 }
+

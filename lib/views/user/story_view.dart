@@ -139,23 +139,9 @@ class StoryView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: storyViewModel.scrollController,
-                  reverse: true,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: Platform.isAndroid ? 210.h : 180.h,
-                      ),
-                      _chatSection(
-                        context,
-                        storyViewModel,
-                      ),
-                      SizedBox(height: 20.h),
-                    ],
-                  ),
-                ),
+              _chatSection(
+                context,
+                storyViewModel,
               ),
             ],
           ),
@@ -208,16 +194,50 @@ class StoryView extends StatelessWidget {
       );
     }
 
-    return Column(
-      children: scripts.map(
-        (script) {
-          if (script.role != "me") {
-            return _storyTellerChat(context, script, storyViewModel);
-          } else {
-            return _myChat(context, script, storyViewModel);
-          }
+    // return Column(
+    //   children: scripts.map(
+    //     (script) {
+    //       if (script.role != "me") {
+    //         return _storyTellerChat(context, script, storyViewModel);
+    //       } else {
+    //         return _myChat(context, script, storyViewModel);
+    //       }
+    //     },
+    //   ).toList(),
+    // );
+
+    return Expanded(
+      child: AnimatedList(
+        key: storyViewModel.listKey,
+        initialItemCount: scripts.length,
+        controller: storyViewModel.scrollController,
+        physics: const BouncingScrollPhysics(),
+        reverse: false,
+        padding: EdgeInsets.only(
+          top: Platform.isAndroid ? 210.h : 180.h,
+          bottom: 20.h,
+        ),
+        itemBuilder: (
+          BuildContext context,
+          int index,
+          Animation<double> animation,
+        ) {
+          final script = scripts[index];
+          final chatWidget = script.role != "me"
+              ? _storyTellerChat(context, script, storyViewModel)
+              : _myChat(context, script, storyViewModel);
+
+          return FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.5, end: 1.0)
+                  .chain(CurveTween(curve: Curves.easeOutBack))
+                  .animate(animation),
+              child: chatWidget,
+            ),
+          );
         },
-      ).toList(),
+      ),
     );
   }
 
@@ -573,3 +593,5 @@ class StoryView extends StatelessWidget {
     );
   }
 }
+
+
