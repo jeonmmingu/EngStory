@@ -1,6 +1,5 @@
 import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/font/font_manager.dart';
-import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,30 +78,6 @@ class AdminView extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             "관리자 페이지",
             style: FontManager.current.font_24,
-          ),
-          const Spacer(),
-          GestureDetector(
-            onTap: () {
-              HapticFeedback.heavyImpact();
-              debugPrint("유저 모드 전환 버튼 탭");
-              DeviceInfoManager().isDeviceManagerChecked = false;
-              DeviceInfoManager().adminMode = false;
-              context.go('/');
-            },
-            child: Container(
-              width: 50.w,
-              height: 50.h,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: ThemeManager.current.grey_3,
-                borderRadius: BorderRadius.circular(25.r),
-              ),
-              child: Icon(
-                Icons.person,
-                color: ThemeManager.current.white,
-                size: 30.sp,
-              ),
-            ),
           ),
         ],
       ),

@@ -55,15 +55,8 @@ class AdminAddStoryView extends StatelessWidget {
                           children: [
                             SizedBox(height: 20.h),
                             _storyJsonInput(context),
-                            ...List.generate(
-                              adminStoryViewModel.scriptIndexCount,
-                              (index) => Column(
-                                children: [
-                                  SizedBox(height: 20.h),
-                                  _storyScriptJsonInput(context, index + 1),
-                                ],
-                              ),
-                            ),
+                            SizedBox(height: 20.h),
+                            _storyScriptJsonInput(context),
                             SizedBox(height: 20.h),
                             _createStoryButton(context, adminStoryViewModel),
                             SizedBox(height: 20.h),
@@ -87,87 +80,32 @@ class AdminAddStoryView extends StatelessWidget {
     AdminStoryViewModel adminStoryViewModel,
   ) {
     return SizedBox(
-      height: 150.h,
-      child: Column(
+      height: 80.h, // 높이 조정
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(width: 20.w),
-              GestureDetector(
-                onTap: () {
-                  context.pop();
-                  adminStoryViewModel.resetAllStates();
-                },
-                child: Container(
-                  width: 18.w,
-                  height: 18.h,
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    AppImages.backButton,
-                    color: ThemeManager.current.text_1,
-                  ),
-                ),
+          SizedBox(width: 20.w),
+          GestureDetector(
+            onTap: () {
+              context.pop();
+              adminStoryViewModel.resetAllStates();
+            },
+            child: Container(
+              width: 18.w,
+              height: 18.h,
+              alignment: Alignment.center,
+              child: Image.asset(
+                AppImages.backButton,
+                color: ThemeManager.current.text_1,
               ),
-              SizedBox(width: 18.w),
-              Text(
-                maxLines: 5,
-                overflow: TextOverflow.ellipsis,
-                "스토리 추가",
-                style: FontManager.current.font_22,
-              ),
-            ],
-          ),
-          SizedBox(height: 30.h),
-          Padding(
-            padding: EdgeInsets.only(left: 30.w, right: 30.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
-                  "스크립트 index 개수:",
-                  style: FontManager.current.font_18,
-                ),
-                SizedBox(width: 20.w),
-                Container(
-                  height: 40.h,
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  decoration: BoxDecoration(
-                    color: ThemeManager.current.white,
-                    borderRadius: BorderRadius.circular(10.r),
-                    border: Border.all(
-                        color: ThemeManager.current.black, width: 0.3),
-                  ),
-                  child: DropdownButton<int>(
-                    value: adminStoryViewModel.scriptIndexCount,
-                    items: List.generate(
-                      8,
-                      (index) => DropdownMenuItem(
-                        value: index + 1,
-                        child: Text(
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
-                          (index + 1).toString(),
-                          style: FontManager.current.font_16,
-                        ),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      // Handle dropdown value change
-                      adminStoryViewModel.setScriptIndexCount(value!);
-                    },
-                    underline: const SizedBox(),
-                  ),
-                ),
-              ],
             ),
-          )
+          ),
+          SizedBox(width: 18.w),
+          Text(
+            "스토리 추가",
+            style: FontManager.current.font_22,
+          ),
         ],
       ),
     );
@@ -182,8 +120,6 @@ class AdminAddStoryView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            maxLines: 5,
-            overflow: TextOverflow.ellipsis,
             "Story Json Script",
             style: FontManager.current.font_16,
           ),
@@ -197,25 +133,21 @@ class AdminAddStoryView extends StatelessWidget {
               border: Border.all(color: ThemeManager.current.black, width: 0.3),
             ),
             child: TextField(
-                maxLines: 10,
-                controller:
-                    context.read<AdminStoryViewModel>().storyJsonController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.r),
-                    borderSide: BorderSide(
-                        color: ThemeManager.current.black, width: 0.3),
-                  ),
-                  contentPadding: EdgeInsets.only(
-                    top: 20.h,
-                    bottom: 20.h,
-                    left: 20.w,
-                    right: 20.w,
-                  ),
+              maxLines: 10,
+              controller:
+                  context.read<AdminStoryViewModel>().storyJsonController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.r),
+                  borderSide:
+                      BorderSide(color: ThemeManager.current.black, width: 0.3),
                 ),
-                onChanged: (value) => context
-                    .read<AdminStoryViewModel>()
-                    .textEditingControllerChanged()),
+                contentPadding: const EdgeInsets.all(20),
+              ),
+              onChanged: (value) => context
+                  .read<AdminStoryViewModel>()
+                  .textEditingControllerChanged(),
+            ),
           ),
         ],
       ),
@@ -223,10 +155,7 @@ class AdminAddStoryView extends StatelessWidget {
   }
 
   // MARK: - StoryScript Json String Input Section
-  Widget _storyScriptJsonInput(BuildContext context, int index) {
-    final start = (index - 1) * 20 + 1;
-    final end = index * 20;
-    final title = "StoryScript Json Script ($start~$end)";
+  Widget _storyScriptJsonInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 30.w, right: 30.w),
       child: Column(
@@ -234,41 +163,34 @@ class AdminAddStoryView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            maxLines: 5,
-            overflow: TextOverflow.ellipsis,
-            title,
+            "StoryScript Json Array",
             style: FontManager.current.font_16,
           ),
           SizedBox(height: 10.h),
           Container(
             width: 393.w,
-            height: 200.h,
+            height: 400.h, // 높이를 더 크게 설정
             decoration: BoxDecoration(
               color: ThemeManager.current.white,
               borderRadius: BorderRadius.circular(20.r),
               border: Border.all(color: ThemeManager.current.black, width: 0.3),
             ),
             child: TextField(
-                controller: context
-                    .read<AdminStoryViewModel>()
-                    .storyScriptJsonControllers[index - 1],
-                maxLines: 10,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.r),
-                    borderSide: BorderSide(
-                        color: ThemeManager.current.black, width: 0.3),
-                  ),
-                  contentPadding: EdgeInsets.only(
-                    top: 20.h,
-                    bottom: 20.h,
-                    left: 20.w,
-                    right: 20.w,
-                  ),
+              maxLines: 20, // 더 많은 라인 입력 가능
+              controller:
+                  context.read<AdminStoryViewModel>().storyScriptJsonController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.r),
+                  borderSide:
+                      BorderSide(color: ThemeManager.current.black, width: 0.3),
                 ),
-                onChanged: (value) => context
-                    .read<AdminStoryViewModel>()
-                    .textEditingControllerChanged()),
+                contentPadding: const EdgeInsets.all(20),
+              ),
+              onChanged: (value) => context
+                  .read<AdminStoryViewModel>()
+                  .textEditingControllerChanged(),
+            ),
           ),
         ],
       ),
@@ -302,8 +224,6 @@ class AdminAddStoryView extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: Text(
-          maxLines: 5,
-          overflow: TextOverflow.ellipsis,
           "스토리 생성",
           style: FontManager.current.font_16.copyWith(
             color: ThemeManager.current.white,
