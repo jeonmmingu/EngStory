@@ -13,7 +13,6 @@ import 'package:eng_story/core/utils/reading_quotes.dart';
 import 'package:eng_story/core/utils/tts_manager.dart';
 import 'package:eng_story/core/utils/tutorial_coach_mark_manager.dart';
 import 'package:eng_story/models/cache/cached_story.dart';
-import 'package:eng_story/services/local/device_info_manager.dart';
 import 'package:eng_story/view_models/user/home_view_model.dart';
 import 'package:eng_story/view_models/user/story_view_model.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +59,6 @@ class HomeView extends StatelessWidget {
     HomeViewModel homeViewModel,
     bool isLoading,
   ) {
-    bool isAdmin = DeviceInfoManager().isAdmin();
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -166,36 +164,10 @@ class HomeView extends StatelessWidget {
                   ),
                 ),
               ),
-
-              if (isAdmin) ...[
-                SizedBox(width: 20.w),
-                GestureDetector(
-                  onTap: () {
-                    HapticFeedback.heavyImpact();
-                    DeviceInfoManager().isDeviceManagerChecked = false;
-                    DeviceInfoManager().adminMode = true;
-                    context.goNamed("adminView");
-                  },
-                  child: Container(
-                    width: 50.w,
-                    height: 50.h,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: ThemeManager.current.button,
-                      borderRadius: BorderRadius.circular(25.r),
-                    ),
-                    child: Icon(
-                      Icons.admin_panel_settings_outlined,
-                      color: ThemeManager.current.white,
-                      size: 28.sp,
-                    ),
-                  ),
-                ),
-              ]
             ],
           ),
         ),
-        SizedBox(height: isAdmin ? 42.h : 50.h),
+        SizedBox(height: 50.h),
         Center(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300), // 애니메이션 지속 시간
