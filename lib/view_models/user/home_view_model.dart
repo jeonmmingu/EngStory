@@ -400,4 +400,9 @@ class HomeViewModel with ChangeNotifier {
       debugPrint("❌ 캐싱된 스토리 삭제 실패: $e");
     }
   }
+
+  /// 🔹 notifying
+  void notify() {
+    notifyListeners();
+  }
 }

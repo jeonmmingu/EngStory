@@ -1,4 +1,6 @@
+import 'package:eng_story/core/utils/tts_manager.dart';
 import 'package:eng_story/models/story_script.dart';
+import 'package:eng_story/repositories/local/cached_story_repository.dart';
 import 'package:eng_story/repositories/local/cached_story_script_repository.dart';
 import 'package:eng_story/repositories/remote/story_repository.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,10 @@ class StoryViewModel with ChangeNotifier {
   final StoryRepository _storyRepository = StoryRepository();
   final CachedStoryScriptRepository _cachedStoryScriptRepository =
       CachedStoryScriptRepository();
+  final _cacheStoryRepository = CachedStoryRepository();
+
+  // StoryViewModel에 추가
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
 
   // 📌 선택된 스토리의 전체 스크립트 리스트
   final List<StoryScript> _selectedScripts = [];
@@ -28,29 +34,42 @@ class StoryViewModel with ChangeNotifier {
   // 📌 현재 언어 모드 (영어 / 한국어)
   String languageMode = "Eng";
 
+  // 📌 이야기 스크롤 컨트롤러
+  final ScrollController _scrollController = ScrollController();
+  ScrollController get scrollController => _scrollController;
+
+  // 📌 자동 진행 변수
+  bool _isAutoPlaying = false;
+  bool get isAutoPlaying => _isAutoPlaying;
+  bool _autoPlayCancelled = false;
+  bool get autoPlayCancelled => _autoPlayCancelled;
+
   /// 🔹 초기 설정 (index 기준)
   void init(int idx) {
     print("🔹 Script Length: (${selectedScripts.length})");
     print("🔹 StoryViewModel.init($idx)");
-    if (idx == 0) return; // 초기화할 스크립트가 없을 경우
+
+    if (idx == 0) return;
     _currentIdx = idx;
 
-    final script = getScript(idx);
-    if (script.role == "story_teller") {
-      var tmpIdx = idx;
-      while (tmpIdx > 0 && getScript(tmpIdx).role == "story_teller") {
-        addStoryTellerScript(getScript(tmpIdx));
-        tmpIdx--;
-      }
-    } else {
-      addMeScript(script);
-      var tmpIdx = idx - 1;
-      while (tmpIdx > 0 && getScript(tmpIdx).role == "story_teller") {
-        addStoryTellerScript(getScript(tmpIdx));
-        tmpIdx--;
+    for (int i = 1; i <= idx; i++) {
+      final script = getScript(i);
+      if (script.role == "story_teller") {
+        addStoryTellerScript(script);
+      } else {
+        addMeScript(script);
       }
     }
     storyTellerScripts.sort((a, b) => a.index.compareTo(b.index));
+
+    Future.delayed(
+      const Duration(milliseconds: 50),
+      () {
+        _scrollController.jumpTo(
+          _scrollController.position.maxScrollExtent,
+        );
+      },
+    );
   }
 
   /// 🔹 언어 모드 변경 (Eng ↔ Kor)
@@ -102,15 +121,9 @@ class StoryViewModel with ChangeNotifier {
   /// 🔹 스토리 재생 (다음 스크립트)
   void playStory() {
     debugPrint("🔹 playStory($currentIdx/${_selectedScripts.length})");
-    if (_currentIdx >= _selectedScripts.length) return;
 
-    // 이전 스크립트가 사용자(me)였을 경우, 기존 대화 삭제
-    if (_currentIdx != 0 && getScript(_currentIdx).role == "me") {
-      clearMeScripts();
-      clearStoryTellerScripts();
-    }
+    if (_currentIdx >= _selectedScripts.length - 1) return;
 
-    // 다음 스크립트 추가
     _currentIdx++;
     final script = getScript(_currentIdx);
 
@@ -120,50 +133,22 @@ class StoryViewModel with ChangeNotifier {
       addMeScript(script);
     }
 
-    notifyListeners();
-  }
+    listKey.currentState?.insertItem(
+      _storyTellerScripts.length + _meScripts.length - 1,
+      duration: const Duration(milliseconds: 600),
+    );
 
-  /// 🔹 스토리 되감기 (이전 스크립트)
-  void rewindStory() {
-    if (_currentIdx == 0) return;
-    debugPrint("🔹 rewindStory($currentIdx/${_selectedScripts.length})");
-
-    if (getScript(_currentIdx).role == "me") {
-      removeMeScript();
-      _currentIdx--;
-    } else {
-      if (_storyTellerScripts.length != 1 || _currentIdx == 1) {
-        removeStoryTellerScript();
-        _currentIdx--;
-
-        if (currentIdx != 0 && getScript(_currentIdx).role == "me") {
-          addMeScript(getScript(_currentIdx));
-          var tmpIdx = _currentIdx - 1;
-          while (tmpIdx > 0 && getScript(tmpIdx).role == "story_teller") {
-            addStoryTellerScript(getScript(tmpIdx));
-            tmpIdx--;
-          }
-        }
-      } else {
-        removeStoryTellerScript();
-        _currentIdx--;
-        addMeScript(getScript(_currentIdx));
-
-        // 이전 스크립트가 story_teller일 경우, 연속된 대화를 복원
-        var tmpIdx = _currentIdx - 1;
-        while (tmpIdx > 0 && getScript(tmpIdx).role == "story_teller") {
-          addStoryTellerScript(getScript(tmpIdx));
-          tmpIdx--;
-        }
-
-        // 스크립트 정렬
-        _storyTellerScripts.sort((a, b) => a.index.compareTo(b.index));
-      }
-    }
+    Future.delayed(const Duration(milliseconds: 50), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
 
     notifyListeners();
   }
-
+  
   /// 🔹 현재 인덱스의 스크립트 반환
   StoryScript getScript(int idx) {
     return _selectedScripts.firstWhere((element) => element.index == idx);
@@ -207,11 +192,52 @@ class StoryViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  /// 🔹 AutoPlay 상태 변경
+  void toggleAutoPlay() {
+    _isAutoPlaying = !_isAutoPlaying;
+    notifyListeners();
+  }
+
+  Future<void> startAutoPlay(String storyId) async {
+    _autoPlayCancelled = false;
+
+    while (_currentIdx < _selectedScripts.length - 1 && !_autoPlayCancelled) {
+      playStory();
+
+      await _cacheStoryRepository.updateLastReadScriptIndex(
+        storyId,
+        _currentIdx,
+      );
+
+      await TtsManager().flutterTts.stop();
+      await TtsManager().flutterTts.awaitSpeakCompletion(true);
+      // TTS 시작
+      await TtsManager().flutterTts.speak(getScript(_currentIdx).text_en);
+      await TtsManager().flutterTts.awaitSpeakCompletion(false);
+
+      // TTS 끝나고 0.6초 대기
+      if (_autoPlayCancelled) break;
+      await Future.delayed(const Duration(milliseconds: 750));
+    }
+
+    _isAutoPlaying = false;
+    notifyListeners();
+  }
+
+  Future<void> cancelAutoPlay() async {
+    _autoPlayCancelled = true;
+    _isAutoPlaying = false;
+    await TtsManager().flutterTts.stop();
+    await TtsManager().flutterTts.awaitSpeakCompletion(false);
+    notifyListeners();
+  }
+
   /// 🔹 모든 상태 초기화 (스토리 변경 시)
   void resetAllStates() {
     _selectedScripts.clear();
     _currentIdx = 0;
     languageMode = "Eng";
+    _isAutoPlaying = false;
     clearStoryTellerScripts();
     clearMeScripts();
   }
