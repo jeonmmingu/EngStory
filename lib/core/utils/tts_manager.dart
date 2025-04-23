@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:eng_story/repositories/local/cached_speech_speed_repository.dart';
+import 'package:eng_story/router/router.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 class TtsManager {
@@ -17,6 +18,8 @@ class TtsManager {
   Future<void> init() async {
     final speechRate = await cachedSpeechSpeedRepository.getSpeechSpeed();
 
+    if (isAdmin) { return; }
+    
     if (Platform.isAndroid) {
       await flutterTts.setLanguage("en-US");
       await flutterTts.setVoice(

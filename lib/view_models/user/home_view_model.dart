@@ -81,9 +81,11 @@ class HomeViewModel with ChangeNotifier {
   /// 🔹 앱 실행 시 초기화 작업 수행
   Future<void> initializeApp(bool isAdmin) async {
     try {
-      TutorialCoachMarkManager().initializeTargets();
-      await loadBannerAd();
-      await createInterstitialAd();
+      if (!isAdmin) {
+        TutorialCoachMarkManager().initializeTargets();
+        await loadBannerAd();
+        await createInterstitialAd();
+      }
 
       // 1️⃣ 1초 딜레이 후 캐싱된 데이터 불러오기
       if (!isAdmin) {
@@ -399,5 +401,10 @@ class HomeViewModel with ChangeNotifier {
     } catch (e) {
       debugPrint("❌ 캐싱된 스토리 삭제 실패: $e");
     }
+  }
+
+  /// 🔹 notifying
+  void notify() {
+    notifyListeners();
   }
 }

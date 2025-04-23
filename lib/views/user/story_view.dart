@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:eng_story/core/utils/color/theme_manager.dart';
 import 'package:eng_story/core/utils/font/font_manager.dart';
@@ -23,30 +24,39 @@ class StoryView extends StatelessWidget {
     final storyViewModel = Provider.of<StoryViewModel>(context);
     final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
 
-    return Scaffold(
-      backgroundColor: ThemeManager.current.background,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _header(context, homeViewModel),
-            _body(context, homeViewModel, storyViewModel),
-            Container(
-              width: double.infinity,
-              color: Colors.transparent,
-              height: 150.h,
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _progressBar(context, homeViewModel, storyViewModel),
-                  _bottomSection(context, storyViewModel),
-                ],
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          storyViewModel.cancelAutoPlay();
+          homeViewModel.notify();
+          context.pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: ThemeManager.current.background,
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _body(context, homeViewModel, storyViewModel),
+              Container(
+                width: double.infinity,
+                color: Colors.transparent,
+                height: 150.h,
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _progressBar(context, homeViewModel, storyViewModel),
+                    _bottomSection(context, storyViewModel),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -80,6 +90,7 @@ class StoryView extends StatelessWidget {
           left: 5.w,
           child: GestureDetector(
             onTap: () {
+              homeViewModel.notify();
               context.pop();
             },
             child: Container(
@@ -133,51 +144,44 @@ class StoryView extends StatelessWidget {
     StoryViewModel storyViewModel,
   ) {
     return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          SizedBox(height: 10.h),
-          Center(
-            child: Lottie.asset(
-              "assets/animations/robot.json",
-              width: 130.w,
-              height: 130.h,
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _chatSection(
+                context,
+                storyViewModel,
+              ),
+            ],
           ),
-          SizedBox(height: 25.h),
-          Expanded(
-            child: SingleChildScrollView(
-              reverse: true,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 0.w,
-                      right: 20.w,
-                    ),
-                    child: _storyTellerChatSections(
-                      context,
-                      storyViewModel.storyTellerScripts,
-                      storyViewModel,
-                    ),
+          Positioned(
+            top: 0.h,
+            left: 0.w,
+            right: 0.w,
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                  height: Platform.isAndroid ? 200.h : 170.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: ThemeManager.current.background.withOpacity(0.85),
                   ),
-                  SizedBox(height: 30.h),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 20.w,
-                      right: 0.w,
-                    ),
-                    child: _myChat(
-                      context,
-                      storyViewModel.meScripts.isEmpty
-                          ? null
-                          : storyViewModel.meScripts.first,
-                      storyViewModel,
-                    ),
+                  child: Column(
+                    children: [
+                      _header(context, homeViewModel),
+                      Center(
+                        child: Lottie.asset(
+                          "assets/animations/robot.json",
+                          width: 120.w,
+                          height: 120.h,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 45.h),
-                ],
+                ),
               ),
             ),
           ),
@@ -187,19 +191,64 @@ class StoryView extends StatelessWidget {
   }
 
   // MARK: - storyTellerChatSections
-  Widget _storyTellerChatSections(
+  Widget _chatSection(
     BuildContext context,
-    List<StoryScript> storyScripts,
     StoryViewModel storyViewModel,
   ) {
-    return Column(
-      children: storyScripts.map((script) {
-        return _storyTellerChat(
-          context,
-          script,
-          storyViewModel,
-        );
-      }).toList(),
+    var scripts = List.from(storyViewModel.storyTellerScripts);
+    scripts.addAll(storyViewModel.meScripts);
+    scripts.sort((a, b) => a.index.compareTo(b.index));
+
+    if (scripts.isEmpty) {
+      return Container(
+        color: ThemeManager.current.background,
+      );
+    }
+
+    // return Column(
+    //   children: scripts.map(
+    //     (script) {
+    //       if (script.role != "me") {
+    //         return _storyTellerChat(context, script, storyViewModel);
+    //       } else {
+    //         return _myChat(context, script, storyViewModel);
+    //       }
+    //     },
+    //   ).toList(),
+    // );
+
+    return Expanded(
+      child: AnimatedList(
+        key: storyViewModel.listKey,
+        initialItemCount: scripts.length,
+        controller: storyViewModel.scrollController,
+        physics: const BouncingScrollPhysics(),
+        reverse: false,
+        padding: EdgeInsets.only(
+          top: Platform.isAndroid ? 210.h : 180.h,
+          bottom: 20.h,
+        ),
+        itemBuilder: (
+          BuildContext context,
+          int index,
+          Animation<double> animation,
+        ) {
+          final script = scripts[index];
+          final chatWidget = script.role != "me"
+              ? _storyTellerChat(context, script, storyViewModel)
+              : _myChat(context, script, storyViewModel);
+
+          return FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.5, end: 1.0)
+                  .chain(CurveTween(curve: Curves.easeOutBack))
+                  .animate(animation),
+              child: chatWidget,
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -211,12 +260,14 @@ class StoryView extends StatelessWidget {
   ) {
     return GestureDetector(
       onTap: () async {
+        if (storyViewModel.isAutoPlaying) return;
+
         HapticFeedback.mediumImpact();
         await TtsManager().stop();
         TtsManager().speak(storyScript.text_en);
       },
       child: Padding(
-        padding: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.only(bottom: 15.h, right: 30.w),
         child: Container(
           padding: EdgeInsets.only(
             left: 20.w,
@@ -255,21 +306,22 @@ class StoryView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Positioned(
-                    right: -14.w,
-                    bottom: 0.h,
-                    child: SizedBox(
-                      width: 21.w,
-                      height: 21.h,
-                      child: Center(
-                        child: Icon(
-                          Icons.volume_up,
-                          color: ThemeManager.current.text_2,
-                          size: 15.w,
+                  if (!storyViewModel.isAutoPlaying)
+                    Positioned(
+                      right: -14.w,
+                      bottom: 0.h,
+                      child: SizedBox(
+                        width: 21.w,
+                        height: 21.h,
+                        child: Center(
+                          child: Icon(
+                            Icons.volume_up,
+                            color: ThemeManager.current.text_2,
+                            size: 15.w,
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
               if (storyViewModel.languageMode != "Eng") ...[
@@ -300,78 +352,84 @@ class StoryView extends StatelessWidget {
     return meScript != null
         ? GestureDetector(
             onTap: () async {
+              if (storyViewModel.isAutoPlaying) return;
+
               HapticFeedback.mediumImpact();
               await TtsManager().stop();
               TtsManager().speak(meScript.text_en);
             },
-            child: Container(
-              padding: EdgeInsets.only(
-                left: 12.w,
-                right: 20.w,
-                top: 7.h,
-                bottom: 7.h,
-              ),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: ThemeManager.current.text_2,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.r),
-                  bottomLeft: Radius.circular(12.r),
+            child: Padding(
+              padding: EdgeInsets.only(top: 15.h, bottom: 30.h, left: 30.w),
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: 12.w,
+                  right: 20.w,
+                  top: 7.h,
+                  bottom: 7.h,
                 ),
-                border: Border.all(
-                  color: ThemeManager.current.text_1,
-                  width: 0.4.w,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: ThemeManager.current.text_2,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.r),
+                    bottomLeft: Radius.circular(12.r),
+                  ),
+                  border: Border.all(
+                    color: ThemeManager.current.text_1,
+                    width: 0.4.w,
+                  ),
                 ),
-              ),
-              alignment: Alignment.centerLeft,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
-                          meScript.text_en,
-                          style: FontManager.current.font_18.copyWith(
-                            color: ThemeManager.current.white,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        right: -14.w,
-                        bottom: 1.h,
-                        child: SizedBox(
-                          width: 21.w,
-                          height: 21.h,
-                          child: Center(
-                            child: Icon(
-                              Icons.volume_up,
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            meScript.text_en,
+                            style: FontManager.current.font_18.copyWith(
                               color: ThemeManager.current.white,
-                              size: 15.w,
                             ),
                           ),
                         ),
+                        if (!storyViewModel.isAutoPlaying)
+                          Positioned(
+                            right: -14.w,
+                            bottom: 1.h,
+                            child: SizedBox(
+                              width: 21.w,
+                              height: 21.h,
+                              child: Center(
+                                child: Icon(
+                                  Icons.volume_up,
+                                  color: ThemeManager.current.white,
+                                  size: 15.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    if (storyViewModel.languageMode != "Eng") ...[
+                      Divider(
+                          color: ThemeManager.current.white, thickness: 0.4.h),
+                      Text(
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                        meScript.text_ko,
+                        style: FontManager.current.font_16.copyWith(
+                          color: ThemeManager.current.white,
+                        ),
                       ),
                     ],
-                  ),
-                  if (storyViewModel.languageMode != "Eng") ...[
-                    Divider(
-                        color: ThemeManager.current.white, thickness: 0.4.h),
-                    Text(
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
-                      meScript.text_ko,
-                      style: FontManager.current.font_16.copyWith(
-                        color: ThemeManager.current.white,
-                      ),
-                    ),
                   ],
-                ],
+                ),
               ),
             ),
           )
@@ -394,7 +452,7 @@ class StoryView extends StatelessWidget {
         Positioned(
           child: Container(
             width: 393.w /
-                storyViewModel.selectedScripts.length *
+                (storyViewModel.selectedScripts.length - 1) *
                 storyViewModel.currentIdx,
             height: 6.h,
             color: ThemeManager.current.text_2,
@@ -410,26 +468,40 @@ class StoryView extends StatelessWidget {
     return Expanded(
       child: Row(
         children: [
-          // MARK: - Rewind Button
+          // MARK: - auto play Button
           Flexible(
             flex: 1,
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 HapticFeedback.mediumImpact();
-                storyViewModel.rewindStory();
-                homeViewModel.updateLastReadScriptIndex(
-                  homeViewModel.selectedStory!.id,
-                  storyViewModel.currentIdx,
-                );
+                storyViewModel.toggleAutoPlay();
+
+                if (storyViewModel.isAutoPlaying) {
+                  await storyViewModel
+                      .startAutoPlay(homeViewModel.selectedStory!.id);
+                } else {
+                  await storyViewModel.cancelAutoPlay();
+                }
               },
-              child: Container(
-                color: Colors.transparent,
-                alignment: Alignment.center,
-                child: Image.asset(
-                  AppImages.chatBackButton,
-                  width: 35.w,
-                  height: 35.h,
-                  color: ThemeManager.current.button,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                transitionBuilder: (child, animation) => ScaleTransition(
+                  scale: animation.drive(
+                    CurveTween(curve: Curves.bounceInOut),
+                  ),
+                  child: child,
+                ),
+                child: Container(
+                  key: ValueKey(storyViewModel.isAutoPlaying),
+                  color: Colors.transparent,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    storyViewModel.isAutoPlaying
+                        ? Icons.pause
+                        : Icons.graphic_eq_outlined,
+                    color: ThemeManager.current.button,
+                    size: 40.w,
+                  ),
                 ),
               ),
             ),
@@ -438,7 +510,10 @@ class StoryView extends StatelessWidget {
           Flexible(
             flex: 1,
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
+                if (storyViewModel.isAutoPlaying) {
+                  return;
+                }
                 HapticFeedback.mediumImpact();
                 storyViewModel.playStory();
                 homeViewModel.updateLastReadScriptIndex(
@@ -446,28 +521,46 @@ class StoryView extends StatelessWidget {
                   storyViewModel.currentIdx,
                 );
               },
-              child: Container(
-                color: Colors.transparent,
-                alignment: Alignment.center,
-                child: Container(
-                  width: 80.w,
-                  height: 80.h,
-                  decoration: BoxDecoration(
-                    color: ThemeManager.current.button,
-                    borderRadius: BorderRadius.circular(40.r),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(width: 4.w),
-                      Image.asset(
-                        AppImages.playButton,
-                        width: 30.w,
-                        height: 30.h,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (storyViewModel.isAutoPlaying) SizedBox(height: 20.h),
+                  Container(
+                    color: Colors.transparent,
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 80.w,
+                      height: 80.h,
+                      decoration: BoxDecoration(
+                        color: (storyViewModel.isAutoPlaying)
+                            ? ThemeManager.current.grey_1
+                            : ThemeManager.current.button,
+                        borderRadius: BorderRadius.circular(40.r),
                       ),
-                    ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(width: 4.w),
+                          Image.asset(
+                            AppImages.playButton,
+                            width: 30.w,
+                            height: 30.h,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                  if (storyViewModel.isAutoPlaying) ...[
+                    SizedBox(height: 5.h),
+                    Text(
+                      "자동 재생 중",
+                      style: FontManager.current.font_14.copyWith(
+                        color: ThemeManager.current.grey_3,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           ),
@@ -520,12 +613,13 @@ class StoryView extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 storyViewModel.resetStoryScripts();
                 homeViewModel.updateLastReadScriptIndex(
                   homeViewModel.selectedStory!.id,
                   0,
                 );
+                await storyViewModel.cancelAutoPlay();
                 context.pop();
               },
               child: Text(
