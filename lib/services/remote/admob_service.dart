@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:eng_story/router/router.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -7,6 +8,9 @@ class AdMobService {
   //배너광고
   //앱 개발시 테스트광고 ID로 입력
   static String? get bannerAdUnitId {
+
+    if (isAdmin) { return null; }
+
     if (Platform.isAndroid) {
       // TODO: 배너 광고 ID 변경
       return 'ca-app-pub-3940256099942544/6300978111';
@@ -20,6 +24,7 @@ class AdMobService {
 
   //전면 광고
   static String? get interstitialAdUnitId {
+    if (isAdmin) { return null; }
     if (Platform.isAndroid) {
       // TODO: 전면 광고 ID 변경
       return 'ca-app-pub-3940256099942544/1033173712';

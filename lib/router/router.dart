@@ -9,18 +9,16 @@ import 'package:eng_story/views/user/home_view.dart';
 import 'package:eng_story/views/user/story_view.dart';
 import 'package:go_router/go_router.dart';
 
+bool isSet = false;
+bool isAdmin = true;
+
 final GoRouter router = GoRouter(
   initialLocation: '/', // 기본 경로 (redirect에서 변경됨)
-  // redirect: (context, state) {
-  //   if (!DeviceInfoManager().isDeviceManagerChecked) {
-  //     DeviceInfoManager().isDeviceManagerChecked = true;
-  //     final bool isAdmin = DeviceInfoManager().isAdmin();
-  //     final bool adminMode = DeviceInfoManager().adminMode;
-  //     return isAdmin && adminMode ? '/adminView' : '/';
-  //   } else {
-  //     return null;
-  //   }
-  // },
+  redirect: (context, state) {
+    if (isSet) return null;
+    isSet = true;
+    return isAdmin ? '/adminView' : '/';
+  },
   routes: [
     GoRoute(
       path: '/',
@@ -30,7 +28,7 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: 'storyView',
           name: 'storyView',
-          builder: (context, state) => StoryView(),
+          builder: (context, state) => const StoryView(),
         ),
       ],
     ),
