@@ -10,7 +10,7 @@ import 'package:eng_story/views/user/story_view.dart';
 import 'package:go_router/go_router.dart';
 
 bool isSet = false;
-bool isAdmin = true;
+bool isAdmin = false;
 
 final GoRouter router = GoRouter(
   initialLocation: '/', // 기본 경로 (redirect에서 변경됨)
