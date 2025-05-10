@@ -1,4 +1,2 @@
-What’s New in Version 1.0.2
-	•	스토리 읽기 화면 UI 변경
-	•   스토리 읽기 화면 말풍선 애니메이션 추가
-	•   스토리 자동 읽어주기 기능 추가
+What’s New in Version 1.0.3
+	•	광고화면 에러 수정

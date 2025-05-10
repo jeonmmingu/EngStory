@@ -5,7 +5,7 @@
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-6460600693792652~4055782152</string>
 	<key>NSLocalNetworkUsageDescription</key>
-  	<string>이 앱은 Firebase 서버와 원활하게 데이터를 동기화하기 위해 로컬 네트워크를 사용할 수 있습니다. 다른 기기와의 직접 연결이나 정보 수집은 하지 않습니다.</string>
+	<string>이 앱은 Firebase 서버와 원활하게 데이터를 동기화하기 위해 로컬 네트워크를 사용할 수 있습니다. 다른 기기와의 직접 연결이나 정보 수집은 하지 않습니다.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -23,11 +23,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.2</string>
+	<string>1.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>3</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
